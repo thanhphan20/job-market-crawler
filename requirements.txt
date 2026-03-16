@@ -2,3 +2,6 @@ flask
 requests
 beautifulsoup4
 MarkupSafe
+pandas
+matplotlib
+seaborn

@@ -1,0 +1,1030 @@
+Title,Company,Skills and Experience
+Mid/Sr Java Developer (English Required) - Up to 3200$,"Rakuten Fintech Vietnam Co., Ltd.","Your skills and experience 
+ Must have: 
+ At least 5+ years working in Java API/Web development 
+ Intermediate-level in English communication 
+ Strong experience in SQL, especially Oracle 
+ Strong knowledge in Java Web & Enterprise (EE) technologies 
+ Good knowledge with source control and defect tracking tool 
+ Good experience with unit testing: JUnit, mock 
+ Must be independent, responsible, and self-motivated with the ability to learn and achieve superior results 
+ Strong communication skills with proven ability to present complex ideas and document in a clear and concise way. 
+ Nice to have: 
+ Experience in developing large-scale mission-critical systems 
+ Experience in design and implement event-driven architectures using messaging systems, especially with Kafka 
+ Experience in utilizing NoSQL distributed databases to manage large volumes of data, especially with Cassandra 
+ Working experience as a Tech Lead and Team Leader 
+ Experience in microservice, cloud computing"
+Technical Lead (Ruby/Java/NodeJS/PHP),RAKSUL Vietnam,"Your skills and experience 
+ Basic Qualification 
+ Experience in operating and re-architecting systems operated more than 8 years. 
+ Confident with 
+ Ruby/PHP/NodeJS/Java 
+ or what other languages but willing to deal with 
+ Ruby 
+ . 
+ Highly productive coding and designing unit testing skill with Linux and web-based application’s frameworks (fluent in at least two of the following: Ruby on Rails, NestJS, Laravel, CakePHP, Django, etc.) 
+ Hand-on experience with designing and tuning complex relational databases such as MySQL, PostgreSQL. 
+ Experience with improving legacy code/system and working with REST API, and GraphQL. 
+ Experience with designing and implementing asynchronous processes using event streaming services such as Kafka. 
+ Familiar with cloud computing such as AWS, GCP 
+ Other skills 
+ Decent communication English skill to work with global members. 
+ Strong documentation skill utilizing tools such as Notion, Clickup, Github Wiki, etc. 
+ Pair programming and/or mob programming. 
+ Ability to work with others and preference on teamwork. 
+ Strong interest to change old industries with technology."
+".NET Developer (C#, ASP.NET,...)(strong English)",Wilmar CLV (Cambodia Laos Vietnam),"Your skills and experience 
+ Basic knowledge of .NET technologies, including C#, ASP.NET, and MVC. 
+ Understanding of RESTful API design principles and web services. 
+ Experience working with databases (SQL Server, MySQL, etc.) and ORM frameworks like Entity Framework. 
+ Knowledge of web development (CSHTML, HTML, CSS, JavaScript) is a plus. 
+ Strong analytical, problem-solving, and debugging skills. 
+ Ability to work independently and as part of a team. 
+ Excellent communication and interpersonal skills. 
+ Eagerness to learn and grow in the field of software development. 
+ Preferred Qualifications (Nice to Have): 
+ Hands-on experience with ABP.io framework 
+ Experience building applications using Blazor Server and/or Blazor WebAssembly 
+ Familiarity with Azure DevOps (Repos, Pipelines, Boards) 
+ Experience using SonarQube or similar static code analysis tools 
+ Understanding of DevOps principles and CI/CD best practices 
+ Experience deploying containerized applications to cloud container platforms (Azure AKS, AWS EKS/ECS, etc.) 
+ Exposure to cloud platforms such as Azure or AWS. 
+ Basic understanding of Visual Studio for Office(VSTO)"
+PHP Team Leader (Laravel/ SQL),ORO Vietnam,"Your skills and experience 
+ Skills And Qualifications 
+ Strong proficiency in the PHP programming language and hands-on experience with the Laravel framework. 
+ Experience with relational databases (such as MySQL) and writing efficient SQL queries. 
+ Familiarity with RESTful APIs and experience in building and consuming APIs. 
+ DevOps, Server, and Linux experienced 
+ Proficient understanding of version control systems, preferably Git. 
+ Excellent problem-solving skills, attention to detail, and ability to work in a collaborative team environment. 
+ Skills And Qualifications 
+ Experience with other PHP frameworks (e.g., Symfony, CodeIgniter) is a plus. 
+ Knowledge of containerization and orchestration tools, such as Docker and Kubernetes. 
+ Experience in Agile development methodologies and tools like JIRA or Trello. 
+ Contributions to open-source projects or active participation in the Laravel community"
+[Global Market] Database Developer (SQL),RIKKEISOFT,"Your skills and experience 
+ 2+ years of experience in SQL and database development (4+ years for Senior level) 
+ Strong knowledge of relational databases such as SQL Server and/or Oracle Database 
+ Hands-on experience writing and optimizing SQL queries using T-SQL and/or PL/SQL 
+ Good understanding of data integrity, normalization, and transaction handling 
+ Experience with performance tuning and database optimization (Senior level expected to handle complex cases) 
+ Familiar with Git and common Agile development practices 
+ Good English communication skills for daily work (written and spoken) 
+ Experience with reporting or ETL tools (e.g. SSIS, Power BI) is a plus 
+ Basic understanding of data warehousing or OLAP concepts is a plus 
+ Experience in data modeling, database architecture, or CI/CD for database deployment is an advantage for Senior candidates"
+Senior Golang Developer,CÔNG TY TNHH FINAN,"Your skills and experience 
+ 3+ years of experience in Go (Golang) development and 2+ years of experience in microservices development. 
+ Hands-on experience with containerization technologies such as Docker and Kubernetes. 
+ Familiarity with REST, gRPC, and RabbitMQ APIs. 
+ Experience working with PostgreSQL, Elasticsearch, and Redis. 
+ Ability to design and develop back-end architecture when necessary. 
+ Knowledge of Prometheus, Elastic Stack (Elasticsearch, Logstash, Kibana), Grafana, Ansible, and cloud infrastructure. 
+ Proactive, adaptable, and eager to learn new technologies. 
+ Self-motivated with a positive ""can-do"" attitude and strong teamwork skills. 
+ Well-disciplined and responsible for task delivery. 
+ Experience with multi-database environments (MySQL, NoSQL, etc.) is a plus."
+Technical Lead (Go/Java/Kotlin/TypeScript/Python),"MONEY FORWARD VIETNAM CO.,LTD","Your skills and experience 
+ Required Skills and Experience 
+ 5+ years of experience in software development with strong hands-on skills in a modern programming language (e.g., Go, Java, Kotlin, TypeScript, Python, etc.). 
+ Experience in leading small teams or acting as a Scrum Master, Tech Lead, or Engineering Manager in an Agile environment. 
+ Deep understanding of backend system design, software architecture, and microservices. 
+ Strong communication and stakeholder management skills, with ability to collaborate effectively with product managers, designers, and leaders. 
+ Comfortable facilitating Agile ceremonies and balancing delivery accountability with technical execution. 
+ Strong sense of ownership, self-direction, and reliability in fast-moving environments. 
+ Preferred Skills and Experience 
+ Experience with distributed systems, message queues (e.g., Kafka), or event-driven architectures. 
+ Familiarity with Domain-Driven Design (DDD), clean architecture, or design patterns for scalable backend development. 
+ Exposure to infrastructure as code, containerized environments (e.g., Docker, Kubernetes), or cloud platforms (especially AWS). 
+ Experience working in a multi-national, cross-timezone team environment. 
+ Scrum Master certification (CSM, PSM) or similar is a plus. 
+ Experience in AI development and/or experience in using AI tools to improve development processes. 
+ Money Forward recently announced our AI Strategy roadmap which focuses on improving AI-driven operational efficiencies, as well as integrating AI agents into our products to deliver better value to our users. (More information 
+ ) 
+ Technology Stack 
+ Language: Go, Java,  Kotlin, TypeScript, Python 
+ Database: MySQL, DynamoDB, Redis 
+ Infrastructure/Middleware: Terraform, Kubernetes, AWS (EKS, ECR, RDS, S3, SQS, SNS, etc…), GCP, Docker, Kafka, NginX, Consul"
+"Software Engineer II (C#, dotnet,Java)",Motorola Solutions,"Your skills and experience 
+ Bachelor’s Degree/ Master Degree in Computer Science, Software Engineering, or a related technical field. 
+ Minimum of 3 years of professional experience in backend software development. 
+ Primary Tech Stack: 
+ Strong proficiency in 
+ C# 
+ or 
+ .NET 
+ is highly preferred for immediate integration. 
+ Java 
+ or 
+ Golang 
+ experts with strong CS fundamentals who are open to mastering new languages and architectures is preferred. 
+ Familiarity with major 
+ cloud providers 
+ (AWS, Azure, or GCP). 
+ Experience with SQL Server, Postgres, or other major relational databases is a plus. 
+ Hands-on experience with Docker and Kubernetes (K8s) for container orchestration is a plus 
+ Experience with distributed messaging systems (e.g., Kafka, Event Hubs, or RabbitMQ). 
+ Proficiency in English (written and verbal) for collaboration in a global environment."
+"Senior Java Engineer (Spring Boot, Microservices, SQL)",EPAM Vietnam,"Your skills and experience 
+ At least 5 years of experience in software development with a degree in computer science or equivalents 
+ Strong experience with Java, Spring, Spring boot, JUnit, Git, Maven, design patterns, and SOLID design principles 
+ Good at data structures, algorithms and problem-solving 
+ Proficient with Rest API, Spring MVC, Spring Data and relational DB (MSSQL, DB2, MySQL, Postgres) or NoSQL (MongoDB, Cassandra, etc.) 
+ Experience with Spring Security, Microservices, JWT, Swagger, Kafka, TDD/BDD practices and Mockito. 
+ Proficient in both spoken and written English (B1 and above levels) with can-do attitudes, willing to learn and apply new technologies quickly 
+ Experience with development processes and CI/CD tools e.g. Atlassian JIRA, Jenkins, SonarQube"
+Java Spring Boot (20-40 Mil),Nitori Digital Base Vietnam,"Your skills and experience 
+ Tốt nghiệp chuyên ngành CNTT các trường đại học; ưu tiên Đại học Bách Khoa Hà Nội, ĐH Công nghệ - ĐHQGHN; Học viện bưu chính viễn thông. 
+ Có thể giao tiếp tốt bằng tiếng Anh, tương đương Toeic 600 trở lên; 
+ Tối thiểu 03 năm phát triển web phía Backend, mạnh về Java Spring Boot; 
+ Ưu tiên kinh nghiệm làm việc cho thị trường Nhật; 
+ Có khả năng truyền giao tiếp, truyền đạt ."
+[HCM] Salesforce Developer (All level) | Up to 55M VND,Hybrid Technologies,"Your skills and experience 
+ Must have: 
+ Bachelor’s Degree in Computer Science or related field 
+ From 3 – 6+ years experience as a Salesforce Developer. 
+ Have Salesforce Platform Developer 1 Certified. 
+ Apex development. 
+ Hands-on experience in administration setup, e.g., managing users, security controls, and data as well as creating roles, profiles, and reports. 
+ Experience in designing custom objects, custom fields, picklists, page layouts, workflow, approval processes, validation rules, custom tabs, reports, Visualforce pages, dashboards, and email generation according to application requirements 
+ Nice to have (Optional): 
+ Candidates with the following Salesforce certifications are preferred: 
+ Salesforce Administrator 
+ Salesforce Platform Developer I, II 
+ Salesforce Application Architect 
+ Salesforce Javascript Developer I 
+ Salesforce Certified Administrator (SCA) 
+ Good English or Japanese."
+.NET Developer (Mortgage Systems),Topicus Vietnam,"Your skills and experience 
+ Bachelor's degree in Computer Science, Information Technology, or a related field. 
+ Strong English communication skills, both written and verbal. 
+ Minimum of 3 years of experience in .NET development. 
+ Proficiency in C# and the .NET framework. 
+ Experience with SQL databases. 
+ Strong understanding of object-oriented programming principles. 
+ Excellent problem-solving skills and attention to detail. 
+ Effective communication and teamwork abilities. 
+ Experience with Azure DevOps and Azure Pipelines is a plus. 
+ Experience working in an international team is a plus."
+Chuyên viên Phát triển ứng dụng (Java Developer),SACOMBANK,"Your skills and experience 
+ YÊU CẦU CÔNG VIỆC: 
+ Yêu cầu về bằng cấp/chứng chỉ 
+ Tốt nghiệp Đại học trở lên các chuyên ngành CNTT hoặc các ngành có liên quan. 
+ Ưu tiên có các chứng chỉ quốc tế có liên quan. 
+ Trình độ ngoại ngữ: tiếng Anh giao tiếp, đọc hiểu tài liệu liên quan. 
+ Yêu cầu về kinh nghiệm, kiến thức 
+ Ít nhất 02 năm kinh nghiệm làm việc Lập trình ứng dụng bằng 
+ Java. 
+ Có kinh nghiệm làm tốt về 
+ Back-End, API Webservice, Micro services 
+ , xử lý tốt MultiTask, Multithread, Multi-processing, cơ chế Hash table, cơ chế xử lý file. 
+ Ưu tiên có kinh nghiệm tích hợp / phát triển: 
+ RESTful APIs, SOAP, TCP/IP. 
+ Ưu tiên có kinh nghiệm làm việc với các hệ điều hành Enterprise Linux, Windows Server. 
+ Ưu tiên có kinh nghiệm làm việc trên các web container: JBOSS, Weblogic, IBM Websphere."
+"Java Developer (Spring Boot, Microservices) – ID2686",VPBank,"Your skills and experience 
+ Trình độ đào tạo 
+ Đại học in Công nghệ thông tin or Khoa học máy tính 
+ Kiến thức/ Chuyên môn Có Liên Quan 
+ Thành thạo, hiểu biết sâu rộng về OOP & Java Core. 
+ Hiểu rõ về design pattern và cách implements trong thực tế 
+ Có kinh nghiệm xây dựng ứng dụng hoàn chỉnh backend cho webapp và mobileapp 
+ Hiểu rõ và có kinh nghiệm sử dụng spring boot, spring security, spring data. 
+ Sử dụng thành thạo cơ sở dữ liệu quan hệ ,hiểu rõ ORM và implements JPA/Hibernate 
+ Có kinh nghiệm làm việc với các service của AWS 
+ Tối ưu hóa query, hiểu biết về index, thiết kế csdl theo chuẩn 3rd 
+ Có kinh nghiệm về Microservices, domain driven design, cqrs, event sourcing 
+ Có kinh nghiệm về event driven trong microservices, event queue, caching bằng Kafka & Redis 
+ Có kinh nghiệm về logging, monitoring bằng ELK, Prometheus, Grafana 
+ Có kinh nghiệm về deploy trên K8s, aws cloud là 1 lợi thế. 
+ Có kiến thức cơ bản về hệ thống, Network, OS (Window, Linux ..) 
+ Sử dụng thành thạo các IDE phát triển. 
+ Các kinh nghiệm liên quan khác 
+ Xây dựng được một ứng dụng  app frontend/backend hoàn chỉnh, module hóa các nhóm tính năng mang tính trìu tượng cao. 
+ Kinh nghiệm 3 năm làm về các ứng dụng/hệ thống tài chính ngân hàng. 
+ Sử dụng thành thạo các tool quản lý source code, quản lý công việc. 
+ Tiếng anh đọc hiểu tài liệu tiếng anh chuyên ngành tốt, giao tiếp tốt là một lợi thế. 
+ Kiến thức triển khai dự án với các phương pháp khác nhau như agile, water-fall, Kanban… 
+ Có kinh nghiệm hướng dẫn và review code cho các thành viên trong team 
+ Có kinh nghiệm phân tích yêu cầu nghiệp vụ 
+ Có kinh nghiệm xây dựng các hệ thống có tính mở rộng 
+ Các năng lực khác 
+ Có khả năng tư duy logic 
+ Đánh giá, giải quyết vấn đề 
+ Lập kế hoạch, tổ chức công việc, phối hợp với nội bộ team cũng như ngoài team."
+Java Software Engineer,Pizza Hut Digital & Technology,"Your skills and experience 
+ Core Skills 
+ Strong expertise in Java (OOP, concurrency, collections, transaction management). 
+ Proficiency with Spring Boot, Spring Data, Dependency Injection. 
+ Experience designing and scaling RESTful microservices. 
+ Knowledge of API security (OAuth, Cognito, token-based auth, RBAC). 
+ Experience with event-driven architecture (Kafka, SQS). 
+ Strong SQL and NoSQL database experience. 
+ Experience diagnosing and resolving production issues. 
+ Experience integrating AI-driven services into backend workflows. 
+ Exposure to conversational systems or recommendation engines. 
+ Experience supporting large-scale multi-tenant platforms 
+ Version Control & Agile 
+ Proficient in Git for version control and team collaboration. 
+ Experience working in Agile environments, participating in sprints, and collaborating with cross-functional teams. 
+ Bonus Skills 
+ Familiarity with JavaScript/TypeScript (ES6+). 
+ Experience with CI/CD tools such as Jenkins, CircleCI, and Harness. 
+ Hands-on experience with AWS services (EC2, EKS, S3, RDS, Lambda). 
+ Knowledge of Kubernetes for container orchestration, scaling, and deployment. 
+ Experience with monitoring and logging tools like DataDog."
+IMS Developer (Cobol),Capgemini Vietnam,"Your skills and experience 
+ Bachelor Degree in Computer Science/ related degree with at least 2 year of working experience in Cobol, IMS 
+ Able to communicate in English is mandatory"
+"Senior/Lead Software Engineer (Java, Golang, English)",GFT Technologies Vietnam,"Your skills and experience 
+ Technical Qualifications 
+ Bachelor’s or Master’s degree in Computer Science, Engineering, or a related field 
+ 8+ years of backend development experience. 
+ 3+ years in a Technical Lead or senior engineering role. 
+ Strong experience with Java and backend frameworks (e.g. Spring Boot). 
+ Experience designing and implementing microservices, API-driven systems, event-driven architectures or messaging systems (e.g., Kafka), RDBMS and SQL. 
+ Solid experience working with containerization (Docker, Kubernetes). 
+ Strong understanding of CI/CD, version control (Git), and automated pipelines. 
+ Experience working in Agile delivery environments. 
+ Excellent leadership, communication, and stakeholder management skills. 
+ Specific Qualifications 
+ Experience working in banking, fintech, or financial services environments. 
+ Familiarity with core banking, card, payment systems, or related financial systems. 
+ Knowledge of industry standards (e.g. PCI-DSS) or payment security practices. 
+ Handson exposure to AIassisted development tools (GitHub Copilot, Claude Code, or similar). 
+ Ability to write effective prompts and context for AI code generation. 
+ Ability to assess AI-generated code, verify security vulnerabilities, validate AI-generated tests for completeness and edge case coverage. 
+ Nice-to-Have 
+ Experience with Golang programming language 
+ Exposure to cloud platforms (AWS, Azure, or GCP) 
+ Familiarity with modern API architectures such as GraphQL or BFF patterns 
+ Experience working with mobile-first platforms or digital banking applications 
+ What Makes You Successful in This Role 
+ You are experienced engineer with great mindset in leading end-to-end technical delivery and problem solving, forward thinking in applying AI-assisted solutions to optimize productivity, and willingness in mentoring others. 
+ (Note: Due to the high volume of applications we receive, we are unable to respond to every candidate individually. If you have not received a response from GFT regarding your application within 10 workdays, please consider that we have decided to proceed with other candidates. We truly appreciate your interest in GFT and thank you for your understanding)"
+Middle/Senior System Developer (Java) - IT Engineering,"Esoft Vietnam., Ltd","Your skills and experience 
+ 1. Education 
+ Bachelor’s degree, preferably in Information Technology or a related field. 
+ 2. Experience 
+ At least 3 years of experience in Java development. 
+ Experience working with overseas clients or international colleagues is a plus. 
+ 3. Technical Skills 
+ Strong Java programming skills. 
+ Experience with AWS (Amazon Web Services). 
+ 4. Soft Skills 
+ Good English communication skills. 
+ Strong time management and ability to work with deadlines. 
+ Problem-solving mindset and proactive attitude. 
+ 5. Personal Attributes 
+ Candidates should demonstrate the 6 core values of Esoft: 
+ 6. Other Requirements 
+ Willing to work outside normal working hours when necessary. 
+ Working time: 9h-18h (Mon-Fri) 
+ Location: Han Viet Tower, 203 Minh Khai, Bach Mai Ward, Hanoi"
+Senior Laravel Developer,KOSATEC EMPOWERING GLOBAL INNOVATION,"Your skills and experience 
+ Bachelor of Computer Science or related field 
+ Extensive experience with Laravel, in particular versions 10/11 
+ Tools: REST APIs, Sanctum/Passport, Eloquent ORM, Migrations, Query Builder, Horizon, Queues, Nova/Filament, PHPUnit/Pest 
+ Databases: MySQL (required), PostgreSQL (nice to have), Redis (nice to have) 
+ Frontend (nice to have): React, Vue.js, Blade, Livewire, Tailwind 
+ Github, CI/CD, AWS or Google Cloud, Docker, etc. 
+ Good English"
+Software Developer (.Net),Spendora,"Your skills and experience 
+ At least 1-3 years of experience in software development of this applied stack 
+ 2+ years of software development experience with C#, .NET, ASP.NET Core, Web API, Entity Framework, SQL Server 
+ Strong knowledge of Software Architecture, SOLID principles, and common Design Patterns 
+ Experience with Azure or AWS, Microservices, Containerization, DevOps, Performance and Security 
+ Familiarity with React, Angular 
+ Having experience working with AI tools in the SDLC, such as GitHub Copilot or Cursor, is a plus 
+ Nice to have 
+ Knowledge of the Agile methodology (Scrum) 
+ Knowledge of CI/CD (Jenkins, Docker) 
+ Experience and/or certifications on Amazon, Azure 
+ Experience in Web development (Angular, React) or mobile (Flutter) 
+ Oral communication skills in English"
+Senior Full-stack Web and AI Developer,East Agile,"Your skills and experience 
+ What We’re Looking For 
+ Experience: 
+ Minimum of 2 years of professional experience in full-stack web development, with a proven track record of building scalable and resilient web applications. 
+ Technical Skills: 
+ Proficient in Python, with experience in frameworks such as Flask or Django. 
+ Strong understanding of modern programming languages like Go, Rust or Move. 
+ Familiarity with cloud environments, including hands-on experience with AWS, GCP, and Azure. 
+ Experience with AI-driven development, including advanced prompt engineering, generative AI, and the ability to leverage AI tools for software development. 
+ Understanding of vector and graph databases, RAG, and working with multiple LLMs is a plus. 
+ Methodologies & Mindset: 
+ Strong foundation in modern software design principles and test-driven development. 
+ Proven ability to quickly adapt to new technologies and methodologies in a fast-paced, innovative environment. 
+ Experience working in an agile development environment using methodologies like SCRUM and Extreme Programming is preferred. 
+ Communication: 
+ Excellent verbal and written communication skills in English, with the ability to break down complex technical concepts into clear, actionable insights. 
+ Education: 
+ A degree in Computer Science, Mathematics, or a related field from a recognized institution is preferred. Practical experience and a strong portfolio of work are highly valued."
+Full-Stack JavaScript Developer (All Levels Welcome),Zigvy,"Your skills and experience 
+ Open to candidates with at least 1 year of experience (Interns are welcome too). 
+ Strong proficiency in JavaScript & TypeScript. 
+ Experience with Node.js (Nest.js, Express.js,..), React.js, and React Native. 
+ A desire to continuously learn and improve your skills. 
+ Ability to understand project requirements and seek clarification when necessary. 
+ Experience in designing and prototyping effective solutions. 
+ Proficiency in converting mockups to HTML/CSS with appropriate UI/UX animations and effects. 
+ Ability to write responsive code that works across different browsers and devices, including compatibility testing. 
+ Experience with popular front-end frameworks such as Bootstrap, Ant Design,.. 
+ Understanding of hybrid technologies like PhoneGap/Cordova, Flutter, and Electron is a plus. 
+ Familiarity with version control systems, primarily Git. 
+ Knowledge and experience with automated testing frameworks. 
+ Personal Traits: 
+ Positive and enthusiastic personality. 
+ Highly organized and efficient. 
+ Strong attention to detail. 
+ Excellent communication skills. 
+ Self-motivated and hardworking. 
+ Reliable and punctual in delivering team contributions."
+"Senior Fullstack Developer - Optimizely (.NET, NodeJS)",Paved Digital Pty Ltd,"Your skills and experience 
+ Key Responsibilities – Backend 
+ Develop backend services using .NET, Node.js 
+ Build APIs and system integrations 
+ Ensure performance, security, and scalability 
+ Apply clean architecture and SOLID principles 
+ Key Responsibilities – Frontend (Next.js) 
+ Build frontend applications using Next.js and React 
+ Implement SSR, SSG, and ISR patterns 
+ Integrate headless CMS solutions 
+ Ensure UX and accessibility best practices 
+ Required Skills & Experience 
+ Strong experience with Optimizely CMS SaaS 
+ Hands-on experience with Optimizely Opal 
+ 5+ years of .NET, 2+ years of Node.js 
+ Strong experience with Next.js and React 
+ Experience working in agile teams 
+ Nice to Have 
+ Experience with Contentful 
+ Experience with Optimizely Graph 
+ Content migration experience 
+ Cloud platforms (Azure / AWS) 
+ CI/CD pipelines 
+ Experience with Optimizely eCommerce"
+"Experienced Full-stack Developer (.NET, C#)",OMNIA SYSTEMS COMPANY LIMITED,"Your skills and experience 
+ Who We’re Looking For: 
+ Have 
+ at least 1 year of professional software development experience 
+ Show strong problem-solving and logical thinking 
+ Care about writing clean, maintainable code 
+ Are curious, motivated, and eager to improve 
+ Enjoy working in a team and sharing knowledge 
+ Are Comfortable communicating in English (doesn’t need to be perfect) 
+ Our tech stack includes: 
+ Web development 
+ TypeScript libraries and frameworks, such as Vue, React 
+ C# / .NET 
+ Microsoft 365 & SharePoint 
+ You don’t need to know everything — 
+ we care more about how you think and learn 
+ than how many technologies you already master. 
+ Your education, previous industry, or exact background matter less than your 
+ talent and mindset 
+ ."
+"Full-stack Developer (HTML5, CSS3, JavaScript, English)",DYM VIET NAM,"Your skills and experience 
+ Bắt buộc: 
+ Từ 3 năm kinh nghiệm với vị trí Full-stack Developer. 
+ Thành thạo HTML5, CSS3, JavaScript (ES6+). 
+ Kinh nghiệm thực tế với framework hiện đại (React, Vue, Angular). 
+ Kinh nghiệm PHP (Laravel), MySQL/PostgreSQL, REST API. 
+ Quản lý phiên bản bằng Git/GitHub, sử dụng Docker, Linux. 
+ Kỹ năng làm việc nhóm, tư duy giải quyết vấn đề. 
+ Ưu tiên: 
+ TypeScript, Next.js, React Hooks. 
+ Python (Django/Flask), Node.js (Express), Go. 
+ NoSQL (MongoDB, Redis), GraphQL, WebSocket. 
+ DevOps: AWS (EC2, S3, RDS, Lambda...), CI/CD (GitHub Actions, Jenkins), Kubernetes. 
+ Kiến thức SEO, tối ưu hiệu năng, bảo mật, TDD. 
+ Có thể giao tiếp bằng Tiếng Nhật hoặc Tiếng Anh"
+Fullstack Developer (Python/ Golang/ C++),OceanNet Software,"Your skills and experience 
+ Bachelor's degree in computer programming or any other related field 
+ Over 3 years 
+ of software development/programming/coding professional work experience 
+ Good English communication skills, both written and oral 
+ Good interpersonal communication skills to work in a friendly workplace environment 
+ Demonstrated organizational, analytical and interpersonal skills 
+ Flexible team player 
+ Ability to manage tasks independently and take ownership of responsibilities 
+ Ability to learn from mistakes and apply constructive feedback to improve performance 
+ Ability to communicate technical information clearly and articulately 
+ Ability to adapt to a rapidly changing environment 
+ In-depth understanding of the systems development life cycle 
+ Proficiency programming in more than one programming language: 
+ Python, Go, C++, Ruby, .NET, Objective-C, ReactJS, NodeJS, JavaScript, HTML 
+ Have knowledge in 
+ Grafana, InfluxDB, Kafka, EMQX/MQTT, Telegraf 
+ Experienced in MS SQL, MySQL, Oracle DB, PostgreSQL, MongoDB 
+ Proficiency using versioning tools: GIT, CVS, SVN, Mercurial… 
+ Experienced in developing on Unix/Linux environments 
+ Experience with unit testing, release procedures, coding design and documentation protocol as well as change management procedures 
+ High critical thinking skills to evaluate alternatives and present solutions that are consistent with business objectives and strategy"
+Full-stack Developer (Middle/Senior),PAL TECH,"Your skills and experience 
+ Good Diploma/Degree in Computer Science/Information Technologies. 
+ 3 – 5 years of experience in full-stack development 
+ Web development knowledge (HTML, CSS, Angular, JavaScript, jQuery, JSON, etc.). 
+ Java EE development experience (Java Core, Java EE, SPRING). 
+ Database/SQL knowledge (SQL, Stored Procedures, and MySQL). 
+ Project experience in CSS animation, or Mobile animation work is an added advantage. 
+ Familiar with Agile and Continuous Integration and Continuous Delivery (Deployment). 
+ Knowledge of code versioning tools including Git, or SVN. 
+ Able to quickly learn new technologies, frameworks, and development languages. 
+ Strong interpersonal and communication skills, both oral and written. 
+ Strong debugging and problem-solving skills. 
+ Understands what to build optimized for speed and scalability. 
+ Able to work in a dynamic and ever-changing industry."
+HN- Fullstack Developer (Golang/Python/ReactJS/Angular),OpenCommerce Group,"Your skills and experience 
+ Experience as a Fullstack Developer, with a focus on 
+ Golang 
+ or 
+ Python 
+ (or other backend languages like 
+ Node.js, Java, 
+ etc 
+ .) 
+ Experience in building scalable applications and working with microservices architecture. 
+ Experience in frontend development using modern frameworks such as 
+ Vue.js, React, or Angular. 
+ Experience with relational databases (e.g., PostgreSQL, MySQL), including schema design and optimization. Familiarity with Elasticsearch and caching technologies like Redis is a plus. 
+ Experience with testing frameworks and writing unit/integration tests. 
+ Proficient in Git for version control and team collaboration. 
+ Strong ability to solve problems and think critically. 
+ You should also be familiar with software development methodologies such as Agile or Scrum, 
+ Excellent problem-solving and debugging skills 
+ Proven experience using AI-assisted programming tools (e.g., GitHub Copilot, ChatGPT, Codeium, Tabnine, etc.) to accelerate software development. 
+ Proficient in leveraging AI for code generation, refactoring, writing test cases, performance optimization, and suggesting technical solutions."
+"Lead Full-Stack Developer (.NET, JavaScript)",SAVILLS VIETNAM,"Your skills and experience 
+ Bachelor’s degree in Information Technology, Software Engineering, Computer Science, or related field. 
+ At least 9 years of hands-on experience in software development. 
+ Strong proficiency in MS SQL and relational database design. 
+ Expertise in Microsoft technologies: ASP.NET Core, .NET 5/6, MVC Framework, REST API development, background services. 
+ Front-end development experience with Angular, TypeScript, JavaScript, HTML 5, CSS 3 and Blazor. 
+ Familiarity with Azure Cloud services like App Service, Azure Storage, Key Vault, Azure Function, Logic-App, etc. 
+ Hands-on experience with version control systems and ability to implement CI/CD pipelines using Azure DevOps for automated builds and deployments. 
+ Skilled in debugging and monitoring tools (Postman, Fiddler, Application Insights) for troubleshooting and performance optimization. 
+ Understanding of enterprise standards: logging, monitoring, access control, and secure data handling. 
+ Knowledge of OOP Concept & software architecture principles, including microservices and SOA. 
+ Experience with Microsoft Power Platform (Power Apps, Power Automate, Power BI) for building low-code/no-code solutions and integrating with enterprise systems. 
+ Comfortable working in Agile and traditional waterfall models. 
+ Strong English communication skills with ability to work effectively with regional teams. 
+ Cross-cultural sensitivity and fully understand and adopt company's values 
+ Experience in sizeable multinational corporations to work with large cross-functional teams. 
+ Please note that by submitting an application to us, you consent to our processing of personal data about you that is provided by you for our company's recruitment purpose. You may send your queries or request for support concerning our personal data processing activities to email: . To better understand our personal data processing practices, please visit to the full Notice on Personal Data Processing of Savills Vietnam Company Limited."
+"Mid-level Full-Stack Developer (.NET, JavaScript)",SAVILLS VIETNAM,"Your skills and experience 
+ Bachelor’s degree in Information Technology, Software Engineering, Computer Science, or related field. 
+ At least 4 years of hands-on experience in software development. 
+ Strong proficiency in MS SQL and relational database design. 
+ Expertise in Microsoft technologies: ASP.NET Core, .NET 5/6, MVC Framework, REST API development, background services. 
+ Front-end development experience with Angular, TypeScript, JavaScript, HTML 5, CSS 3 and Blazor. 
+ Familiarity with Azure Cloud services like App Service, Azure Storage, Key Vault, Azure Function, Logic-App, etc. 
+ Hands-on experience with version control systems and ability to implement CI/CD pipelines using Azure DevOps for automated builds and deployments. 
+ Skilled in debugging and monitoring tools (Postman, Fiddler, Application Insights) for troubleshooting and performance optimization. 
+ Understanding of enterprise standards: logging, monitoring, access control, and secure data handling. 
+ Knowledge of OOP Concept & software architecture principles, including microservices and SOA. 
+ Experience with Microsoft Power Platform (Power Apps, Power Automate, Power BI) for building low-code/no-code solutions and integrating with enterprise systems. 
+ Comfortable working in Agile and traditional waterfall models. 
+ Strong English communication skills with ability to work effectively with regional teams. 
+ Cross-cultural sensitivity and fully understand and adopt company's values 
+ Experience in sizeable multinational corporations to work with large cross-functional teams. 
+ Please note that by submitting an application to us, you consent to our processing of personal data about you that is provided by you for our company's recruitment purpose. You may send your queries or request for support concerning our personal data processing activities to email: . To better understand our personal data processing practices, please visit to the full Notice on Personal Data Processing of Savills Vietnam Company Limited."
+"Senior Full-Stack Developer (.NET, JavaScript)",SAVILLS VIETNAM,"Your skills and experience 
+ Bachelor’s degree in Information Technology, Software Engineering, Computer Science, or related field. 
+ At least 7 years of hands-on experience in software development. 
+ Strong proficiency in MS SQL and relational database design. 
+ Expertise in Microsoft technologies: ASP.NET Core, .NET 5/6, MVC Framework, REST API development, background services. 
+ Front-end development experience with Angular, TypeScript, JavaScript, HTML 5, CSS 3 and Blazor. 
+ Familiarity with Azure Cloud services like App Service, Azure Storage, Key Vault, Azure Function, Logic-App, etc. 
+ Hands-on experience with version control systems and ability to implement CI/CD pipelines using Azure DevOps for automated builds and deployments. 
+ Skilled in debugging and monitoring tools (Postman, Fiddler, Application Insights) for troubleshooting and performance optimization. 
+ Understanding of enterprise standards: logging, monitoring, access control, and secure data handling. 
+ Knowledge of OOP Concept & software architecture principles, including microservices and SOA. 
+ Experience with Microsoft Power Platform (Power Apps, Power Automate, Power BI) for building low-code/no-code solutions and integrating with enterprise systems. 
+ Comfortable working in Agile and traditional waterfall models. 
+ Strong English communication skills with ability to work effectively with regional teams. 
+ Cross-cultural sensitivity and fully understand and adopt company's values 
+ Experience in sizeable multinational corporations to work with large cross-functional teams. 
+ Please note that by submitting an application to us, you consent to our processing of personal data about you that is provided by you for our company's recruitment purpose. You may send your queries or request for support concerning our personal data processing activities to email: . To better understand our personal data processing practices, please visit to the full Notice on Personal Data Processing of Savills Vietnam Company Limited."
+"Mid/Senior Fullstack Developer (NodeJS, English) x2",SMG Swiss Marketplace Group,"Your skills and experience 
+ What will you bring to the ride? 
+ We require excellent English communication skills, both spoken and written. In order to be successful in our international team settings,  effortless communication is essential. 
+ We value engineers who 
+ Thrive in collaborative environments. You are a team player. 
+ Have a growth mindset and are curious - we love growing together. 
+ Are passionate about software architecture, building, and scaling cloud-based solutions. 
+ Are open to change and able to propose solutions. 
+ Feel free to challenge the status quo. 
+ Are creative, adaptable, and problem-solving individuals. 
+ It would be best if you also had most of these: 
+ 3+ years of experience in software development. 
+ Prior working experience with Javascript / Typescript and Node.js. 
+ Prior working experience with APIs and microservices. 
+ Prior working experience with frontend frameworks like Vue.js, React, or similar. 
+ Prior working experience with cloud service providers like AWS, Microsoft Azure, or Google Cloud. 
+ We value the skills you bring and your ability to learn quickly, so don’t worry if your career path has been unique."
+VAI_Fullstack Engineer,Viettel Group,"Your skills and experience 
+ Tốt nghiệp Đại học Chính quy loại Khá trở lên, chuyên ngành Công nghệ thông tin, Điện tử viễn 
+ thông, Hệ thống thông tin quản lý, Khoa học máy tính… thuộc khối ngành CNTT. 
+ Có từ 2 năm kinh nghiệm trở lên (chấp nhận ghi nhận cả quá trình kinh nghiệm đi làm trong thời 
+ gian chưa tốt nghiệp). 
+ Tiếng Anh tương đương TOEIC 650/990 (Chưa yêu cầu có bằng khi tuyển dụng đầu vào). 
+ Thành thạo lập trình Python với kinh nghiệm từ 02 năm. 
+ Thành thạo một trong các framework: Flask, Django. 
+ Thành thạo làm việc với SQL (Mysql, PostgreSQL), NoSQL (Mongo). 
+ Có kinh nghiệm Bootstrap, Web API, các mô hình MVC, MVVM. 
+ Có kinh nghiệm làm việc với ReactJS 
+ Có kinh nghiệm lập trình Java. 
+ Có kinh nghiệm sử dụng LessCSS, SassCSS. 
+ Thành thạo HTML5, CSS3, Java Script, JQuery, AJAX, XML. 
+ Thành thạo 1 trong các công nghệ: AngularJS, VueJS, NodeJS. 
+ Có kinh nghiệm sử dụng LessCSS, SassCSS. 
+ Có kinh nghiệm làm việc theo phương pháp phát triển phần mềm Agile/Scrum."
+Fullstack - HTML5/CSS/JS/WordPress,"Alive Việt Nam Co., Ltd","Your skills and experience 
+ Có nền tảng sử dụng HTML5, SCSS, JavaScript 
+ Hiểu biết về thiết kế giao diện và các công nghệ phát triển web hiện đại (web responsive). 
+ Sử dụng được các công cụ quản lý mã nguồn: Bitbucket, GitHub, GitLab 
+ Có kiến thức, kinh nghiệm về WordPress, PHP, MySQL 
+ Có kinh nghiệm về E-commerce (Shopify, EC Cube), Movable Type, sử dụng thành thạo 
+ JavaScript Frameworks 
+ (React, 
+ Next.js, Nuxt.js 
+ ) 
+ Hiểu biết và sử dụng thành thạo các công cụ Coding AI hỗ trợ công việc nhằm nâng cao hiệu suất làm việc ( GitHub Copilot, Claude Code, Google Antigravity…) 
+ Tốt nghiệp các trường Đại học chuyên ngành CNTT 
+ (C 
+ hỉ liên hệ phỏng vấn những ứng viên đạt yêu cầu tuyển dụng)"
+"Fullstack Software Engineer (AWS, Python, Agile)",Vietlink,"Your skills and experience 
+ Education: 
+ Bachelor's Degree in Computer Science, Engineering, or related field (or equivalent experience). 
+ Required Tech Skills and Experience: 
+ -Strong experience in software development Serverless application with 
+ Python 
+ (Serverless Framework, AWS SAM, Lambda Function, StepFunction) and pytest, unittest. 
+ -Proficiency in 
+ AWS 
+ services such as 
+ EC2, S3, Lambda, RDS, API Gateway, DynamoDB. 
+ -Familiarity with JavaScript frameworks such as React or Vue.js, 
+ preferably Vue.js. 
+ -Strong understanding of RESTful APIs, and microservices architecture. 
+ -Comfortable working on both front-end and back-end. 
+ -Experience with database management 
+ (SQL and NoSQL databases like MySQL, PostgreSQL, DynamoDB or MongoDB). 
+ - 
+ Familiarity with DevOps practices, 
+ CI/CD pipelines 
+ (GitHub Actions, AWS CodePipeline/CodeBuild/CodeDeploy) 
+ , Infrastructure as Code (IaC) tools like Terraform or CloudFormation. 
+ -Solid knowledge of version control tools, preferably Git. 
+ -Ability to work with third-party APIs and services. 
+ -Problem-solving skills and attention to detail. 
+ -Strong communication and collaboration skills. 
+ -Good English language skills for both reading and writing. 
+ Preferred Skills: 
+ -AWS Certification (e.g., 
+ AWS Certified Solutions Architect, AWS Certified Developer, or AWS Certified DevOps Engineer 
+ ). 
+ -Familiarity with Agile methodologies, Scrum, and Kanban frameworks. 
+ -Experience working in Agile teams with tools like JIRA, Confluence. 
+ -Experience with containerization technologies such as Docker and Kubernetes. 
+ -Understanding of authentication mechanisms like OAuth2, JWT, and SAML. 
+ -Familiarity with monitoring tools like AWS CloudWatch and Datadog."
+"Full Stack Developer (Python, AWS)",TecAlliance Vietnam,"Your skills and experience 
+ Job Qualification 
+ Strong backend development skills with Python and experience with AWS services such as SQS, S3, Lambda / ECS 
+ Experience working with graph databases, ideally Neo4j 
+ Familiarity with the Serverless Framework and a basic understanding of DevOps practices, including CI/CD 
+ Comfortable working with frontend code; experience with React is helpful, Angular is our future direction. Familiarity with AWS Amplify is a plus. 
+ A structured, solution-oriented working style with the ability to work independently and collaboratively"
+Fullstack Developer (mạnh FE),KCI Credit Information JSC,"Your skills and experience 
+ Tốt nghiệp đại học chuyên ngành CNTT (ưu tiên HUST, UET, PTIT, FTU...). 
+ Có tối thiểu 3 năm kinh nghiệm làm web (ưu tiên Fullstack, thiên về FE). 
+ Thành thạo JavaScript/TypeScript, Next.js, ReactJS, có kinh nghiệm sử dụng tốt các thư viện UI. 
+ Có kinh nghiệm tối ưu performance FE 
+ Tư duy UI/UX tốt, có khả năng làm việc độc lập và teamwork hiệu quả. 
+ Điểm cộng: 
+ Có kinh nghiệm làm sản phẩm phục vụ doanh nghiệp, ngân hàng. 
+ Từng làm hệ thống có tính bảo mật cao, phức tạp về nghiệp vụ. 
+ Hiểu CI/CD, Docker, GitHub Action. 
+ Chủ động, cầu tiến, tư duy hệ thống tốt."
+"Fullstack Dev ( ReactJS, JavaScript, NodeJS, API, AI )",AI VIETNAM RDS JSC,"Your skills and experience 
+ YÊU CẦU CHUYÊN MÔN 
+ Tối thiểu 01 năm kinh nghiệm phát triển Fullstack trong môi trường sản phẩm thực tế. 
+ Thành thạo ReactJS ở phía Frontend; nắm vững JavaScript (ES6+) hoặc TypeScript. 
+ Thành thạo ít nhất một ngôn ngữ/framework Backend: Node.js (Express / NestJS), Python (FastAPI / Django) hoặc tương đương. 
+ Có kinh nghiệm thiết kế và xây dựng RESTful API; am hiểu các nguyên tắc API design, xử lý lỗi và versioning. 
+ Có kinh nghiệm làm việc với cơ sở dữ liệu quan hệ (PostgreSQL) và/hoặc phi quan hệ (MongoDB, Redis). 
+ Hiểu rõ các khái niệm bảo mật Web cơ bản: xác thực (JWT/OAuth2), phân quyền và kiểm soát truy cập. 
+ Có kinh nghiệm sử dụng Git trong môi trường làm việc nhóm (branching strategy, pull request workflow). 
+ YÊU CẦU ƯU TIÊN 
+ Đã từng tích hợp API AI / Machine Learning vào ứng dụng thực tế (ưu tiên cao). 
+ Có kinh nghiệm xử lý luồng tệp phương tiện: ghi âm (audio recording pipeline), lưu trữ đám mây (S3 hoặc tương đương) và phát video trực tuyến. 
+ Có kinh nghiệm với container hóa (Docker) và triển khai trên nền tảng đám mây (AWS / GCP / Azure). 
+ Quen thuộc với kiến trúc microservices hoặc event-driven architecture. 
+ Đã làm việc trong môi trường phát triển sản phẩm (product company), quen với quy trình Agile/Scrum và vòng lặp cải tiến liên tục. 
+ NĂNG LỰC & PHẨM CHẤT 
+ Tư duy hệ thống toàn diện; có khả năng hình dung tác động của từng quyết định kỹ thuật lên toàn bộ kiến trúc sản phẩm. 
+ Tinh thần chủ động và trách nhiệm cao; không cần được nhắc nhở để hoàn thành cam kết và phát hiện vấn đề tiềm ẩn. 
+ Giao tiếp kỹ thuật rõ ràng, mạch lạc; có khả năng diễn đạt quyết định kỹ thuật cho các bên liên quan không chuyên. 
+ Tư duy hướng sản phẩm: lấy giá trị mang lại cho người học làm thước đo chính khi đưa ra các lựa chọn kỹ thuật."
+Fullstack Developer (Ruby on Rails/ PHP/ AWS/ English),Giftee Tech Vietnam,"Your skills and experience 
+ What we need: 
+ Join our growing engineering team to help build innovative services using modern technologies. You will work directly on product development and collaborate with a team that values ownership, openness, and learning. 
+ Technology Stack 
+ Language 
+ : Ruby - Open for all Tech stacks 
+ Framework 
+ : Ruby on Rails or any other frameworks 
+ Database 
+ : MySQL (Aurora), Redis 
+ Infrastructure 
+ : AWS 
+ CI/CD 
+ : CircleCI, GitHub Actions 
+ Tools 
+ : Docker, Terraform, CloudFormation, Ansible, Sentry 
+ Communication & Documentation 
+ : GitHub, Slack, Redash, Notion 
+ Must-Have 
+ 4+ years 
+ of experience in 
+ Ruby on Rails 
+ development 
+ Practical experience in 
+ database table design 
+ Familiarity with 
+ agile team-based development 
+ using 
+ Git 
+ Business-level English 
+ communication skills 
+ Ability to 
+ work on-site 
+ at our HCMC office 
+ Nice-to-Have 
+ Experience in 
+ PHP engineering 
+ Proficiency in using 
+ Notion"
+"Full-Stack Developer (React JS, Nest JS)",LG Electronics Development Vietnam (LGEDV),"Your skills and experience 
+ Education: 
+ • B.S in Mechatronic Engineering, Automotive Engineering, Computing Engineering, 
+ Information Technology, Computer Science or related majors. 
+ Mandatory skills and experience: 
+ • Deep understanding of 
+ JavaScript and TypeScript. 
+ • Deep understanding of 
+ React 
+ , including component lifecycle, state management, and 
+ optimization techniques. 
+ • At least 2 year of working experience with 
+ NestJS. 
+ • Proficiency in 
+ NestJS and PostgreSQL. 
+ • Experience with 
+ cron job schedulers and mailer systems. 
+ • Familiarity with 
+ GitLab, Jenkins, and Docker for CI/CD automation. 
+ • Strong teamwork and communication skills. 
+ • Strong problem-solving skills and ability to debug complex issues. 
+ • Excellent verbal and written English communication skills. 
+ • Ability to work in a team and take ownership of tasks. 
+ Competitive skills: 
+ • Understanding of algorithms and data structures. 
+ • Experience in building and maintaining custom libraries for internal or open-source use. 
+ • Advanced knowledge of Linux server management. 
+ • Familiarity with Agile/Scrum methodologies and experience working in an Agile 
+ development environment"
+Backend Developer (Java/ Odoo (Python)) - VIC,Viettel Group,"Your skills and experience 
+ Tốt nghiệp Đại học loại khá trở lên chuyên ngành Công nghệ thông tin, Khoa học máy tính, Toán tin, Tin học, Hệ thống thông tin, Kỹ thuật điện tử... hoặc các ngành liên quan. 
+ Có trình độ tiếng Anh tương đương với TOEIC 550 điểm trở lên (Ưu tiên ứng viên đã có chứng chỉ tiếng anh TOEFL, IELTS tương đương TOEIC từ 550 trở lên) 
+ Có từ 02 năm kinh nghiệm lập trình Backend (Java/Odoo). Ưu tiên ứng viên đã từng tham gia triển khai hệ thống ERP hoặc các dự án chuyển đổi số cho doanh nghiệp. 
+ Có kiến thức và tư duy lập trình hướng đối tượng (OOP). 
+ Hiểu rõ kiến trúc REST API, JWT Authentication. 
+ Làm việc tốt với cơ sở dữ liệu PostgreSQL/MySQL, có kinh nghiệm tối ưu truy vấn. 
+ Ưu tiên ứng viên có kinh nghiệm tích hợp hệ thống và triển khai ứng dụng trên nền tảng cloud (AWS, GCP,...), có kinh nghiệm triển khai ứng dụng trên hạ tầng ảo hóa (Docker, K8S,…) 
+ Chủ động, có tinh thần trách nhiệm cao."
+Senior Backend Developer (Java),HSC,"Your skills and experience 
+ 1. Education level 
+ • Bachelor‘s degree in computer science, information-technology, engineering, or a related study, or equivalent experience 
+ 2. Knowledge & Experiences 
+ • Strong understanding of the web development cycle and programming techniques and tools 
+ • Fluency or understanding of specific languages, such as Java, Python, JS (node), C#/.NET and operating systems may be required 
+ • Understanding of key design patterns 
+ • Basic knowledge of server-side optimization tools and techniques 
+ • Knowledge of DevOps, CI / CD and Agile software development processes agile development 
+ • Experience in banking, finance or securities sectors is a big plus 
+ 3. Technical skills 
+ • Knowledge of code versioning tools such as Git with GitHub or GitLab or BitBucket 
+ • Excellent project and time management skills 
+ • Writing maintainable code that is well thought out and can be reused across multiple projects. 
+ • Focus on efficiency, user experience, and process improvement 
+ 4. Soft skills 
+ • Basic English reading comprehension 
+ • Strong problem-solving skills 
+ • Good verbal and written communication skills 
+ • Ability to meet deadlines and deliver within our high-demand environment 
+ • High responsibility and teamwork 
+ • Required to be team-player who is highly motivated, focused on customer satisfaction and solution/results driven"
+"Fullstack Developer (Java or NodeJS, AWS, API)",Tripsoft Studio,"Your skills and experience 
+ Tối thiểu 
+ 3 năm kinh nghiệm 
+ phát triển backend với 
+ Java hoặc NodeJS hoặc cả 2 stacks. 
+ Hiểu rõ: 
+ Backend architecture 
+ RESTful API, event-based system 
+ Data flow trong hệ thống lớn 
+ Có kinh nghiệm: 
+ Debug production, phân tích log, xử lý incident 
+ Làm việc với hệ thống nhiều service, nhiều luồng dữ liệu 
+ Thực chiến với: 
+ Docker, containerized application 
+ Cloud environment (AWS, GCP…) 
+ Có kiến thức về: 
+ High availability, fault tolerance 
+ Security cơ bản cho backend & API 
+ Có tư duy hệ thống tốt, chủ động: 
+ Review code 
+ Đề xuất giải pháp kỹ thuật 
+ Hỗ trợ, chia sẻ kinh nghiệm với thành viên khác."
+"Solution Architecture (Java, AWS, BI) - KCN - 4M017",MSB,"Your skills and experience 
+ 1. Trình độ: 
+ Học vấn: Tốt nghiệp Đại học chuyên ngành Công nghệ (Công nghệ thông tin, Khoa học máy tính, Hệ thống thông tin, Thông tin truyền thông …). Có bằng thạc sỹ của một trong các ngành trên là lợi thế. 
+ 2. Kinh nghiệm: 
+ Kinh nghiệm chuyên môn: 
+ Có ít nhất 7 năm kinh nghiệm trong lĩnh vực Tài chính - Ngân hàng. 
+ Có kinh nghiệm về việc xây dựng giải pháp cho các dự án công nghệ trong lĩnh vực Tài chính - Ngân hàng. 
+ Có kinh nghiệm với models, meta-models, taxonomies, EA tools như ARIS, MEGA, or TROUX là một lợi thế 
+ Kinh nghiệm quản lý: Ưu tiên ứng viên có kinh nghiệm trong vai trò quản lý hoặc leading việc xây dựng hoặc triển khai các dự án chiến lược công nghệ. 
+ 3. Kiến thức: 
+ Có kiến thức chuyên sâu ở 1 trong các lĩnh vực sau: hệ thống CoreBanking, Card, CRM, BPM, ERP, HRM, ESB, BI, Internet Banking, Hệ thống an toàn thông tin. 
+ Có kiến thức chuyên sâu về một trong số các tiêu chuẩn, hướng dẫn: ITIL, BPMN, Cobit, Togaf, ISO27K. 
+ Có kiến thức ở 1 trong các chuyên môn: Business Architecture, Application Architecture, Information/Data Architecture hoặc Technology Architecture là một lợi thế."
+Senior Backend Engineer (Java/Go),TIKI,"Your skills and experience 
+ ðŸŒŸRequirements 
+ Experience: 3+ years of professional experience in backend development, with a proven track record as a Senior Developer in high-scale environments. 
+ Tech Stack: Proficiency in 
+ Java 
+ or 
+ Golang 
+ . Experience with 
+ Python 
+ is a strong plus (especially for AI/ML integration). 
+ Data Management: Strong expertise in 
+ PostgreSQL, Elasticsearch 
+ , and 
+ Redis 
+ for caching and high-speed data retrieval. 
+ Message Broker: Hands-on experience with 
+ Kafka 
+ for building event-driven architectures. 
+ Distributed Systems: Deep understanding of microservices architecture, distributed transactions, and handling high-throughput traffic. 
+ Problem Solving: A proactive mindset with the ability to navigate complex business logic and turn it into efficient technical solutions."
+FullStack Java Developer (Junior - Middle),BUCA,"Your skills and experience 
+ Tối thiểu 02 năm kinh nghiệm làm việc với Java (Spring hoặc JEE). 
+ Có hiểu biết đối với kiến trúc microservices 
+ Thành thạo các hệ quản trị dữ liệu quan hệ (RDBMS) 
+ Quen thuộc với GIT-flow để quản lý source code 
+ Có kiến thức về OOP, design pattern, bảo mật ứng dụng web 
+ Giao tiếp tốt, chủ động, làm việc nhóm tốt, ý thức chất lượng cao 
+ Ưu tiên ứng viên (không bắt buộc) 
+ - Có khả năng đọc hiểu tài liệu tiếng Anh, thuật ngữ chuyên ngành 
+ - Có định hướng full-stack (Java, Vuejs, Flutter…) 
+ - Không ngại thay đổi ngôn ngữ, kỹ thuật theo yêu cầu công việc 
+ - Có kỹ năng quản lý team: tiến độ, chất lượng, vấn đề 
+ - Có kinh nghiệm làm việc trong môi trường Outsourcing"
+"Backend Developer (Java, MySQL, Spring Boot)",WTECH VIETNAM,"Your skills and experience 
+ ● At least 3 years of experience for mid-level roles. 
+ ● Strong Java language. 
+ ● Strong understanding of object-oriented programming principles. 
+ ● Ability to write reusable Java libraries. 
+ ● Ability to read SRS/FRS, understand/implement flow document. 
+ ● Familiarity with MVC, JDBC, and RESTful concepts. 
+ ● Good communication skills. 
+ ● Demonstrates a strong team-oriented mindset and the ability to work effectively both collaboratively and independently. 
+ ● Experience with the following technologies is a plus: 
+ ○ Spring Boot, Microservice 
+ ○ Elasticsearch, MongoDB, MySQL, Redis 
+ ○ AWS services such as EC2 and S3 
+ ○ RabbitMQ and/or Kafka 
+ ○ OAuth 2 and JWT 
+ ● It’s a great plus if you are open to learning and working with different languages as project needs evolve. (For example, Golang)"
+"Fresher & Junior - Software Developer (.NET, Java, C#)",Netcompany,"Your skills and experience 
+ Bachelor or Master degree within a relevant IT specialization. 
+ Good English skills both in writing and verbally. 
+ Basic understanding of and practical experience with object-oriented programming and data modelling. 
+ Familiar with various design, architectural patterns and modern system development. 
+ Open towards and able to quickly learn new technologies. 
+ Ability to work both independently and collaboratively as part of an international team. 
+ Professional pro-active attitude, taking responsibility and initiative. 
+ Effectively estimate work and produce deliverables on time. 
+ Recruitment process: 
+ - Phone Screening (English Proficiency Test): 
+ Once your application is reviewed and meets the qualifications, the Recruitment Team will reach out to you via phone for a discussion. Please note, you may receive a call from an unknown number after submitting your application. 
+ - In-person Interview (Conducted in English, 2 Hours): 
+ The interview will take place at our office and will be conducted entirely in English. The session will be divided into two parts: Introduction Round & Technical Round"
+"Java Deverloper (JavaScript, Spring Boot, Oracle)","ADVANCE TECH .,JSC","Your skills and experience 
+ Yêu cầu chung: 
+ Tốt nghiệp ĐH chuyên ngành CNTT và ĐTVT hoặc tương đương, Có ít nhất 2 năm kinh nghiệm. 
+ Đam mê công nghệ, Năm vững ngôn ngữ Java, OOP 
+ Có kiến thức làm việc với JavaScript, jQuery, HTML/CSS, Kiến thức cơ bản Spring boot, Spring MVC, Spring security,... 
+ Có kinh nghiệm với CSDL như MySQL , Oracle...Có kinh nghiệm phát triển Web service ( RESTful APIs, JSON/XML). 
+ Có tư duy logic khả năng xử lý tình huống tốt, cẩn thận, trách nhiệm cao trong công việc. 
+ Có khả năng làm việc độc lập, làm việc nhóm.Có thể đọc hiểu tài liệu tiếng Anh là một lợi thế. 
+ Sử dụng công cụ quản lý mã nguồn Git. Sẵn sàng học tập các ngôn ngữ, framework mới. 
+ Kỹ năng mềm: 
+ Kỹ năng làm việc nhóm hiệu quả, Kỹ năng giải quyết vấn đề 
+ Trung thực, có tinh thần trách nhiệm cao, Chủ động sáng tạo trong công việc."
+"Backend Developer (Java,Spring,NodeJS,AWS,MySQL)",BLUE DRAGON COMMUNICATIONS,"Your skills and experience 
+ Minimum of 3 years of experience in backend development using Java (Spring Framework) – Required , Experience with Node.js – Preferred 
+ Familiar with RESTful APIs and working with third party APIs 
+ Experience with some types DBMS like MySQL, MariaDB, ... 
+ Advanced skills in managing and utilizing AWS servers. 
+ Strong problem-solving skills and high attention to detail. Excellent communication and team collaboration abilities. 
+ Proficiency with Git and version control practices. 
+ High level of diligence, meticulousness, and responsibility in work."
+"Java Developer (J2EE, Spring)",TwinApe,"Your skills and experience 
+ Required Qualifications: 
+ More than 3 years of experience in Java and J2EE technologies 
+ Know Relational Databases, SQL and ORM technologies (JPA, Hibernate) 
+ Experience with Spring frameworks (Spring Core, Spring MVC, Spring Security, Spring Data…) 
+ Experience in building RESTful web services 
+ Working experience in Spring Microservice System, OOP and know common design patterns 
+ Git source control and Git Flow branching model 
+ Having knowledge of web development with HTML/CSS/JavaScript/AngularJS is preferred 
+ Experience in working with Docker, AWS, No SQL (MongoDB, Cassandra), Message Broker (Kafka, RabbitMQ)... is a plus."
+Tech Lead (Golang/Python/Java),Viettel Cyber Security,"Your skills and experience 
+ Có từ 5 năm kinh nghiệm phát triển backend, trong đó ít nhất 1–2 năm ở vai trò Technical Leader 
+ Thành thạo 1 trong các ngôn ngữ: Golang/Python/Java 
+ Có kinh nghiệm thiết kế và triển khai hệ thống lớn, yêu cầu cao về hiệu năng (scalable, high-performance, real-time). 
+ Kiến thức vững về: OOP, kiến trúc Microservices, Design patterns, CI/CD, Cloud (Docker, Kubernetes), Message Queue (Kafka, RabbitMQ). 
+ Tư duy logic tốt, khả năng phân tích và giải quyết vấn đề phức tạp. 
+ Kỹ năng giao tiếp, truyền đạt, làm việc nhóm và đào tạo kỹ thuật tốt. 
+ Chủ động, trách nhiệm và tinh thần cầu tiến cao. 
+ Tốt nghiệp Đại học chuyên ngành Công nghệ Thông tin, An toàn Thông tin hoặc các chuyên ngành liên quan. 
+ Nice to have: 
+ Có kinh nghiệm phát triển các sản phẩm trong lĩnh vực An toàn thông tin, Fintech hoặc xử lý dữ liệu lớn. 
+ Đã từng xử lý các bài toán về performance tuning, tối ưu query, scaling hệ thống 
+ Kiến thức tốt về kiến trúc bảo mật hệ thống (Security Architecture) là một lợi thế."
+"Lead Frontend Engineer (Reactjs, Java, Nodejs)",NAB Innovation Centre Vietnam,"Your skills and experience 
+ Ideally 8+ years with Frontend development ES6/TypeScript working with React.js  & 2+ years in leadership role. 
+ Proven experience with one of these backend: Java, Nodejs, .NET,…etc 
+ Strong experience in all areas of web development (HTML5, CSS3, Bootstrap, Foundation, JQuery, JSON) including accessibility and security concerns; 
+ Ability to leverage developer tooling, and CI/CD pipelines to deploy artefacts 
+ Solid experience in modern front-end build pipelines and tools (e.g. Git, Webpack, Gulp, NPM); 
+ Experience in Cloud computing and Amazon Web Services – particularly Serverless Development. Experience in Containers (ECS, Kubernetes, Docker) and FaaS (AWS Lambda) technologies; 
+ Strong understanding of RESTful APIs design (GraphQL desirable) and Microservices-based system; 
+ Well-versed in writing structured, well-documented, maintainable, and clean code; 
+ Experience in leading and coaching at least one software engineer team on various projects; 
+ Strong understanding of standard Software Engineering processes, Testing, and Agile methodology; 
+ Strong English communication skills (both verbal & written), especially in the global software development environment. 
+ Nice-to-have 
+ Experience in the Banking or Financial Services industry; 
+ Experience in using front-end testing and test runners (eg. Selenium, Mocha/Chai/Jest). 
+ Any additional certification or training in IT, Business, Computer Science, or related area."
+Senior Java Developer (Tech Lead),Astek Vietnam,"Your skills and experience 
+ 6 years+ experience as a Senior Java Developer /technical lead in a complex, enterprise level development environment; 
+ Solid experience in JAVA 17, Spring Boot 
+ Experience in designing & developing RESTful APIs and complex microservices based system; troubleshooting and debugging in microservice 
+ Experience in Cloud computing is a plus 
+ Experience with unit testing and integration testing 
+ Practical experience in Containers (ECS, Kubernetes, Docker) 
+ Strong English communication skills 
+ Experience in Agile development environments; 
+ Well-versed in writing structured, well-documented, maintainable, and clean code; 
+ Good problem-solving and analytical skills"
+"IT System Specialist (Security, Java, C#)",Công ty TNHH Bảo Dưỡng Toàn Cầu,"Your skills and experience 
+ Tốt nghiệp Cao đẳng/Đại học chuyên ngành 
+ Công nghệ Thông tin, Hệ thống Thông tin, Khoa học Máy tính 
+ hoặc các ngành liên quan. 
+ Thành thạo ít nhất một ngôn ngữ lập trình thường dùng trong hệ thống ngân hàng (ví dụ: 
+ Java, C#, C/C++, 
+ Abd Android 
+ ). 
+ Có kiến thức cơ bản về 
+ bảo mật hệ thống, 
+ an toàn thông tin, phân quyền truy cập. 
+ Có khả năng đọc hiểu và trao đổi công việc bằng 
+ tiếng Anh kỹ thuật 
+ . 
+ Tư duy logic tốt, cẩn trọng, có tinh thần trách nhiệm cao; chịu được áp lực công việc trong môi trường ngân hàng. 
+ Có khả năng làm việc nhóm và phối hợp với các bên liên quan (ngân hàng, nhà cung cấp, đối tác kỹ thuật)."
+"Shopify Developer (HTML, Java)",Công ty TNHH SHUEI TRADING Việt Nam,"Your skills and experience 
+ Có hơn 2-3 năm kinh nghiệm lập trình trên Shopify (Liquid, HTML, Java, v.v.) 
+ Có từ 2- 3 năm kinh nghiệm phát triển hệ thống web (có kinh nghiệm setting và customize , phát triển add-on trên shopify…) 
+ Ưu tiên 
+ Kinh nghiệm Front end về web 
+ Trình độ tiếng Anh: Có thể nói, gửi email và trò chuyện ở một mức độ làm việc được. 
+ Môi trường phát triển: Shopify"
+Middle/Senior Software Engineer (Java),M_Service (MoMo),"Your skills and experience 
+ Bachelor’s degree in Computer Science or a related field. 
+ 3+ years 
+ of experience in backend development using 
+ Java 
+ . 
+ Solid understanding of 
+ data structures, algorithms, OOP, and SOLID principles 
+ . 
+ Experience with 
+ Spring 
+ framework (Spring Bean, Spring AOP, Spring Data, Spring MVC), Spring Boot, Hibernate; 
+ Experience in building and maintaining 
+ microservices architectures 
+ . 
+ Familiar with 
+ messaging systems 
+ such as RabbitMQ, Kafka, or equivalent. 
+ Experience working with 
+ web servers 
+ and 
+ caching solutions 
+ (e.g., Redis). 
+ Familiar with 
+ RDBMS 
+ (MySQL/PostgreSQL) and/or 
+ NoSQL databases 
+ (MongoDB, Cassandra, Google Bigtable). 
+ Be familiar with RDBMS such as MySQL/PostgreSQL or NoSQL databases such as MongoDB is a plus; 
+ Familiarity with NoSQL databases like Redis, Cassandra, MongoDB, or Google Bigtable is a plus; 
+ Proficient in using Docker and Kubernetes is plus; 
+ Ability to optimize and build systems that handle high traffic is plus;"
+Java Backend Developer (Senior/Leader),Capgemini Vietnam,"Your skills and experience 
+ Responsibilities: 
+ Translate application User Stories into functional applications 
+ Design, build, and maintain efficient, reusable, reliable, testable and secure Java code 
+ Design and build API following microservices principles 
+ Ensure the best possible performance, quality, and responsiveness of the applications 
+ Identify bottlenecks and bugs, and find solutions to fix issues 
+ Help team to maintain code quality, organization, and automatization 
+ Must have Technical Requirements / Qualifications 
+ Primary Skills: 
+ Language: Java, SQL 
+ Frameworks: SpringMVC, SpringBoot, Hibernate, Junit, Mockito 
+ API specification: Spectral, Swagger 
+ Java API Security: Authentication, Authorization, common security standards 
+ Database: SQL server, MariaDB, MySQL, PostgreSQL 
+ Tools: Gradle, Maven, GIT, JIRA/Confluence 
+ At least basic knowledge of AWS Cloud and deployment 
+ Secondary Skills: 
+ Basic of advanced knowledge of an alternate cloud provider (AWS, GCPâ€¦) 
+ Kubernetes on one cloud provider 
+ CI/CD tools (Harness, Jenkins) 
+ BS/MS degree in Computer Science, Engineering or a related subject 
+ Good English communication is a must 
+ Minimum 6+ years of relevant experience primarily in Java backend development 
+ Proficient in Java, with a good knowledge of its ecosystems 
+ Proficient in writing efficient, reusable, reliable, testable and secure Java code 
+ Excellent in popular Java frameworks: Spring MVC, Spring Boot, Hibernate 
+ Familiarity with concepts of MVC, JDBC, and RESTful, micro service 
+ Familiarity with security aspects of backend API: authentication, authorization, OAuth, OpenID, JWT, SAML, SSO 
+ Object Oriented analysis and design using common design patterns 
+ Familiarity with common integration patterns: REST, Messaging, Streaming, SOAP 
+ Knowledge of concurrency patterns in Java 
+ Excellent knowledge of Relational Databases, SQL and ORM technologies (JPA2, Hibernate) 
+ Proficient understanding of code versioning tools, such as Git 
+ Familiarity with build tools such as Gradle, Maven, Ant 
+ Familiarity with continuous integration and basic cloud services on one cloud provider is a plus 
+ Familiarity with other languages for backend is a plus: NodeJS, dotNET, Kotlin 
+ Knowledge of the business domains is a plus: Insurance (Life/Non-life), Banking 
+ Experience working in an agile team, practicing Scrum, Kanban 
+ Good communication skills, interpersonal and teamworking skills 
+ Pro-active and flexible working approach 
+ Team-player with experience working with international and multi-functional teams 
+ Self-development skills to keep up to date with fast-changing trends"
+"Frontend Developer (Java, Jmix, JavaScript, ReactJS)",HDBank,"Your skills and experience 
+ Bachelor's degree in Computer Science, IT, or related field. 
+ Strong hands-on experience with Java, Jmix and its core principles. 
+ Thorough understanding of HTML5, CSS3, and JavaScript (ES6+). Experience with state management libraries such as Redux. 
+ Expertise in building responsive and mobile-friendly user interfaces. 
+ Familiarity with Git for version control and collaborative development. 
+ Experience integrating with RESTful APIs and working with asynchronous requests. 
+ Adherence to coding standards, best practices, and code reviews. 
+ Knowledgeable in banking/fintech domain is a BIG plus. 
+ A genuine passion for front-end development and a proactive attitude towards learning and adopting new technologies. 
+ Meticulous attention to detail, ensuring a high level of quality in deliverables. 
+ Demonstrated sense of responsibility and accountability for assigned tasks and projects. 
+ Strong communication skills, both verbal and written, with the ability to collaborate effectively within a team."
+Senior Java Engineer – 24Hr Campaign,ELCA,"Your skills and experience 
+ Bachelor's degree in computer science or equivalent 
+ Good knowledge of OOP, SOLID principles, design patterns, and data modeling 
+ Able to read and write technical documents in the English language 
+ Good technical, analytical, and problem-solving skills 
+ Passionate, pro-active, and keen to learn new technologies (or move to a mission part) 
+ Experience in the Java technology and ecosystem 
+ Experience in SQL and database management systems 
+ Knowledge of JavaScript, HTML, XML, and CSS 
+ At least 5 years of experience in software development of this applied stack 
+ Proven experience of coaching and supervising other developers and team members 
+ Proven experience: Spring, SpringBoot, Hibernate, etc. 
+ Nice to have 
+ Knowledge of the Agile methodology (Scrum) 
+ Knowledge of CI/CD (Jenkins, Docker) 
+ Experience and/or certifications on Amazon, Azure, and Oracle clouds. 
+ Experience in Web development (Angular, ReactJS) or Windows App development 
+ Experience in leading a project or a team 
+ Oral communication skills in English"

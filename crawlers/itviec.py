@@ -13,18 +13,17 @@ Entry = TypedDict('Entry', {
     'skills_and_experience': Optional[str]
 }, total=False)
 
-
-# simulate a login to get salary range
-# get this session from real login, this may expires after a while
-# to retrieve the session id from cookie: https://developers.google.com/web/tools/chrome-devtools/storage/cookies
-# then copy the string of key "_ITViec_session" at site itviec.com and paste it here
-session = '[b1695776a7dcd41e]'
+# change this session value if meet 403 error
+session = '30e4a69e4e08b991'
 
 # Common headers to mimic a browser
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'en-US,en;q=0.9',
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+    "Connection": "keep-alive",
     'Referer': 'https://itviec.com/',
     'Upgrade-Insecure-Requests': '1',
     'Sec-Fetch-Dest': 'document',

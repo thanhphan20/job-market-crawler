@@ -4,8 +4,8 @@ from scraper import scrap_itviec
 
 def main():
     print("Starting crawler...")
-    # Scrape first 2 pages for each category, limit 50 total results
-    results = scrap_itviec(page_num=1, limit=50)
+    # Scrape first 3 pages for each category, limit 100 total results
+    results = scrap_itviec(page_num=3, limit=100)
     
     if not results:
         print("No results found.")
