@@ -11,6 +11,7 @@ job-market-crawler/
 │   └── itviec.py        # ITviec-specific scraping logic
 ├── analytics/           # Data processing & visualization
 │   └── skill_analyzer.py# Trends analysis logic
+│   └── kaggle_analyzer.py# Kaggle global trend insights
 ├── data/                # Raw scraped data (CSV/JSON)
 ├── outputs/             # Generated graphs and reports
 ├── requirements.txt     # Dependencies
@@ -22,6 +23,7 @@ job-market-crawler/
 - **Automated Crawling**: Fetches job listings from ITviec for Backend, Fullstack, and Java queries.
 - **Skill Analytics**: Scans job descriptions for key technologies (Spring Boot, SQL, AWS, etc.).
 - **Market Visualization**: Generates ranking charts of the most in-demand skills.
+- **Kaggle Global Intelligence**: Integration with multiple Kaggle datasets to correlate local trends with global AI market forecasts (2020-2030).
 - **Duplicate Prevention**: ensuring unique data across different search categories.
 
 ## 📊 Latest Market Insights (Data-Driven)
@@ -44,8 +46,9 @@ A powerful data engine that correlates local job requirements with global indust
 ## 🌟 Key Features
 - **Intelligence Engine**: Triangular correlation between Skills, Experience, and Global Salary Benchmarks.
 - **ROI Roadmaps**: Automated identification of "High ROI" skills (High Global Pay / Moderate Local Competition).
-- **Global Benchmarking**: Integrates official **Stack Overflow Developer Survey 2025** data.
+- **Global Benchmarking**: Integrates official **Stack Overflow Developer Survey 2025** and **Kaggle AI Datasets**.
 - **Advanced Extraction**: Regex-based parsing of salaries (USD/VND) and experience years from unstructured JD text.
+- **AI Impact Profiling**: Automation risk analysis by industry using global research data.
 - **Visual Analytics Heatmaps**: Market demand hierarchy and "Opportunity Gap" visualizations.
 
 ## 🛠 Tech Stack
@@ -76,9 +79,15 @@ A powerful data engine that correlates local job requirements with global indust
    python main.py --crawl --pages 15
    ```
 
+5. **Run Kaggle Global Intelligence Suite**:
+   ```bash
+   python analytics/kaggle_analyzer.py
+   ```
+
 ## 📊 Outputs
 - **`analytics/reports/market_intelligence_*.md`**: Detailed insight report with ROI analysis.
 - **`analytics/reports/*.png`**: Visual heatmaps of demand and salary gaps.
+- **`outputs/kaggle_reports/`**: Global AI trends, automation risk matrices, and global salary evolution charts.
 
 ## 🧠 Intelligence Logic
 The system analyzes the **Opportunity Gap** using the following formula:
