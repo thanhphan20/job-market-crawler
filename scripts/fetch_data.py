@@ -44,3 +44,4 @@ def fetch_so_survey_2025(url, target_dir="data"):
 if __name__ == "__main__":
     SO_URL_2025 = "https://survey.stackoverflow.co/datasets/stack-overflow-developer-survey-2025.zip"
     fetch_so_survey_2025(SO_URL_2025)
+ 
