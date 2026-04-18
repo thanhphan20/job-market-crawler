@@ -1,6 +1,11 @@
+import os
 from typing import TypedDict, Optional
-import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests as curl_requests
+from dotenv import load_dotenv
+
+# Load secret variables from .env
+load_dotenv()
 
 Entry = TypedDict('Entry', {
     'elem_id': str,
@@ -13,35 +18,44 @@ Entry = TypedDict('Entry', {
     'skills_and_experience': Optional[str]
 }, total=False)
 
-# change this session value if meet 403 error
-session = '30e4a69e4e08b991'
+import time
+import random
 
-# Common headers to mimic a browser
+# Common headers to mimic a browser accurately
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Accept-Language': 'en-US,en;q=0.9',
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
-    "Connection": "keep-alive",
-    'Referer': 'https://itviec.com/',
-    'Upgrade-Insecure-Requests': '1',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'same-origin',
-    'Sec-Fetch-User': '?1',
+    'authority': 'itviec.com',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-language': 'en-US,en;q=0.9',
+    'cache-control': 'max-age=0',
+    'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
 }
 
 def scrap_itviec(limit: int, start_page: int = 1, end_page: int = 5) -> list[Entry]:
     results: list[Entry] = []
-    queries = ['backend', 'fullstack-developer', 'java']
+    queries = ['backend', 'fullstack-developer', 'java', 'software-engineer']
     seen_ids = set()
 
-    # Create a session to persist cookies and headers
-    req_session = requests.Session()
+    # Use curl_cffi to bypass Cloudflare TLS fingerprinting
+    # impersonate="chrome" makes it look like a real Chrome browser
+    req_session = curl_requests.Session(impersonate="chrome")
     req_session.headers.update(headers)
-    if session and session != '[input the string of _ITViec_session]':
-        req_session.cookies.set('_ITViec_session', session, domain='itviec.com')
+
+    # Get credentials from env
+    session_cookie = os.getenv('ITVIEC_SESSION')
+    auth_token_cookie = os.getenv('ITVIEC_TOKEN')
+
+    if session_cookie:
+        req_session.cookies.set('_ITViec_session', session_cookie, domain='itviec.com')
+    if auth_token_cookie:
+        req_session.cookies.set('auth_token', auth_token_cookie, domain='itviec.com')
     
     for page_num in range(start_page, end_page + 1):
         print(f"Scraping page {page_num}...")
@@ -107,34 +121,49 @@ def scrap_itviec(limit: int, start_page: int = 1, end_page: int = 5) -> list[Ent
                     if not data['url'].startswith('/'):
                         data['url'] = '/' + data['url']
                     jd_link = f"https://itviec.com{data['url']}"
-                    try:
-                        jd_page = req_session.get(jd_link, timeout=10)
-                        jd_page.raise_for_status()
-                        jd_soup = BeautifulSoup(jd_page.content, 'html.parser')
-                        
-                        if not data['company']:
-                            company_header = jd_soup.find(class_='normal-text text-rich-grey') or jd_soup.find('a', href=lambda x: x and '/companies/' in x)
-                            data['company'] = company_header.text.strip() if company_header else ''
-                        
-                        if not data['address']:
-                            address_span = jd_soup.find('span', class_='small-text text-rich-grey')
-                            data['address'] = address_span.text.strip() if address_span else ''
-                        
-                        skills_section = jd_soup.find('section', class_='job-experiences')
-                        if skills_section:
-                            data['skills_and_experience'] = skills_section.get_text(separator=' \n ', strip=True)
-                        else:
-                            skills_header = jd_soup.find(lambda tag: tag.name in ['h2', 'h3'] and tag.get_text() and 'skills and experience' in tag.get_text().lower())
-                            if skills_header:
-                                skills_div = skills_header.find_parent('div', class_='job-details__paragraph')
-                                if skills_div:
-                                    data['skills_and_experience'] = skills_div.get_text(separator=' \n ', strip=True)
-                                else:
-                                    sibling = skills_header.find_next_sibling()
-                                    if sibling:
-                                        data['skills_and_experience'] = sibling.get_text(separator=' \n ', strip=True)
-                    except Exception as e:
-                        print(f"Error fetching JD from {jd_link}: {e}")
+                    
+                    for jd_retry in range(2): # 2 attempts for JD
+                        try:
+                            time.sleep(random.uniform(1, 2))
+                            print(f"  - Fetching job {len(results)+1}/{limit}: {jd_link[:60]}...")
+                            # Crucial: Referer must be the search page
+                            req_session.headers.update({'Referer': url})
+                            jd_page = req_session.get(jd_link, timeout=15)
+                            
+                            if jd_page.status_code == 403:
+                                wait_time = 2 if jd_retry == 0 else 4
+                                print(f"403 on JD {jd_link}. Waiting {wait_time}s... (Retry {jd_retry+1}/2)")
+                                time.sleep(wait_time)
+                                continue
+                            
+                            jd_page.raise_for_status()
+                            jd_soup = BeautifulSoup(jd_page.content, 'html.parser')
+                            
+                            if not data['company']:
+                                company_header = jd_soup.find(class_='normal-text text-rich-grey') or jd_soup.find('a', href=lambda x: x and '/companies/' in x)
+                                data['company'] = company_header.text.strip() if company_header else ''
+                            
+                            if not data['address']:
+                                address_span = jd_soup.find('span', class_='small-text text-rich-grey')
+                                data['address'] = address_span.text.strip() if address_span else ''
+                            
+                            skills_section = jd_soup.find('section', class_='job-experiences')
+                            if skills_section:
+                                data['skills_and_experience'] = skills_section.get_text(separator=' \n ', strip=True)
+                            else:
+                                skills_header = jd_soup.find(lambda tag: tag.name in ['h2', 'h3'] and tag.get_text() and 'skills and experience' in tag.get_text().lower())
+                                if skills_header:
+                                    skills_div = skills_header.find_parent('div', class_='job-details__paragraph')
+                                    if skills_div:
+                                        data['skills_and_experience'] = skills_div.get_text(separator=' \n ', strip=True)
+                                    else:
+                                        sibling = skills_header.find_next_sibling()
+                                        if sibling:
+                                            data['skills_and_experience'] = sibling.get_text(separator=' \n ', strip=True)
+                            break # Success
+                        except Exception as e:
+                            print(f"Error JD {jd_link}: {e}")
+                            if jd_retry == 1: break
 
                 results.append(data)
 

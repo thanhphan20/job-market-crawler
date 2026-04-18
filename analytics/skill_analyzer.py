@@ -31,7 +31,8 @@ CONCEPT_GROUPS = {
     ]
 }
 
-def analyze_market_trends(data_path='data/itviec_jobs.csv'):
+def analyze_market_trends(data_path, timestamp=None):
+    ts_suffix = f"_{timestamp}" if timestamp else ""
     if not os.path.exists(data_path):
         print(f"Error: {data_path} not found.")
         return None
@@ -92,7 +93,7 @@ def analyze_market_trends(data_path='data/itviec_jobs.csv'):
     sns.barplot(x=list(group_counts.values()), y=list(group_counts.keys()), palette='magma')
     plt.title('Market Demand by Concept Group', fontsize=14)
     plt.tight_layout()
-    plt.savefig('outputs/market_groups.png')
+    plt.savefig(f'outputs/market_groups{ts_suffix}.png')
 
     # Graph 2: Co-occurrence Network
     plt.figure(figsize=(12, 10))
@@ -114,16 +115,17 @@ def analyze_market_trends(data_path='data/itviec_jobs.csv'):
     
     plt.title('Skill Co-occurrence Network (Trends that go together)', fontsize=15)
     plt.axis('off')
-    plt.savefig('outputs/skill_network.png')
+    plt.savefig(f'outputs/skill_network{ts_suffix}.png')
 
     # 4. Generate Learning Roadmap
-    generate_roadmap(group_counts, top_skills_for_graph)
+    generate_roadmap(group_counts, top_skills_for_graph, timestamp=timestamp)
 
     return group_counts
 
-def generate_roadmap(groups, top_skills):
-    roadmap_path = 'outputs/java_roadmap.md'
-    with open(roadmap_path, 'w') as f:
+def generate_roadmap(groups, top_skills, timestamp=None):
+    ts_suffix = f"_{timestamp}" if timestamp else ""
+    roadmap_path = f'outputs/java_roadmap{ts_suffix}.md'
+    with open(roadmap_path, 'w', encoding='utf-8') as f:
         f.write("# 🚀 Java Developer Learning Roadmap (Data-Driven)\n\n")
         f.write(f"Generated from analyzing latest job postings on ITviec.\n\n")
         

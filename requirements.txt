@@ -2,7 +2,9 @@ flask
 requests
 beautifulsoup4
 MarkupSafe
-pandas
+pandas>=2.1.0
+python-dotenv>=1.0.0
+curl-cffi>=0.7.0
 matplotlib
 seaborn
 networkx

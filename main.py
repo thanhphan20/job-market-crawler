@@ -28,14 +28,17 @@ def main():
     # Ensure data directory exists
     os.makedirs('data', exist_ok=True)
 
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
     # Export to JSON
-    json_path = 'data/itviec_jobs.json'
+    json_path = f'data/itviec_jobs_{timestamp}.json'
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=2)
     print(f"Exported listings to {json_path}")
 
     # Export to CSV (Primary for pandas analysis)
-    csv_path = 'data/itviec_jobs.csv'
+    csv_path = f'data/itviec_jobs_{timestamp}.csv'
     if output_data:
         keys = output_data[0].keys()
         with open(csv_path, 'w', newline='', encoding='utf-8') as f:
@@ -46,17 +49,17 @@ def main():
 
     # 2. Analytics
     print("\n--- Phase 2: Advanced Market Analytics (NLP & Graphs) ---")
-    group_counts = analyze_market_trends(csv_path)
+    group_counts = analyze_market_trends(csv_path, timestamp=timestamp)
     
     if group_counts:
         print("\nMarket Demand Summary:")
         for group, count in sorted(group_counts.items(), key=lambda x: x[1], reverse=True):
             print(f"- {group}: {count} jobs")
         
-        print("\n✅ All artifacts generated in 'outputs/' folder:")
-        print("- market_groups.png (Bar chart)")
-        print("- skill_network.png (Co-occurrence Graph)")
-        print("- java_roadmap.md (Data-driven learning guide)")
+        print(f"\nAll artifacts generated in 'outputs/' folder:")
+        print(f"- market_groups_{timestamp}.png (Bar chart)")
+        print(f"- skill_network_{timestamp}.png (Co-occurrence Graph)")
+        print(f"- java_roadmap_{timestamp}.md (Data-driven learning guide)")
 
 if __name__ == "__main__":
     main()
