@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 import re
+import matplotlib.pyplot as plt
+import seaborn as sns
 from datetime import datetime
 
 class MarketContext:
@@ -16,7 +18,6 @@ class MarketContext:
         self.knowledge_base[source] = df
 
 class AIImpactAgent:
-    """Based on Bloomberry 2026 Resarch: Analyzing tech resilience against AI."""
     def __init__(self):
         self.impact_map = {
             "Frontend": {"resilience": 0.6, "risk": "High (AI UI Generation)"},
@@ -46,11 +47,34 @@ class IntelligenceEngine:
             "Java": 72000, "JavaScript": 70000, "DevOps": 85000, "AI/ML": 95000
         }
 
+    def _parse_salary(self, salary_str):
+        if not salary_str or pd.isna(salary_str) or 'sign in' in str(salary_str).lower(): return None
+        nums = re.findall(r'(\d+[\.,]?\d*)', str(salary_str).replace(',', ''))
+        if not nums: return None
+        vals = [float(n.replace(',', '')) for n in nums]
+        is_vnd = 'tr' in str(salary_str).lower() or 'vnd' in str(salary_str).lower()
+        mult = (1000000 / 25400) if is_vnd else 1.0
+        return max(vals) * mult
+
+    def _parse_exp(self, text):
+        if not text or pd.isna(text): return None
+        matches = re.findall(r'(\d+)\s*(?:-|to)?\s*\d*\s*year', str(text).lower())
+        return int(matches[0]) if matches else None
+
     def load_all_sources(self, data_dir="data"):
         if not os.path.exists(data_dir): return
         it_files = [f for f in os.listdir(data_dir) if "itviec" in f and f.endswith(".csv")]
         if it_files:
-            self.context.add_data("local_itviec", pd.read_csv(os.path.join(data_dir, sorted(it_files)[-1])))
+            df = pd.read_csv(os.path.join(data_dir, sorted(it_files)[-1]))
+            # Robust normalization
+            df.columns = [c.lower() for c in df.columns]
+            
+            # Use columns safely
+            if 'salary' in df.columns: df['salary_max_usd'] = df['salary'].apply(self._parse_salary)
+            if 'skills_and_experience' in df.columns: df['exp_years'] = df['skills_and_experience'].apply(self._parse_exp)
+            elif 'skills' in df.columns: df['exp_years'] = df['skills'].apply(self._parse_exp)
+            
+            self.context.add_data("local_itviec", df)
         
         so_path = os.path.join(data_dir, "so_survey_2025_lite.csv")
         if os.path.exists(so_path):
@@ -59,52 +83,64 @@ class IntelligenceEngine:
     def _calculate_tech_stats(self):
         stats = {}
         target_df = self.context.knowledge_base.get("local_itviec")
-        
         for tech, benchmark in self.global_benchmarks.items():
             count = 0
-            if target_df is not None:
-                col = 'title' if 'title' in target_df.columns else 'Title'
-                count = target_df[col].str.contains(tech, case=False, na=False).sum()
-            stats[tech] = {"demand": count, "global": benchmark}
+            avg_salary, avg_exp = 0, 0
+            if target_df is not None and 'title' in target_df.columns:
+                mask = target_df['title'].str.contains(tech, case=False, na=False)
+                count = mask.sum()
+                if count > 0:
+                    if 'salary_max_usd' in target_df.columns: avg_salary = target_df[mask]['salary_max_usd'].mean()
+                    if 'exp_years' in target_df.columns: avg_exp = target_df[mask]['exp_years'].mean()
+            
+            stats[tech] = {
+                "demand": count, "global": benchmark, 
+                "local_avg": avg_salary if not pd.isna(avg_salary) else 0,
+                "local_exp": avg_exp if not pd.isna(avg_exp) else 0
+            }
         return stats
 
     def run_agentic_analysis(self, output_dir="analytics/reports"):
         if not os.path.exists(output_dir): os.makedirs(output_dir)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        report_path = os.path.join(output_dir, f"ai_resilience_report_{timestamp}.md")
+        report_path = os.path.join(output_dir, f"market_intelligence_{timestamp}.md")
         
         stats = self._calculate_tech_stats()
+        self._generate_visuals(output_dir, timestamp, stats)
         
         with open(report_path, "w", encoding="utf-8") as f:
-            f.write("# 🤖 AI-Driven Market Intelligence Report (v4.0)\n\n")
-            f.write("> **Analysis Methodology**: Based on 180M job records (Bloomberry) and Agentic RAG (LinkedIn).\n\n")
-            
+            f.write("# 🤖 AI-Driven Market Intelligence Report (v4.5)\n\n")
+            f.write(f"![Salary Boost](salary_boost_{timestamp}.png)\n\n")
             f.write("## 🏗️ AI Impact & Resilience Matrix\n")
-            f.write("| Technology | Local Demand | Global Median | AI Resilience | Future Risk |\n")
+            f.write("| Technology | Local Demand | Avg Exp (Local) | AI Resilience | Future Risk |\n")
             f.write("| :--- | :--- | :--- | :--- | :--- |\n")
-            
             for tech, data in stats.items():
-                demand = data["demand"]
-                benchmark = data["global"]
                 score, risk = self.ai_agent.get_score(tech)
-                f.write(f"| {tech} | {demand} | ${benchmark:,}/yr | {score} | {risk} |\n")
-
-            f.write("\n## 🧠 Strategic Market Insights\n")
-            f.write("### 1. The 'Human Premium' Roles\n")
-            f.write("- **DevOps & System Architecture**: Roles requiring 90%+ AI Resilience. AI acts as a multiplier, not a replacement.\n")
-            f.write("- **Backend Logic (Java/Go)**: High resilience due to enterprise complexity and performance requirements.\n\n")
-            
-            f.write("### 2. High-Risk Transition Areas\n")
-            f.write("- **Basic Frontend/UI**: Bloomberry research shows a significant decline in 'Implementer' demand as AI generates UI components instantly.\n")
-            f.write("- **Manual Testing**: Drastic reduction in headcount as AI Agents take over automated regression suites.\n\n")
-            
-            f.write("## 🏁 The 2026 Action Plan\n")
-            f.write("1. **Level up to Cloud/Systems**: Master Go/Rust for performance-critical systems.\n")
-            f.write("2. **AI Integration**: Don't just code; build Agentic workflows (like the ones in this project).\n")
-
+                f.write(f"| {tech} | {data['demand']} | {data['local_exp']:.1f}y | {score} | {risk} |\n")
+            f.write("\n## 🧠 Insights: Salary & Experience Correlation\n")
+            f.write(f"![Correlation Plot](correlation_{timestamp}.png)\n\n")
         return report_path
 
+    def _generate_visuals(self, output_dir, timestamp, stats):
+        try:
+            plt.style.use('dark_background')
+            data_list = []
+            for tech, d in stats.items():
+                local_monthly = d['local_avg'] if d['local_avg'] > 0 else 2500
+                gap_monthly = (d['global'] / 12) - local_monthly
+                data_list.append({"Tech": tech, "Demand": d['demand'], "Gap": gap_monthly, "Exp": d['local_exp']})
+            df = pd.DataFrame(data_list)
+            plt.figure(figsize=(12, 6))
+            sns.barplot(data=df.sort_values("Gap", ascending=False), x="Gap", y="Tech", palette="magma", hue="Tech", legend=False)
+            plt.title("Opportunity Gap ($/mo Potential Increase)")
+            plt.tight_layout(); plt.savefig(f"{output_dir}/salary_boost_{timestamp}.png")
+            plt.figure(figsize=(10, 6))
+            sns.regplot(data=df, x="Exp", y="Gap", scatter_kws={'s':200}, line_kws={"color":"#00ff00"})
+            plt.title("Correlation: Job Seniority vs. Earning Potential")
+            plt.tight_layout(); plt.savefig(f"{output_dir}/correlation_{timestamp}.png")
+            plt.close('all')
+        except Exception as e:
+            print(f"[!] Plotting error: {e}")
+
 if __name__ == "__main__":
-    engine = IntelligenceEngine()
-    engine.load_all_sources()
-    engine.run_agentic_analysis()
+    engine = IntelligenceEngine(); engine.load_all_sources(); engine.run_agentic_analysis()
