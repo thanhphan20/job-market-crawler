@@ -37,46 +37,53 @@ Analyzed from **131** live job postings on ITviec.
 | **Spring Ecosystem** | 29 | 22.1% |
 | **Java Core** | 10 | 7.6% |
 
-> [!TIP]
-> **Data & Messaging** (SQL, Kafka, Redis) and **Infrastructure** (AWS, Docker, K8s) are the most dominant requirements. A modern Java developer must look beyond the language to the surrounding ecosystem.
+# 🚀 Agentic Job Market Intelligence Engine (v2.0)
 
-### Visual Analytics
-- [Skill Network Map](./outputs/skill_network.png) - Shows how technologies cluster together.
-- [Market Demand Chart](./outputs/market_groups.png) - Ranking of top technology groups.
+A powerful data engine that correlates local job requirements with global industry benchmarks (Stack Overflow 2025) to generate high-ROI career roadmaps.
 
-### 🚀 Data-Driven Roadmap
-Based on current data, we have generated a specialized learning path:
-👉 **[View Full Java Roadmap](./outputs/java_roadmap.md)**
+## 🌟 Key Features
+- **Intelligence Engine**: Triangular correlation between Skills, Experience, and Global Salary Benchmarks.
+- **ROI Roadmaps**: Automated identification of "High ROI" skills (High Global Pay / Moderate Local Competition).
+- **Global Benchmarking**: Integrates official **Stack Overflow Developer Survey 2025** data.
+- **Advanced Extraction**: Regex-based parsing of salaries (USD/VND) and experience years from unstructured JD text.
+- **Visual Analytics Heatmaps**: Market demand hierarchy and "Opportunity Gap" visualizations.
 
-## Installation
+## 🛠 Tech Stack
+- **Data**: Pandas, NumPy, Scikit-Learn
+- **Visualization**: Matplotlib, Seaborn
+- **Crawler**: curl-cffi (Cloudflare Bypass), BeautifulSoup4
+- **Intelligence**: Custom correlation engine for market gaps.
 
-1. **Setup Environment**:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-2. **Install Requirements**:
+## 🚀 Quick Start
+
+1. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-## Usage
+2. **Fetch Global Benchmarks (SO 2025)**:
+   ```bash
+   python main.py --fetch
+   ```
 
-Run the complete pipeline:
-```bash
-python main.py
-```
+3. **Run Market Intelligence Analysis (Default)**:
+   ```bash
+   python main.py
+   ```
 
-or
+4. **Scrap Fresh Local Data (Optional)**:
+   ```bash
+   python main.py --crawl --pages 15
+   ```
 
-```bash
-python crawlers/itviec.py
-python analytics/skill_analyzer.py
-```
+## 📊 Outputs
+- **`analytics/reports/market_intelligence_*.md`**: Detailed insight report with ROI analysis.
+- **`analytics/reports/*.png`**: Visual heatmaps of demand and salary gaps.
 
-After running, check:
-- `data/itviec_jobs.csv`: Raw data.
-- `outputs/java_skills_chart.png`: Visual skill ranking.
+## 🧠 Intelligence Logic
+The system analyzes the **Opportunity Gap** using the following formula:
+`Gap = Global_Median_Salary - Local_Estimate`
+Skills with the largest positive gap and high local demand are tagged as **🚀 High ROI**.
 
 ## Configuration
 

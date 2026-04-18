@@ -5,4 +5,7 @@ __pycache__/
 .idea/
 .agent/
 .env
+data/
+outputs/
+reports/
 *.pyc
