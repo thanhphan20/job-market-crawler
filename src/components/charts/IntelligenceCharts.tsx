@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -11,6 +12,14 @@ import {
   Cell,
   AreaChart,
   Area,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  ScatterChart,
+  Scatter,
+  ZAxis,
   TooltipProps
 } from 'recharts';
 
@@ -34,13 +43,26 @@ export interface ImpactData {
   automationRisk: number;
 }
 
-const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+export interface SkillStat {
+  skill: string;
+  relevance: number;
+  growth: number;
+}
+
+export interface CorrelationPoint {
+  x: number;
+  y: number;
+  label: string;
+  size: number;
+}
+
+const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#0A0A0A] border border-[#262626] p-3 font-mono text-[10px] uppercase tracking-wider shadow-xl">
         <p className="text-foreground font-black mb-1">{label}</p>
         <div className="space-y-1">
-          {payload.map((p, index) => (
+          {payload.map((p: any, index: number) => (
             <p key={index} style={{ color: p.color }}>
               {p.name}: {typeof p.value === 'number' && p.value > 1000 ? `$${p.value.toLocaleString()}` : `${p.value}%`}
             </p>
@@ -53,6 +75,11 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
 };
 
 export function OpportunityGapChart({ data }: { data: TechStat[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
+
   const chartData = data
     .map((d) => ({
       name: d.tech,
@@ -63,7 +90,7 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
 
   return (
     <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" horizontal={false} />
           <XAxis 
@@ -94,8 +121,8 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
 
 export function SalaryEvolutionChart({ data }: { data: SalaryTrend[] }) {
   return (
-    <div className="h-[300px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-[300px] w-full min-h-[300px]">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorSalary" x1="0" y1="0" x2="0" y2="1">
@@ -127,7 +154,7 @@ export function ImpactHeatmap({ data }: { data: ImpactData[] }) {
   
   return (
     <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <BarChart data={sortedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
           <XAxis dataKey="industry" stroke="#737373" fontSize={10} tick={{ fontSize: 8 }} interval={0} angle={-45} textAnchor="end" height={80} />
@@ -149,35 +176,94 @@ export function ImpactHeatmap({ data }: { data: ImpactData[] }) {
 }
 
 export function AIResilienceRadar({ data }: { data: TechStat[] }) {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <div className="h-[250px] w-full bg-border/10 animate-pulse" />;
+  
   const chartData = data.map(d => ({
-    name: d.tech,
-    score: d.resilienceScore,
-    demand: d.demand
-  }));
+    subject: d.tech,
+    A: d.resilienceScore,
+    fullMark: 100,
+  })).slice(0, 6);
 
   return (
-    <div className="h-[250px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData}>
-          <defs>
-            <linearGradient id="colorRes" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#EAB308" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#EAB308" stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="name" stroke="#737373" fontSize={10} hide />
-          <YAxis hide domain={[0, 100]} />
-          <Tooltip content={<CustomTooltip />} />
-          <Area 
-            type="monotone" 
-            dataKey="score" 
-            stroke="#EAB308" 
-            fillOpacity={1} 
-            fill="url(#colorRes)" 
-            strokeWidth={2}
+    <div className="h-[250px] w-full flex items-center justify-center">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+          <PolarGrid stroke="#262626" />
+          <PolarAngleAxis dataKey="subject" tick={{ fill: '#737373', fontSize: 8 }} />
+          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+          <Radar
             name="Resilience"
+            dataKey="A"
+            stroke="#EAB308"
+            fill="#EAB308"
+            fillOpacity={0.4}
           />
-        </AreaChart>
+          <Tooltip content={<CustomTooltip />} />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
+  return (
+    <div className="h-[400px] w-full">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+          <PolarGrid stroke="#262626" />
+          <PolarAngleAxis dataKey="skill" tick={{ fill: '#737373', fontSize: 10 }} />
+          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+          <Radar
+            name="Skill Relevance"
+            dataKey="relevance"
+            stroke="#EAB308"
+            fill="#EAB308"
+            fillOpacity={0.2}
+          />
+          <Tooltip content={<CustomTooltip />} />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
+  return (
+    <div className="h-[400px] w-full">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+          <XAxis 
+            type="number" 
+            dataKey="x" 
+            name="Experience" 
+            unit="yrs" 
+            stroke="#737373" 
+            fontSize={10} 
+          />
+          <YAxis 
+            type="number" 
+            dataKey="y" 
+            name="Salary" 
+            unit="$" 
+            stroke="#737373" 
+            fontSize={10} 
+            tickFormatter={(v) => `$${v/1000}k`}
+          />
+          <ZAxis type="number" dataKey="size" range={[50, 400]} />
+          <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
+          <Scatter name="Market Correlation" data={data} fill="#EAB308" fillOpacity={0.6}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.y > 100000 ? '#EAB308' : '#737373'} />
+            ))}
+          </Scatter>
+        </ScatterChart>
       </ResponsiveContainer>
     </div>
   );
