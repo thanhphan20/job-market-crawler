@@ -32,7 +32,7 @@ export default function SyncTerminal() {
           setLogs(prev => [...prev, ...newLines]);
         }
       }
-    } catch (error) {
+    } catch {
       setLogs(prev => [...prev, '[ERROR] Sync failed: Connection lost.']);
     } finally {
       setIsSyncing(false);

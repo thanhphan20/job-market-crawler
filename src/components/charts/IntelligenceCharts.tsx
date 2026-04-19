@@ -20,8 +20,7 @@ import {
   ScatterChart,
   Scatter,
   ZAxis,
-  Treemap,
-  TooltipProps
+  Treemap
 } from 'recharts';
 
 export interface TechStat {
@@ -60,15 +59,16 @@ export interface CorrelationPoint {
 export interface MarketRegion {
   name: string;
   value: number;
+  [key: string]: string | number | undefined;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number; color: string }[]; label?: string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#0A0A0A] border border-[#262626] p-3 font-mono text-[10px] uppercase tracking-wider shadow-xl">
         <p className="text-foreground font-black mb-1">{label}</p>
         <div className="space-y-1">
-          {payload.map((p: any, index: number) => (
+          {payload.map((p, index) => (
             <p key={index} style={{ color: p.color }}>
               {p.name}: {typeof p.value === 'number' && p.value > 1000 ? `$${p.value.toLocaleString()}` : `${p.value}%`}
             </p>
@@ -82,6 +82,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function OpportunityGapChart({ data }: { data: TechStat[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
@@ -103,7 +104,7 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
             type="number" 
             stroke="#737373" 
             fontSize={10} 
-            tickFormatter={(value) => `$${value}`}
+            tickFormatter={(_value) => `$${_value}`}
           />
           <YAxis 
             dataKey="name" 
@@ -183,8 +184,8 @@ export function ImpactHeatmap({ data }: { data: ImpactData[] }) {
 
 export function AIResilienceRadar({ data }: { data: TechStat[] }) {
   const [mounted, setMounted] = useState(false);
-  
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -219,6 +220,7 @@ export function AIResilienceRadar({ data }: { data: TechStat[] }) {
 
 export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
@@ -246,6 +248,7 @@ export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
 
 export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
@@ -289,6 +292,7 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
 
 export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
@@ -297,7 +301,7 @@ export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
     <div className="h-[400px] w-full">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <Treemap
-          data={data as any}
+          data={data}
           dataKey="value"
           stroke="#060606"
           fill="#EAB308"
@@ -310,8 +314,9 @@ export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomTreemapContent = (props: any) => {
-  const { x, y, width, height, index, name, value } = props;
+  const { x, y, width, height, index, name } = props;
   return (
     <g>
       <rect

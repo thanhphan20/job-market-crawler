@@ -34,9 +34,9 @@ async function getDashboardData() {
   try {
     // 1. Fetch Cached Data
     const intelData = await getCachedIntelligence();
-    intelligence = intelData as any;
-    trends = await getCachedTrends() as any;
-    impact = await getCachedImpact() as any;
+    intelligence = intelData as unknown as TechStat[];
+    trends = await getCachedTrends() as unknown as SalaryTrend[];
+    impact = await getCachedImpact() as unknown as ImpactData[];
 
     if (intelData.length > 0) {
       lastSync = intelData[0].updatedAt;
@@ -47,10 +47,10 @@ async function getDashboardData() {
       const insights = JSON.parse(fs.readFileSync(localInsightsPath, "utf-8"));
       if (trends.length === 0) trends = insights.salary_trends;
       if (impact.length === 0) {
-        impact = insights.ai_impact.map((i: any) => ({
+        impact = insights.ai_impact.map((i: { industry: string; status: string; risk?: number; automationRisk?: number }) => ({
           industry: i.industry,
           status: i.status,
-          automationRisk: i.risk || i.automationRisk
+          automationRisk: i.risk || i.automationRisk || 0
         }));
       }
       skills = insights.skill_matrix || [];
@@ -150,10 +150,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
       {/* Navigation Tabs */}
       <nav className="flex gap-4 border-b border-border mb-8 overflow-x-auto no-scrollbar">
-        <a href="?tab=local" className={`nav-tab \${tab === 'local' ? 'active' : ''}`}>Local Market</a>
-        <a href="?tab=global" className={`nav-tab \${tab === 'global' ? 'active' : ''}`}>Global Trends</a>
-        <a href="?tab=impact" className={`nav-tab \${tab === 'impact' ? 'active' : ''}`}>AI Impact</a>
-        <a href="?tab=skills" className={`nav-tab \${tab === 'skills' ? 'active' : ''}`}>Skill Matrix</a>
+        <a href="?tab=local" className={`nav-tab ${tab === 'local' ? 'active' : ''}`}>Local Market</a>
+        <a href="?tab=global" className={`nav-tab ${tab === 'global' ? 'active' : ''}`}>Global Trends</a>
+        <a href="?tab=impact" className={`nav-tab ${tab === 'impact' ? 'active' : ''}`}>AI Impact</a>
+        <a href="?tab=skills" className={`nav-tab ${tab === 'skills' ? 'active' : ''}`}>Skill Matrix</a>
       </nav>
 
       {tab === 'local' && (

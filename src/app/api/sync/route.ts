@@ -1,14 +1,14 @@
-import { spawn } from 'child_process';
-import { NextRequest } from 'next/server';
 import path from 'path';
+import { spawn } from 'child_process';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const encoder = new TextEncoder();
-  const pythonPath = process.env.PYTHON_EXECUTABLE || 'python3';
+  const pythonPath = process.env.NODE_ENV === 'production' ? 'python3' : (process.env.PYTHON_EXECUTABLE || 'python3');
+  const scriptPath = path.join(/* turbopackIgnore: true */ process.cwd(), 'scripts/sync_intelligence.py');
   
   const stream = new ReadableStream({
     start(controller) {
-      const pythonProcess = spawn(pythonPath, ['scripts/sync_intelligence.py'], {
+      const pythonProcess = spawn(pythonPath, [scriptPath], {
         env: { 
           ...process.env, 
           PYTHONUNBUFFERED: '1',
