@@ -227,3 +227,29 @@ def scrap_itviec(limit: int, start_page: int = 1, end_page: int = 5) -> list[Ent
                 results.append(data)
 
     return results
+
+
+import pandas as pd
+
+
+def run_itviec_crawler(limit=20, output_path="data/itviec_jobs.csv"):
+    """
+    Orchestrates the scraping and saving of ITviec jobs.
+    """
+    print(f"\n[*] Starting ITviec Crawler (Limit: {limit})...")
+    data = scrap_itviec(limit=limit)
+
+    if data:
+        df = pd.DataFrame(data)
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        df.to_csv(output_path, index=False, encoding="utf-8-sig")
+        print(f"[SUCCESS] Saved {len(df)} jobs to {output_path}")
+        return df
+    else:
+        print("[!] No data collected from ITviec.")
+        return None
+
+
+if __name__ == "__main__":
+    run_itviec_crawler()

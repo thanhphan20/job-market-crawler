@@ -26,19 +26,20 @@ def run_main():
     )
 
     # Options
-    parser.add_argument(
-        "--dir",
-        type=str,
-        default=str(RAW_DATA_DIR),
-        help="Override the raw data directory",
-    )
+    parser.add_argument('--dir', type=str, default=str(RAW_DATA_DIR), help="Override the raw data directory")
+    parser.add_argument('--limit', type=int, default=20, help="Limit for crawler or analysis results")
 
     args = parser.parse_args()
 
     # Logo / Header
-    print("\n" + "=" * 50)
+    print("\n" + "="*50)
     print(" MARKET INTELLIGENCE ENGINE v6.1")
-    print("=" * 50 + "\n")
+    print("="*50 + "\n")
+
+    if args.itviec:
+        from crawlers.itviec import run_itviec_crawler
+        run_itviec_crawler(limit=args.limit)
+        return
 
     if args.extract:
         # Import internally to avoid circular dependencies
