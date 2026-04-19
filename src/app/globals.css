@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -18,13 +19,35 @@
 
   body {
     @apply bg-background text-foreground antialiased selection:bg-accent selection:text-background;
+    font-family: 'Roboto Mono', monospace;
     font-feature-settings: "ss01", "ss03", "cv01", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Exo', sans-serif;
+    @apply font-bold tracking-tight uppercase;
+  }
+
+  /* Scanline Effect */
+  body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 1000;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+    opacity: 0.3;
   }
 
   /* Intelligence Terminal Scrollbar */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     @apply bg-background;
@@ -36,20 +59,86 @@
 
 @layer components {
   .terminal-card {
-    @apply border border-border bg-card p-6 transition-all hover:border-accent/50;
+    @apply border border-border bg-card p-6 transition-all hover:border-accent/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.05)];
     border-radius: var(--radius-none);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal-card::after {
+    content: "";
+    @apply absolute top-0 left-0 h-[2px] w-full bg-accent opacity-0 transition-opacity;
+  }
+
+  .terminal-card:hover::after {
+    @apply opacity-100;
   }
 
   .terminal-button {
-    @apply bg-accent px-4 py-2 text-sm font-bold uppercase tracking-wider text-background transition-all hover:opacity-90 active:scale-95;
+    @apply bg-accent px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-background transition-all hover:brightness-110 active:scale-95 disabled:opacity-50;
     border-radius: var(--radius-none);
+    cursor: pointer;
   }
 
   .terminal-label {
-    @apply text-[10px] font-black uppercase tracking-[0.2em] text-accent/70;
+    @apply text-[10px] font-black uppercase tracking-[0.3em] text-accent/70;
   }
 
   .data-value {
-    @apply font-mono text-2xl font-bold tracking-tight text-accent;
+    @apply font-mono text-3xl font-black tracking-tighter text-accent;
+    font-variant-numeric: tabular-nums;
   }
+
+  .nav-tab {
+    @apply px-4 py-2 text-[10px] font-black uppercase tracking-widest text-zinc-500 border-b-2 border-transparent transition-all hover:text-foreground;
+  }
+
+  .nav-tab.active {
+    @apply text-accent border-accent;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 10px rgba(234,179,8,0.5);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-in {
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: slide-in-from-bottom;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(1rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoom-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
