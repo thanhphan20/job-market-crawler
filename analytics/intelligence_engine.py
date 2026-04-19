@@ -43,8 +43,11 @@ class IntelligenceEngine:
         self.context = MarketContext()
         self.ai_agent = AIImpactAgent()
         self.global_benchmarks = {
-            "Go": 85000, "Rust": 88000, "TypeScript": 77000, "Python": 75000, 
-            "Java": 72000, "JavaScript": 70000, "DevOps": 85000, "AI/ML": 95000
+            "Go": 88000, "Rust": 92000, "TypeScript": 78000, "Python": 82000, 
+            "Java": 75000, "JavaScript": 72000, "DevOps": 87000, "AI/ML": 110000,
+            "C#": 74000, "C++": 85000, "PHP": 62000, "Swift": 86000, 
+            "Kotlin": 84000, "Data Engineering": 95000, "Cloud Architect": 125000,
+            "Ruby": 82000, "SQL": 70000, "Scala": 92000, "Flutter": 78000
         }
 
     def _parse_salary(self, salary_str):

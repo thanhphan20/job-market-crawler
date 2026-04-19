@@ -25,7 +25,7 @@ def main():
     # 1. Crawl (if requested)
     if args.crawl:
         print("\n--- Scraping Market Data ---")
-        results = scrap_itviec(limit=100)
+        results = scrap_itviec(limit=500)
         # ... (rest of crawl logic)
 
     # 2. Intelligence Engine Analysis (SO + ITviec)
