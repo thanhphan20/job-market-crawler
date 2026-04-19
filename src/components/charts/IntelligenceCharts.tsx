@@ -20,6 +20,7 @@ import {
   ScatterChart,
   Scatter,
   ZAxis,
+  Treemap,
   TooltipProps
 } from 'recharts';
 
@@ -54,6 +55,11 @@ export interface CorrelationPoint {
   y: number;
   label: string;
   size: number;
+}
+
+export interface MarketRegion {
+  name: string;
+  value: number;
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -212,6 +218,11 @@ export function AIResilienceRadar({ data }: { data: TechStat[] }) {
 }
 
 export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
+
   return (
     <div className="h-[400px] w-full">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
@@ -234,10 +245,15 @@ export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
 }
 
 export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
+
   return (
-    <div className="h-[400px] w-full">
+    <div className="h-[400px] w-full min-h-[400px]">
       <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
           <XAxis 
             type="number" 
@@ -245,7 +261,8 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
             name="Experience" 
             unit="yrs" 
             stroke="#737373" 
-            fontSize={10} 
+            fontSize={10}
+            domain={['auto', 'auto']}
           />
           <YAxis 
             type="number" 
@@ -254,17 +271,74 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
             unit="$" 
             stroke="#737373" 
             fontSize={10} 
+            domain={['auto', 'auto']}
             tickFormatter={(v) => `$${v/1000}k`}
           />
-          <ZAxis type="number" dataKey="size" range={[50, 400]} />
+          <ZAxis type="number" dataKey="size" range={[60, 400]} />
           <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
-          <Scatter name="Market Correlation" data={data} fill="#EAB308" fillOpacity={0.6}>
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.y > 100000 ? '#EAB308' : '#737373'} />
-            ))}
-          </Scatter>
+          <Scatter 
+            name="Market Correlation" 
+            data={data} 
+            fill="#EAB308" 
+          />
         </ScatterChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
+export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
+
+  return (
+    <div className="h-[400px] w-full">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+        <Treemap
+          data={data as any}
+          dataKey="value"
+          stroke="#060606"
+          fill="#EAB308"
+          content={<CustomTreemapContent />}
+        >
+          <Tooltip content={<CustomTooltip />} />
+        </Treemap>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+const CustomTreemapContent = (props: any) => {
+  const { x, y, width, height, index, name, value } = props;
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        style={{
+          fill: '#EAB308',
+          fillOpacity: 0.3 + (index / 6) * 0.6,
+          stroke: 'none',
+        }}
+      />
+      {width > 50 && height > 30 && (
+        <text
+          x={x + width / 2}
+          y={y + height / 2}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fill="#FFFFFF"
+          fontSize={14}
+          fontWeight={900}
+          className="uppercase tracking-tighter drop-shadow-md"
+        >
+          {name}
+        </text>
+      )}
+    </g>
+  );
+};

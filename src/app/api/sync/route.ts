@@ -1,11 +1,14 @@
 import { spawn } from 'child_process';
 import { NextRequest } from 'next/server';
+import path from 'path';
 
 export async function GET(req: NextRequest) {
   const encoder = new TextEncoder();
+  const pythonPath = process.env.PYTHON_EXECUTABLE || 'python3';
+  
   const stream = new ReadableStream({
     start(controller) {
-      const pythonProcess = spawn('./.venv/bin/python3', ['scripts/sync_intelligence.py'], {
+      const pythonProcess = spawn(pythonPath, ['scripts/sync_intelligence.py'], {
         env: { 
           ...process.env, 
           PYTHONUNBUFFERED: '1',
