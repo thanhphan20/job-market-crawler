@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  salaryMin   Float?
+  salaryMax   Float?
+  currency    String   @default("USD")
+  experience  Float?   // in years
+  skills      String[]
+  url         String?  @unique
+  source      String   @default("ITviec")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([title])
+  @@index([company])
+}
+
+model GlobalIntelligence {
+  id              String   @id @default(cuid())
+  tech            String   @unique
+  demand          Int      // count in global listings
+  globalAvgSalary Float    // in USD (Annual)
+  localAvgSalary  Float?   // correlated from Job model
+  resilienceScore Float    // AI Resilience (0-100)
+  riskLevel       String   // LOW, MEDIUM, HIGH, CRITICAL
+  updatedAt       DateTime @updatedAt
+}
+
+model AIImpactMatrix {
+  id             String   @id @default(cuid())
+  industry       String
+  status         String   // Growing, Stable, Declining
+  automationRisk Float    // Percentage (0-100)
+  updatedAt      DateTime @default(now())
+
+  @@unique([industry, status])
+}
+
+model SalaryTrend {
+  id        String   @id @default(cuid())
+  year      Int
+  tech      String?  // Optional for general trends
+  avgSalary Float
+  source    String   // Kaggle, StackOverflow
+  createdAt DateTime @default(now())
+
+  @@unique([year, tech, source])
+}

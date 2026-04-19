@@ -153,6 +153,37 @@ class KaggleMarketAnalyzer:
         print("\n[DONE] Kaggle analysis suite completed.")
         print(f"[*] Visual reports available in: {self.output_dir}")
 
+    def get_processed_data(self):
+        """Returns structured data for AI Impact and Salary Trends."""
+        data = {
+            "ai_impact": [],
+            "salary_trends": []
+        }
+        
+        # AI Impact
+        df_impact = self.load_dataset("ai_impact_2024_2030.csv")
+        if df_impact is not None:
+            cols = {'Job Title': 'job_title', 'Job Status': 'status', 'Automation Risk (%)': 'risk', 'Industry': 'industry'}
+            df_clean = df_impact.rename(columns={k: v for k, v in cols.items() if k in df_impact.columns})
+            if 'industry' in df_clean.columns and 'status' in df_clean.columns and 'risk' in df_clean.columns:
+                # Group and get mean risk per industry/status
+                impact_summary = df_clean.groupby(['industry', 'status'])['risk'].mean().reset_index()
+                data["ai_impact"] = impact_summary.to_dict('records')
+
+        # Salary Trends
+        df_growth = self.load_dataset("ai_data_science_2020_2026.csv")
+        if df_growth is not None and 'work_year' in df_growth.columns:
+            # Group by year
+            trends = df_growth.groupby('work_year')['salary_in_usd'].median().reset_index()
+            for _, row in trends.iterrows():
+                data["salary_trends"].append({
+                    "year": int(row['work_year']),
+                    "avgSalary": float(row['salary_in_usd']),
+                    "source": "Kaggle"
+                })
+        
+        return data
+
 if __name__ == "__main__":
     analyzer = KaggleMarketAnalyzer()
     analyzer.run_all()

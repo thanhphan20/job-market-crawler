@@ -142,5 +142,23 @@ class IntelligenceEngine:
         except Exception as e:
             print(f"[!] Plotting error: {e}")
 
+    def get_processed_data(self):
+        """Returns a list of dictionaries suitable for Supabase insertion."""
+        stats = self._calculate_tech_stats()
+        processed = []
+        for tech, data in stats.items():
+            score, risk = self.ai_agent.get_score(tech)
+            processed.append({
+                "tech": tech,
+                "demand": data['demand'],
+                "globalAvgSalary": data['global'],
+                "localAvgSalary": data['local_avg'],
+                "resilienceScore": score,
+                "riskLevel": risk
+            })
+        return processed
+
 if __name__ == "__main__":
-    engine = IntelligenceEngine(); engine.load_all_sources(); engine.run_agentic_analysis()
+    engine = IntelligenceEngine()
+    engine.load_all_sources()
+    engine.run_agentic_analysis()

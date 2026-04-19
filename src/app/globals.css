@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #060606;
+  --color-foreground: #fafafa;
+  --color-accent: #eab308;
+  --color-card: #0a0a0a;
+  --color-border: #262626;
+  
+  --radius-none: 0px;
+}
+
+@layer base {
+  :root {
+    --background: 6 6 6;
+    --foreground: 250 250 250;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-accent selection:text-background;
+    font-feature-settings: "ss01", "ss03", "cv01", "cv11";
+  }
+
+  /* Intelligence Terminal Scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border hover:bg-accent transition-colors;
+  }
+}
+
+@layer components {
+  .terminal-card {
+    @apply border border-border bg-card p-6 transition-all hover:border-accent/50;
+    border-radius: var(--radius-none);
+  }
+
+  .terminal-button {
+    @apply bg-accent px-4 py-2 text-sm font-bold uppercase tracking-wider text-background transition-all hover:opacity-90 active:scale-95;
+    border-radius: var(--radius-none);
+  }
+
+  .terminal-label {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-accent/70;
+  }
+
+  .data-value {
+    @apply font-mono text-2xl font-bold tracking-tight text-accent;
+  }
+}
