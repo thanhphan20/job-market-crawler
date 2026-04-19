@@ -24,6 +24,9 @@ def run_main():
         action="store_true",
         help="Generate synthetic benchmark data (for testing purposes)",
     )
+    parser.add_argument(
+        "--itviec", action="store_true", help="Run the ITviec live job crawler"
+    )
 
     # Options
     parser.add_argument('--dir', type=str, default=str(RAW_DATA_DIR), help="Override the raw data directory")

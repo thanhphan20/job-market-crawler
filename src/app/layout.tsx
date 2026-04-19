@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistMono.variable} font-mono overflow-x-hidden`}>
         <div className="flex min-h-screen bg-background">
           {/* Main Content Area */}

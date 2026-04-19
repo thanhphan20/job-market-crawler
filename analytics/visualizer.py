@@ -63,7 +63,13 @@ class MarketVisualizer:
     def plot_global_skills_ranking(self, skills_series, ts):
         """[3/8] Global Skills Demand (Kaggle)"""
         plt.figure(figsize=(12, 8))
-        sns.barplot(x=skills_series.values, y=skills_series.index, palette="mako")
+        sns.barplot(
+            x=skills_series.values,
+            y=skills_series.index,
+            hue=skills_series.index,
+            palette="mako",
+            legend=False,
+        )
         plt.title(
             "Global Tech Demand: Most Required Skills", fontsize=16, fontweight="bold"
         )
@@ -95,7 +101,13 @@ class MarketVisualizer:
         # Assuming df has 'skills' or we use 'std_role' for demand
         counts = df["standardized_title"].value_counts()
         plt.figure(figsize=(12, 8))
-        sns.barplot(x=counts.values, y=counts.index, palette="flare")
+        sns.barplot(
+            x=counts.values,
+            y=counts.index,
+            hue=counts.index,
+            palette="flare",
+            legend=False,
+        )
         plt.title(
             "Local Demand: Unified Market Vacancies", fontsize=16, fontweight="bold"
         )

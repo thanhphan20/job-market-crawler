@@ -96,8 +96,8 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
     .sort((a, b) => b.gap - a.gap);
 
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+    <div className="h-[400px] w-full min-h-[400px]">
+      <ResponsiveContainer width="99%" aspect={1.5}>
         <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" horizontal={false} />
           <XAxis 
@@ -127,10 +127,14 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
 }
 
 export function SalaryEvolutionChart({ data }: { data: SalaryTrend[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return <div className="h-[250px] w-full bg-border/10 animate-pulse" />;
+
   return (
-    <div className="h-[300px] w-full min-h-[300px]">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-        <AreaChart data={data}>
+    <div className="h-auto w-full min-h-[250px]">
+      <ResponsiveContainer width="99%" aspect={2}>
+        <AreaChart data={data.length === 1 ? [...data, { ...data[0], year: data[0].year + 1 }] : data}>
           <defs>
             <linearGradient id="colorSalary" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#EAB308" stopOpacity={0.2}/>
@@ -160,8 +164,8 @@ export function ImpactHeatmap({ data }: { data: ImpactData[] }) {
   const sortedData = [...data].sort((a, b) => b.automationRisk - a.automationRisk);
   
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+    <div className="h-[400px] w-full min-h-[400px]">
+      <ResponsiveContainer width="99%" aspect={1.5}>
         <BarChart data={sortedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
           <XAxis dataKey="industry" stroke="#737373" fontSize={10} tick={{ fontSize: 8 }} interval={0} angle={-45} textAnchor="end" height={80} />
@@ -198,8 +202,8 @@ export function AIResilienceRadar({ data }: { data: TechStat[] }) {
   })).slice(0, 6);
 
   return (
-    <div className="h-[250px] w-full flex items-center justify-center">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+    <div className="h-auto w-full min-h-[250px] flex items-center justify-center">
+      <ResponsiveContainer width="99%" aspect={1.5}>
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
           <PolarGrid stroke="#262626" />
           <PolarAngleAxis dataKey="subject" tick={{ fill: '#737373', fontSize: 8 }} />
@@ -226,8 +230,8 @@ export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
 
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+    <div className="h-[400px] w-full min-h-[400px]">
+      <ResponsiveContainer width="99%" aspect={1.5}>
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
           <PolarGrid stroke="#262626" />
           <PolarAngleAxis dataKey="skill" tick={{ fill: '#737373', fontSize: 10 }} />
@@ -255,7 +259,7 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
 
   return (
     <div className="h-[400px] w-full min-h-[400px]">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+      <ResponsiveContainer width="99%" aspect={1.5}>
         <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
           <XAxis 
@@ -292,14 +296,12 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
 
 export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
   const [mounted, setMounted] = useState(false);
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
-
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
 
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+    <div className="h-auto w-full min-h-[400px]">
+      <ResponsiveContainer width="99%" aspect={2} minWidth={0} minHeight={0}>
         <Treemap
           data={data}
           dataKey="value"
