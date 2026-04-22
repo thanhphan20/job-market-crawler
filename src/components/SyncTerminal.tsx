@@ -21,33 +21,27 @@ export default function SyncTerminal() {
     setLogs(prev => [...prev, `[SYSTEM] Preparing command: python main.py ${command} ${args.join(' ')}`]);
     
     try {
-      const response = await fetch('/api/run-script', {
+      let endpoint = '/api/sync';
+      if (command === '--itviec') endpoint = '/api/sync/itviec';
+      if (command === '--extract') endpoint = '/api/sync/extract';
+
+      setLogs(prev => [...prev, `[SYSTEM] Requesting ${endpoint}...`]);
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command, args }),
       });
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          
-          const text = decoder.decode(value);
-          if (text.includes('[PROCESS_COMPLETED] with code 0')) {
-            setLogs(prev => [...prev, '[SUCCESS] Sync completed. Intel is ready.']);
-            // Notify other components to refresh data without reloading
-            window.dispatchEvent(new CustomEvent('intel-sync-complete'));
-          }
-          
-          const newLines = text.split('\n').filter(line => line.trim());
-          setLogs(prev => [...prev, ...newLines]);
-        }
-      }
-    } catch {
-      setLogs(prev => [...prev, '[ERROR] Connection lost. Python script aborted.']);
+      if (!response.ok) throw new Error(`Server returned ${response.status}`);
+      
+      const data = await response.json();
+      setLogs(prev => [...prev, `[SYSTEM] ${data.message}`]);
+      setLogs(prev => [...prev, '[SUCCESS] Task queued in background.']);
+      
+      window.dispatchEvent(new CustomEvent('intel-sync-complete'));
+    } catch (err: any) {
+      setLogs(prev => [...prev, `[ERROR] Sync failed: ${err.message}`]);
+      setLogs(prev => [...prev, '[HINT] Make sure the FastAPI server is running at localhost:8000 if testing locally.']);
     } finally {
       setIsSyncing(false);
     }
@@ -109,29 +103,22 @@ export default function SyncTerminal() {
         </div>
         
         <div className="grid grid-cols-4 gap-2">
-          {process.env.NEXT_PUBLIC_VERCEL_ENV ? (
-            <div className="col-span-4 p-3 border border-yellow-500/30 bg-yellow-500/5 text-yellow-200/70 text-[9px] leading-relaxed mb-1">
-              [CLOUD_MODE] Crawler and Sync engines are disabled in the cloud to prevent timeouts. 
-              Please run `python main.py --flow` locally to update the Cloud DB results.
-            </div>
-          ) : (
             <>
               <button 
                 onClick={() => runCommand('--itviec', ['--limit', '10'])} 
-                disabled={isSyncing}
-                className="terminal-button text-[9px] py-1 h-auto"
+                disabled={isSyncing || !!process.env.NEXT_PUBLIC_VERCEL_ENV}
+                className={`terminal-button text-[9px] py-1 h-auto ${process.env.NEXT_PUBLIC_VERCEL_ENV ? 'opacity-30' : ''}`}
               >
-                🕷️ Crawl
+                {process.env.NEXT_PUBLIC_VERCEL_ENV ? '🚫 Local Crawl' : '🕷️ Crawl'}
               </button>
               <button 
                 onClick={() => runCommand('--flow')} 
                 disabled={isSyncing}
                 className="terminal-button text-[9px] py-1 h-auto bg-accent/20 border-accent/50 text-accent"
               >
-                🧠 Intelligence
+                🧠 Intelligence [FastAPI]
               </button>
             </>
-          )}
           <button 
             onClick={fetchReport} 
             disabled={isSyncing}

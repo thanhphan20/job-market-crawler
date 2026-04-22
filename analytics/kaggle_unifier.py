@@ -53,9 +53,21 @@ class KaggleUnifier:
 
         # 1. Main Salary Data
         df_sal = pd.read_csv(path_sal)
+        
+        # --- CLEANING STEP ---
+        initial_count = len(df_sal)
+        # Remove nulls in critical columns
+        df_sal = df_sal.dropna(subset=["job_title", "salary_usd"])
+        
+        # Standardize roles
         df_sal["std_role"] = df_sal["job_title"].apply(
             DataStandardizer.standardize_title
         )
+        
+        # Filter out 'Unknown' roles after standardization
+        df_sal = df_sal[df_sal["std_role"] != "Unknown"]
+        
+        print(f"[CLEAN] Kaggle Data: {len(df_sal)}/{initial_count} records retained after strict filtering.")
 
         benchmarks = (
             df_sal.groupby("std_role")
@@ -101,22 +113,30 @@ class KaggleUnifier:
         # 3. Insights Data
         if path_ins:
             df_ins = pd.read_csv(path_ins)
-            proj_col = [
-                c
-                for c in df_ins.columns
-                if "growth" in c.lower() or "projection" in c.lower()
-            ]
+            proj_col = [c for c in df_ins.columns if "growth" in c.lower() or "projection" in c.lower()]
+            risk_col = [c for c in df_ins.columns if "risk" in c.lower() or "automation" in c.lower()]
+            skill_col = [c for c in df_ins.columns if "skill" in c.lower()]
             title_col = [c for c in df_ins.columns if "title" in c.lower()][0]
 
-            if proj_col:
-                df_ins["std_role"] = df_ins[title_col].apply(
-                    DataStandardizer.standardize_title
-                )
-                growth_stats = (
-                    df_ins.groupby("std_role")[proj_col[0]]
-                    .agg(lambda x: x.mode()[0] if not x.empty else "Unknown")
-                    .reset_index()
-                )
-                benchmarks = benchmarks.merge(growth_stats, on="std_role", how="left")
+            if title_col:
+                df_ins["std_role"] = df_ins[title_col].apply(DataStandardizer.standardize_title)
+                
+                # Aggregate growth, risk, and skills
+                agg_dict = {}
+                if proj_col: agg_dict[proj_col[0]] = lambda x: x.mode()[0] if not x.empty else "Stable"
+                if risk_col: agg_dict[risk_col[0]] = "mean"
+                if skill_col: agg_dict[skill_col[0]] = lambda x: ",".join(x.mode()) if not x.empty else ""
+                
+                insight_stats = df_ins.groupby("std_role").agg(agg_dict).reset_index()
+                
+                # Rename columns for clarity
+                rename_map = {}
+                if proj_col: rename_map[proj_col[0]] = "growth_projection"
+                if risk_col: rename_map[risk_col[0]] = "avg_automation_risk_pct"
+                if skill_col: rename_map[skill_col[0]] = "top_skills"
+                insight_stats.rename(columns=rename_map, inplace=True)
+                
+                # Merge into benchmarks
+                benchmarks = benchmarks.merge(insight_stats, on="std_role", how="left")
 
         return benchmarks, df_sal

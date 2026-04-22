@@ -11,32 +11,114 @@ class DataStandardizer:
 
     # Mapping Local Vietnamese Titles to Global Categories
     TITLE_MAP = {
-        "unity": "Game Development/AR-VR",
-        "java": "Backend Developer",
-        "python": "Data & AI Engineer",
-        "data": "Data Science/Analytics",
-        "ml": "Machine Learning Engineer",
+        # High-level specialized roles
         "machine learning": "Machine Learning Engineer",
+        "data scientist": "Data Scientist",
+        "data analyst": "Data Analyst",
+        "ai scientist": "AI Research Scientist",
+        "ai engineer": "AI Engineer",
+        "solution architect": "Solution Architect",
+        "cloud architect": "Cloud Architect",
+        "cybersecurity": "Cybersecurity Specialist",
+        "blockchain": "Blockchain Engineer",
+        "game developer": "Game Developer",
+        "unity": "Game Developer",
+        "unreal": "Game Developer",
+        
+        # DevOps & Infrastructure
+        "sre": "Site Reliability Engineer",
+        "site reliability": "Site Reliability Engineer",
+        "devops": "DevOps Engineer",
+        "infrastructure": "DevOps Engineer",
+        "cloud engineer": "Cloud & DevOps",
+        "aws": "Cloud & DevOps",
+        "azure": "Cloud & DevOps",
+        "kubernetes": "Cloud & DevOps",
+        "docker": "Cloud & DevOps",
+
+        # Mobile Development
+        "ios": "iOS Developer",
+        "android": "Android Developer",
+        "flutter": "Mobile Developer",
+        "react native": "Mobile Developer",
+        "mobile": "Mobile Developer",
+
+        # Frontend Development
         "frontend": "Frontend Developer",
         "react": "Frontend Developer",
+        "angular": "Frontend Developer",
+        "vue": "Frontend Developer",
+        "javascript": "Frontend Developer",
+        "typescript": "Frontend Developer",
+        "nextjs": "Frontend Developer",
+
+        # Backend Development
+        "backend": "Backend Developer",
+        "java": "Java Backend Developer",
+        "node": "Node.js Backend Developer",
+        "golang": "Go Backend Developer",
+        "python developer": "Python Backend Developer",
+        "php": "PHP Backend Developer",
+        "ruby": "Ruby Backend Developer",
+        ".net": ".NET Backend Developer",
+        "c#": ".NET Backend Developer",
+        "c++": "C++ Engineer",
+        "embedded": "Embedded Systems",
+        "firmware": "Embedded Systems",
+        "rust": "Systems Engineer",
+
+        # Fullstack
         "fullstack": "Fullstack Developer",
-        "devops": "Cloud & DevOps",
-        "mobile": "Mobile App Developer",
-        "ios": "Mobile App Developer",
-        "android": "Mobile App Developer",
-        "bridge": "Project Management",
-        "manager": "Management/Leadership",
-        "lead": "Management/Leadership",
+        "full stack": "Fullstack Developer",
+
+        # Management & Business
+        "project manager": "Project Manager",
+        "product manager": "Product Manager",
+        "business analyst": "Business Analyst",
+        "ba": "Business Analyst",
+        "manager": "Engineering Management",
+        "director": "Executive",
+        "cto": "Executive",
+        "pmo": "Project Manager",
+        
+        # QA & Testing
+        "qa": "QA/QC Engineer",
+        "qc": "QA/QC Engineer",
+        "tester": "QA/QC Engineer",
+        "automation test": "QA/QC Engineer",
     }
 
     @classmethod
     def standardize_title(cls, title):
-        """Maps diverse job titles to a standard global category."""
-        title_lower = title.lower()
-        for key, category in cls.TITLE_MAP.items():
+        """Maps diverse job titles to a standard global category or cleans the original."""
+        title_clean = title.strip()
+        title_lower = title_clean.lower()
+        
+        # Sort keys by length descending to match longest/most specific patterns first
+        sorted_keys = sorted(cls.TITLE_MAP.keys(), key=len, reverse=True)
+        
+        for key in sorted_keys:
             if key in title_lower:
-                return category
-        return "Software Engineering (Other)"
+                return cls.TITLE_MAP[key]
+        
+        # If no stack-specific keyword, clean the original title instead of being generic
+        # Remove common noise words
+        noise = [
+            r"\bsenior\b", r"\bjunior\b", r"\bmiddle\b", r"\blead\b", 
+            r"\bprincipal\b", r"\bstaff\b", r"\bassociate\b", r"\bexpert\b",
+            r"\[.*?\]", r"\(.*?\)", r"\bvn\b", r"\bvietnam\b", r"\bhcm\b", r"\bhanoi\b"
+        ]
+        
+        cleaned = title_lower
+        for pattern in noise:
+            cleaned = re.sub(pattern, "", cleaned)
+            
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        
+        if len(cleaned) > 3:
+            return cleaned.title()
+            
+        return "Specialized Tech Role"
 
     @classmethod
     def parse_experience(cls, exp_str):

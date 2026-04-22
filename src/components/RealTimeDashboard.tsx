@@ -12,6 +12,7 @@ import {
 } from "@/components/charts/IntelligenceCharts";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "./charts/IntelligenceCharts";
 import SyncTerminal from "./SyncTerminal";
+import KaggleDataTable from "./KaggleDataTable";
 
 interface Props {
   initialData: {
@@ -75,70 +76,77 @@ export default function RealTimeDashboard({ initialData }: Props) {
 
       {/* Navigation Tabs */}
       <nav className="flex gap-4 border-b border-border mb-8 overflow-x-auto no-scrollbar">
-        {['local', 'global', 'impact', 'skills'].map((t) => (
+        {['local', 'global', 'impact', 'skills', 'raw'].map((t) => (
           <button 
             key={t}
             onClick={() => setTab(t)} 
             className={`nav-tab capitalize ${tab === t ? 'active' : ''}`}
           >
-            {t === 'local' ? 'Local Market' : t === 'global' ? 'Global Trends' : t === 'impact' ? 'AI Impact' : 'Skill Matrix'}
+            {t === 'local' ? 'Local Market' : 
+             t === 'global' ? 'Global Trends' : 
+             t === 'impact' ? 'AI Impact' : 
+             t === 'skills' ? 'Skill Matrix' : 'Raw Data'}
           </button>
         ))}
       </nav>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
         {/* Main Content Area (Tabs) */}
-        <div className="lg:col-span-2 space-y-8 min-w-0">
-          <div className="animate-in fade-in duration-500">
+        <div className="lg:col-span-2 space-y-12 min-w-0">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {tab === 'local' && (
-              <div className="space-y-8">
+              <div className="space-y-12">
                 <section className="terminal-card">
                   <h2 className="mb-6 flex items-center gap-2">
                     <span className="h-2 w-2 bg-accent animate-pulse" />
                     VN Market: Opportunity Gap ($/mo Potential)
                   </h2>
-                  <OpportunityGapChart data={data.intelligence} />
+                  <div className="w-full">
+                    <OpportunityGapChart data={data.intelligence} />
+                  </div>
                 </section>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <section className="terminal-card">
-                    <h2 className="mb-4 text-xs font-bold text-accent">Tech Resilience</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <section className="terminal-card min-h-[400px]">
+                    <h2 className="mb-6 text-xs font-bold text-accent uppercase tracking-[0.3em]">AI Resilience Profile</h2>
                     <AIResilienceRadar data={data.intelligence} />
                   </section>
-                  <section className="terminal-card">
-                    <h2 className="mb-4 text-xs font-bold text-accent">Market Intensity</h2>
-                    <div className="space-y-4">
-                      {(data.intelligence || []).slice(0, 4).map(t => (
-                        <div key={t.tech} className="flex justify-between items-center border-b border-border pb-2">
-                          <span className="text-[10px] font-bold">{t.tech}</span>
-                          <span className="text-accent font-black">{t.demand} <span className="text-[8px] text-zinc-500 tracking-normal">JOBS</span></span>
+                  <section className="terminal-card min-h-[400px]">
+                    <h2 className="mb-6 text-xs font-bold text-accent uppercase tracking-[0.3em]">Market Velocity</h2>
+                    <div className="space-y-6">
+                      {(data.intelligence || []).slice(0, 6).map(t => (
+                        <div key={t.tech} className="flex justify-between items-center border-b border-border/50 pb-3 group hover:border-accent/30 transition-colors">
+                          <span className="text-xs font-bold text-zinc-300">{t.tech}</span>
+                          <div className="text-right">
+                            <span className="text-accent font-black block leading-none">{t.demand}</span>
+                            <span className="text-[8px] text-zinc-500 uppercase tracking-tighter">Jobs Indexed</span>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </section>
                 </div>
-                
-                <section className="terminal-card border-accent/10">
-                  <h2 className="mb-4 text-xs font-bold text-accent">Strategic Benchmark: Global Correlation</h2>
-                  <CorrelationChart data={data.correlation} />
-                </section>
               </div>
             )}
 
             {tab === 'global' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <section className="terminal-card md:col-span-2">
-                  <h2 className="mb-8">Market Volume Share</h2>
-                  <GlobalMarketShareChart data={data.marketShare} />
-                </section>
+              <div className="space-y-12">
                 <section className="terminal-card">
-                  <h2 className="mb-8">AI Salary Evolution</h2>
-                  <SalaryEvolutionChart data={data.trends} />
+                  <h2 className="mb-10 text-lg font-black uppercase italic tracking-tighter">Global Market Share & Volume</h2>
+                  <div className="">
+                    <GlobalMarketShareChart data={data.marketShare} />
+                  </div>
                 </section>
-                <section className="terminal-card">
-                  <h2 className="mb-8">Experience Correlation</h2>
-                  <CorrelationChart data={data.correlation} />
-                </section>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <section className="terminal-card min-h-[400px]">
+                    <h2 className="mb-10 text-xs font-bold text-accent uppercase tracking-widest">Global Salary Evolution</h2>
+                    <SalaryEvolutionChart data={data.trends} />
+                  </section>
+                  <section className="terminal-card min-h-[400px]">
+                    <h2 className="mb-10 text-xs font-bold text-accent uppercase tracking-widest">Experience ROI Heatmap</h2>
+                    <CorrelationChart data={data.correlation} />
+                  </section>
+                </div>
               </div>
             )}
 
@@ -153,6 +161,16 @@ export default function RealTimeDashboard({ initialData }: Props) {
               <section className="terminal-card">
                 <h2 className="mb-8">Skill Relevance Matrix</h2>
                 <SkillMatrixChart data={data.skills} />
+              </section>
+            )}
+
+            {tab === 'raw' && (
+              <section className="terminal-card">
+                <h2 className="mb-8 flex items-center gap-2">
+                  <span className="h-2 w-2 bg-accent animate-pulse" />
+                  Kaggle Unified Intelligence Dataset ({data.rawTable?.length || 0} Roles)
+                </h2>
+                <KaggleDataTable initialData={data.rawTable} />
               </section>
             )}
           </div>

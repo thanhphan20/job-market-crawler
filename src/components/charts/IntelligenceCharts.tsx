@@ -96,7 +96,7 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
     .sort((a, b) => b.gap - a.gap);
 
   return (
-    <div className="h-[400px] w-full min-h-[400px]">
+    <div className="h-auto w-full min-h-[400px]">
       <ResponsiveContainer width="99%" aspect={1.5}>
         <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" horizontal={false} />
@@ -164,7 +164,7 @@ export function ImpactHeatmap({ data }: { data: ImpactData[] }) {
   const sortedData = [...data].sort((a, b) => b.automationRisk - a.automationRisk);
   
   return (
-    <div className="h-[400px] w-full min-h-[400px]">
+    <div className=" w-full min-h-[400px]">
       <ResponsiveContainer width="99%" aspect={1.5}>
         <BarChart data={sortedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
@@ -230,7 +230,7 @@ export function SkillMatrixChart({ data }: { data: SkillStat[] }) {
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
 
   return (
-    <div className="h-[400px] w-full min-h-[400px]">
+    <div className=" w-full min-h-[400px]">
       <ResponsiveContainer width="99%" aspect={1.5}>
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
           <PolarGrid stroke="#262626" />
@@ -258,7 +258,7 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
 
   return (
-    <div className="h-[400px] w-full min-h-[400px]">
+    <div className=" w-full min-h-[400px]">
       <ResponsiveContainer width="99%" aspect={1.5}>
         <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />

@@ -59,7 +59,7 @@ def run_main():
 
     if args.flow:
         engine = IntelligenceEngine(raw_dir=args.dir)
-        engine.load_all_sources()
+        engine.load_all_sources(skip_itviec=True)
         report = engine.run_agentic_analysis()
         if report:
             print(f"\n[SUCCESS] Analysis Complete: {report}")
