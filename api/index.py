@@ -99,4 +99,4 @@ def get_kaggle_data():
         return merged.fillna(0).to_dict(orient="records")
     except Exception as e:
         print(f"[API_ERR] Kaggle data fetch failed: {str(e)}")
-        return {"error": str(e)}
+        return {"error": "Internal server error"}
