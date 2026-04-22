@@ -4,13 +4,19 @@ import { prisma } from "@/lib/db";
 export async function GET() {
   try {
     const intelligence = await prisma.globalIntelligence.findMany();
+    
+    // Fallback to local JSON if DB is empty or fails
+    if (!intelligence || intelligence.length === 0) {
+      console.log("[API] DB empty, falling back to static JSON...");
+      return fetchStaticFallback();
+    }
+
     const trends = await prisma.salaryTrend.findMany({
       where: { source: "Kaggle" },
       orderBy: { year: 'asc' }
     });
     const impact = await prisma.aIImpactMatrix.findMany();
 
-    // Map DB entities to UI schema
     return NextResponse.json({
       intelligence: intelligence.map(i => ({
         tech: i.tech,
@@ -32,6 +38,22 @@ export async function GET() {
       updated_at: intelligence[0]?.updatedAt || new Date().toISOString()
     });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch cloud data" }, { status: 500 });
+    console.error("[API_ERR] Database fetch failed:", error);
+    return fetchStaticFallback();
   }
+}
+
+async function fetchStaticFallback() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const filePath = path.join(process.cwd(), 'public/data/intelligence.json');
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      return NextResponse.json(data);
+    }
+  } catch (e) {
+    console.error("[API_ERR] Static fallback failed:", e);
+  }
+  return NextResponse.json({ error: "Data unavailable" }, { status: 500 });
 }

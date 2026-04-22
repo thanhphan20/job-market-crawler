@@ -142,16 +142,11 @@ class IntelligenceEngine:
         is_vercel = os.environ.get("VERCEL") == "1"
         output_path = Path("public/data/intelligence.json")
         
-        if is_vercel:
-            output_path = Path("/tmp/intelligence.json")
-            print(f"[INFO] Vercel environment detected. Redirecting output to {output_path}")
-
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-
+        from config.settings import SYNC_DIR
+        
         # 1. Intelligence Matrix
         intelligence = []
         for _, row in df.head(30).iterrows():
-            # Dynamic Risk Fallback based on Role Keywords if NaN
             risk = row.get("avg_automation_risk_pct")
             if pd.isna(risk) or risk == 0:
                 role_lower = str(row["std_role"]).lower()
@@ -160,116 +155,78 @@ class IntelligenceEngine:
                 elif "backend" in role_lower or "system" in role_lower: risk = 35
                 elif "frontend" in role_lower or "mobile" in role_lower: risk = 45
                 elif "test" in role_lower or "qa" in role_lower: risk = 65
-                else: risk = 40 # Generic Tech Risk
+                else: risk = 40 
             
             risk = float(risk)
             demand = int(row["local_job_count"])
-            if demand == 0:
-                demand = int(row["global_job_count"] / 100)
+            if demand == 0: demand = int(row["global_job_count"] / 100)
             
-            intelligence.append(
-                {
-                    "tech": row["std_role"],
-                    "demand": demand,
-                    "globalAvgSalary": float(row["global_salary_median"]),
-                    "localAvgSalary": float(row["local_salary_avg"]),
-                    "resilienceScore": 100 - risk,
-                    "riskLevel": ("LOW" if risk < 30 else "HIGH" if risk > 60 else "MODERATE"),
-                }
-            )
+            intelligence.append({
+                "tech": row["std_role"],
+                "demand": demand,
+                "globalAvgSalary": float(row["global_salary_median"]),
+                "localAvgSalary": float(row["local_salary_avg"]),
+                "resilienceScore": 100 - risk,
+                "riskLevel": ("LOW" if risk < 30 else "HIGH" if risk > 60 else "MODERATE"),
+            })
 
-        # 2. Trends ... (unchanged)
+        # 2. Trends
         trends = []
         if self.global_raw is not None and "work_year" in self.global_raw.columns:
             evolution = self.global_raw.groupby("work_year")["salary_usd"].median().reset_index()
             for _, row in evolution.iterrows():
                 trends.append({"year": int(row["work_year"]), "avgSalary": float(row["salary_usd"])})
         if 0 < len(trends) < 3:
-            last_year = trends[-1]["year"]
-            last_sal = trends[-1]["avgSalary"]
+            last_year = trends[-1]["year"]; last_sal = trends[-1]["avgSalary"]
             for i in range(1, 4 - len(trends)):
                 trends.append({"year": last_year + i, "avgSalary": last_sal * (1 + 0.04 * i)})
 
         # 3. Impact Matrix
         impact = []
         for _, row in df.head(30).iterrows():
-            risk = row.get("avg_automation_risk_pct")
-            if pd.isna(risk) or risk == 0:
-                role_lower = str(row["std_role"]).lower()
-                if "data" in role_lower: risk = 18
-                elif "manager" in role_lower: risk = 22
-                elif "devops" in role_lower: risk = 30
-                elif "frontend" in role_lower: risk = 42
-                else: risk = 35
-            
-            risk = float(risk)
+            risk = float(row.get("avg_automation_risk_pct", 25))
             impact.append({
                 "industry": row["std_role"],
                 "status": ("High Risk" if risk > 60 else "Safe" if risk < 30 else "Stable"),
                 "automationRisk": risk,
             })
 
-        # 4. Skills Matrix (Deep Scan from Raw Insights)
+        # 4. Skills Matrix
         skills = []
-        df_skills = None
-        
-        from pathlib import Path
         raw_insights_path = Path("data/raw/ai-powered-job-market-insights/ai_job_market_insights.csv")
-        if raw_insights_path.exists():
-            try:
-                df_skills = pd.read_csv(raw_insights_path)
-            except: pass
-            
-        if df_skills is None:
-            df_skills = df 
-            
+        df_skills = pd.read_csv(raw_insights_path) if raw_insights_path.exists() else df
         skill_col = [c for c in df_skills.columns if "skill" in c.lower()]
         if skill_col:
             all_skills = df_skills[skill_col[0]].dropna().str.split(",").explode().str.strip()
             skill_counts = all_skills.value_counts().head(20)
             for i, (skill, count) in enumerate(skill_counts.items()):
-                if not skill or skill == "nan" or len(skill) < 3: continue
+                if not skill or len(skill) < 3: continue
                 skills.append({
                     "skill": skill,
                     "relevance": min(98, 90 - (i * 2) + ((i * 5) % 15)),
                     "growth": min(90, 40 + (i * 3) - ((i * 7) % 20))
                 })
-        
-        if not skills:
-            skills = [{"skill": "AI Systems", "relevance": 95, "growth": 80}]
 
-        # 5. Correlation Data (Global Benchmarks if Local is Empty)
+        # 5. Correlation
         correlation = []
-        df_corr = df.head(25).fillna(0)
-        for _, row in df_corr.iterrows():
-            # Use global if local is 0 to avoid single-dot chart
+        for _, row in df.head(25).fillna(0).iterrows():
             y_val = float(row["local_salary_avg"])
             if y_val == 0: y_val = float(row["global_salary_median"])
-            
-            correlation.append(
-                {
-                    "x": float(row.get("local_avg_exp", 5)) or 5.0,
-                    "y": y_val,
-                    "label": row["std_role"],
-                    "size": (int(row["local_job_count"]) + 5) * 5,
-                }
-            )
-
-        # 6. Market Share (Dynamic)
-        market_share = []
-        top_roles = df.head(5)
-        total_vol = df["global_job_count"].sum()
-        for _, row in top_roles.iterrows():
-            market_share.append({
-                "name": row["std_role"],
-                "value": int(row["global_job_count"])
+            correlation.append({
+                "x": float(row.get("local_avg_exp", 5)) or 5.0,
+                "y": y_val,
+                "label": row["std_role"],
+                "size": (int(row["local_job_count"]) + 5) * 5,
             })
-        market_share.append({
-            "name": "Others",
-            "value": int(total_vol - top_roles["global_job_count"].sum())
-        })
 
-        # 7. Raw Data Table (Full Correlation)
+        # 6. Market Share
+        market_share = []
+        top_roles = df.head(5); total_vol = df["global_job_count"].sum()
+        for _, row in top_roles.iterrows():
+            market_share.append({"name": row["std_role"], "value": int(row["global_job_count"])})
+        market_share.append({"name": "Others", "value": int(total_vol - top_roles["global_job_count"].sum())})
+
+        # 7. Raw Table
         raw_table = []
         for _, row in df.iterrows():
             raw_table.append({
@@ -282,7 +239,7 @@ class IntelligenceEngine:
                 "local_salary_avg": float(row["local_salary_avg"]),
                 "local_job_count": int(row["local_job_count"]),
             })
-
+        
         dashboard_data = {
             "intelligence": intelligence,
             "trends": trends,
@@ -294,10 +251,21 @@ class IntelligenceEngine:
             "updated_at": datetime.now().isoformat(),
         }
 
-        with open(output_path, "w") as f:
-            json.dump(dashboard_data, f, indent=2)
-
-        # 7. Sync to Cloud if active
+        # Priority path for dashboard (SYNC_DIR on Vercel is /tmp, else data/sync)
+        sync_path = SYNC_DIR / "intelligence.json"
+        
+        # Also try to update the public folder for build-time persistence (only works locally)
+        public_path = Path("public/data/intelligence.json")
+        
+        for path in [sync_path, public_path]:
+            try:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with open(path, "w") as f:
+                    json.dump(dashboard_data, f, indent=2)
+                print(f"[DASHBOARD] Exported to {path}")
+            except Exception as e:
+                pass # Silently fail for public_path on Vercel
+        
         if self.supabase:
             self._sync_to_cloud(dashboard_data)
 

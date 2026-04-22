@@ -66,13 +66,20 @@ def get_market_data():
     """Returns the latest intelligence data from /tmp or public."""
     import json
     from pathlib import Path
+    from config.settings import SYNC_DIR
     
-    is_vercel = os.environ.get("VERCEL") == "1"
-    data_path = Path("/tmp/intelligence.json") if is_vercel else Path("public/data/intelligence.json")
+    # Priority 1: Freshly synced data in /tmp (Vercel) or data/sync (Local)
+    sync_path = SYNC_DIR / "intelligence.json"
+    # Priority 2: Static build-time data in public folder
+    public_path = Path("public/data/intelligence.json")
     
-    if data_path.exists():
-        with open(data_path, "r") as f:
-            return json.load(f)
+    for data_path in [sync_path, public_path]:
+        if data_path.exists():
+            try:
+                with open(data_path, "r") as f:
+                    return json.load(f)
+            except: continue
+            
     return {"error": "Data not found. Run sync first."}
 
 @app.get("/api/kaggle-data")
