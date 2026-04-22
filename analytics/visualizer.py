@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -12,8 +13,17 @@ class MarketVisualizer:
     """
 
     def __init__(self, report_dir=OUTPUT_DIR):
-        self.report_dir = report_dir
-        self.report_dir.mkdir(parents=True, exist_ok=True)
+        # On Vercel, use /tmp for output
+        if os.environ.get("VERCEL") == "1":
+            from pathlib import Path
+            self.report_dir = Path("/tmp/reports")
+        else:
+            self.report_dir = report_dir
+            
+        try:
+            self.report_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            print(f"[WARN] Could not create report directory {self.report_dir}: {e}")
 
         # High-end design tokens
         self.palette = "viridis"

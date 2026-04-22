@@ -31,7 +31,7 @@ export default function RealTimeDashboard({ initialData }: Props) {
 
   const refreshData = async () => {
     try {
-      const res = await fetch('/data/intelligence.json');
+      const res = await fetch('/api/market-data');
       if (res.ok) {
         const json = await res.json();
         setData({
@@ -43,7 +43,7 @@ export default function RealTimeDashboard({ initialData }: Props) {
           marketShare: json.marketShare || initialData.marketShare,
           lastSync: json.updated_at || initialData.lastSync
         });
-        console.log("[DASHBOARD] Client-side data hot-refreshed.");
+        console.log("[DASHBOARD] Cloud data hot-refreshed.");
       }
     } catch (e) {
       console.error("Failed to refresh chart data:", e);

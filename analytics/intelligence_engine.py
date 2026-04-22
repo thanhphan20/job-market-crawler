@@ -1,10 +1,13 @@
 import pandas as pd
+import os
+import sys
 from datetime import datetime
 from config.settings import RAW_DATA_DIR, DATA_DIR
 from analytics.topcv_parser import TopCVParser
 from analytics.kaggle_unifier import KaggleUnifier
 from analytics.standardizer import DataStandardizer
 
+from supabase import create_client, Client
 from analytics.visualizer import MarketVisualizer
 
 
@@ -20,6 +23,13 @@ class IntelligenceEngine:
         self.local_data = None
         self.global_benchmarks = None
         self.global_raw = None
+        
+        # Initialize Supabase
+        url: str = os.environ.get("SUPABASE_URL")
+        key: str = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+        self.supabase: Client = create_client(url, key) if url and key else None
+        if self.supabase:
+            print("[INFO] Supabase cloud-sync active.")
         self.visualizer = MarketVisualizer()
 
     def load_all_sources(self):
@@ -47,8 +57,8 @@ class IntelligenceEngine:
             df_itviec["standardized_title"] = it_titles.apply(
                 DataStandardizer.standardize_title
             )
-            # Hacky salary parsing for ITviec if needed, or just follow TopCV pattern
-            df_itviec["annual_salary_usd"] = 25000  # Default fallback for ITviec demo
+            # Better salary parsing or use global average if local is missing
+            df_itviec["annual_salary_usd"] = None # Will be filled by correlation or global median
             df_itviec["min_years_exp"] = 2
             df_itviec["source"] = "ITviec"
             print(f"[+] Cleaned {len(df_itviec)} records from ITviec.")
@@ -124,7 +134,14 @@ class IntelligenceEngine:
         # Ensure no NaN values reach JSON
         df = df.fillna(0)
 
+        # On Vercel, use /tmp for output if public/ is not writable
+        is_vercel = os.environ.get("VERCEL") == "1"
         output_path = Path("public/data/intelligence.json")
+        
+        if is_vercel:
+            output_path = Path("/tmp/intelligence.json")
+            print(f"[INFO] Vercel environment detected. Redirecting output to {output_path}")
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         # 1. Intelligence Matrix
@@ -209,7 +226,47 @@ class IntelligenceEngine:
 
         with open(output_path, "w") as f:
             json.dump(dashboard_data, f, indent=2)
+
+        # 7. Sync to Cloud if active
+        if self.supabase:
+            self._sync_to_cloud(dashboard_data)
+
         print(f"[DASHBOARD] Exported real-time intelligence to {output_path}")
+
+    def _sync_to_cloud(self, data):
+        """Pushes intelligence data to Supabase/Prisma tables."""
+        print("[*] Synchronizing local findings to cloud database...")
+        try:
+            # 1. Sync GlobalIntelligence
+            for item in data["intelligence"]:
+                self.supabase.table("GlobalIntelligence").upsert({
+                    "tech": item["tech"],
+                    "demand": item["demand"],
+                    "globalAvgSalary": item["globalAvgSalary"],
+                    "localAvgSalary": item["localAvgSalary"],
+                    "resilienceScore": item["resilienceScore"],
+                    "riskLevel": item["riskLevel"],
+                }, on_conflict="tech").execute()
+
+            # 2. Sync AIImpactMatrix
+            for item in data["impact"]:
+                self.supabase.table("AIImpactMatrix").upsert({
+                    "industry": item["industry"],
+                    "status": item["status"],
+                    "automationRisk": item["automationRisk"],
+                }, on_conflict="industry,status").execute()
+
+            # 3. Sync SalaryTrend
+            for item in data["trends"]:
+                self.supabase.table("SalaryTrend").upsert({
+                    "year": item["year"],
+                    "avgSalary": item["avgSalary"],
+                    "source": "Kaggle",
+                }, on_conflict="year,tech,source").execute()
+
+            print("[SUCCESS] Cloud synchronization complete.")
+        except Exception as e:
+            print(f"[ERR] Cloud sync failed: {str(e)}")
 
     def _correlate_data(self):
         local_stats = (

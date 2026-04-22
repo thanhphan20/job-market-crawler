@@ -242,9 +242,13 @@ def run_itviec_crawler(limit=20, output_path="data/itviec_jobs.csv"):
     if data:
         df = pd.DataFrame(data)
         # Ensure the directory exists
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        df.to_csv(output_path, index=False, encoding="utf-8-sig")
-        print(f"[SUCCESS] Saved {len(df)} jobs to {output_path}")
+        try:
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            df.to_csv(output_path, index=False, encoding="utf-8-sig")
+            print(f"[SUCCESS] Saved {len(df)} jobs to {output_path}")
+        except Exception as e:
+            print(f"[WARN] Could not save ITviec data locally: {e}")
+            print("[INFO] Data remains in memory for cloud sync if active.")
         return df
     else:
         print("[!] No data collected from ITviec.")

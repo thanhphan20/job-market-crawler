@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
 
   const stream = new ReadableStream({
     start(controller) {
-      console.log(`[*] Spawning python main.py ${command} ${args.join(" ")}`);
+      console.log(`[*] Spawning python3 main.py ${command} ${args.join(" ")}`);
       
-      const process = spawn("python", ["main.py", command, ...args]);
+      const process = spawn("python3", ["main.py", command, ...args]);
 
       process.stdout.on("data", (data) => {
         controller.enqueue(data.toString());

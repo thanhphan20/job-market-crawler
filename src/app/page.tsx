@@ -1,6 +1,7 @@
 import RealTimeDashboard from "@/components/RealTimeDashboard";
 import { getCachedIntelligence, getCachedTrends, getCachedImpact } from "@/lib/cache-data";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "@/components/charts/IntelligenceCharts";
+import { prisma } from "@/lib/db";
 
 import fs from "fs";
 import path from "path";
@@ -18,8 +19,30 @@ async function getDashboardData() {
   let lastSync: string | null = null;
 
   try {
-    console.log(`[SSR] Checking for intelligence at: ${realIntelligencePath}`);
-    if (fs.existsSync(realIntelligencePath)) {
+    // 1. Priority: Read from Cloud Database (Prisma)
+    const dbIntelligence = await prisma.globalIntelligence.findMany();
+    if (dbIntelligence.length > 0) {
+      intelligence = dbIntelligence.map(i => ({
+        tech: i.tech,
+        demand: i.demand,
+        globalAvgSalary: i.globalAvgSalary,
+        localAvgSalary: i.localAvgSalary || 0,
+        resilienceScore: i.resilienceScore,
+        riskLevel: i.riskLevel as any
+      }));
+      
+      const dbTrends = await prisma.salaryTrend.findMany({ where: { source: "Kaggle" }, orderBy: { year: 'asc' } });
+      trends = dbTrends.map(t => ({ year: t.year, avgSalary: t.avgSalary }));
+      
+      const dbImpact = await prisma.aIImpactMatrix.findMany();
+      impact = dbImpact.map(im => ({ industry: im.industry, status: im.status, automationRisk: im.automationRisk }));
+      
+      lastSync = dbIntelligence[0]?.updatedAt.toISOString();
+      console.log(`[SSR] Loaded real data from Cloud DB: ${intelligence.length} records.`);
+    } 
+    
+    // 2. Fallback: Local JSON if DB is empty
+    if (intelligence.length === 0 && fs.existsSync(realIntelligencePath)) {
       const realData = JSON.parse(fs.readFileSync(realIntelligencePath, "utf-8"));
       intelligence = realData.intelligence || [];
       trends = realData.trends || [];
@@ -28,14 +51,6 @@ async function getDashboardData() {
       correlation = realData.correlation || [];
       marketShare = realData.marketShare || [];
       lastSync = realData.updated_at || null;
-      console.log(`[SSR] Loaded real data: ${intelligence.length} records found.`);
-    } else {
-      console.warn(`[SSR] real-time data NOT FOUND at ${realIntelligencePath}`);
-    }
-
-    if (intelligence.length === 0) {
-      const intelData = await getCachedIntelligence();
-      intelligence = intelData as unknown as TechStat[];
     }
 
     if (skills.length === 0 && fs.existsSync(localInsightsPath)) {

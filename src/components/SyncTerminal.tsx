@@ -109,20 +109,29 @@ export default function SyncTerminal() {
         </div>
         
         <div className="grid grid-cols-4 gap-2">
-          <button 
-            onClick={() => runCommand('--itviec', ['--limit', '10'])} 
-            disabled={isSyncing}
-            className="terminal-button text-[9px] py-1 h-auto"
-          >
-            🕷️ Crawl
-          </button>
-          <button 
-            onClick={() => runCommand('--flow')} 
-            disabled={isSyncing}
-            className="terminal-button text-[9px] py-1 h-auto bg-accent/20 border-accent/50 text-accent"
-          >
-            🧠 Intelligence
-          </button>
+          {process.env.NEXT_PUBLIC_VERCEL_ENV ? (
+            <div className="col-span-4 p-3 border border-yellow-500/30 bg-yellow-500/5 text-yellow-200/70 text-[9px] leading-relaxed mb-1">
+              [CLOUD_MODE] Crawler and Sync engines are disabled in the cloud to prevent timeouts. 
+              Please run `python main.py --flow` locally to update the Cloud DB results.
+            </div>
+          ) : (
+            <>
+              <button 
+                onClick={() => runCommand('--itviec', ['--limit', '10'])} 
+                disabled={isSyncing}
+                className="terminal-button text-[9px] py-1 h-auto"
+              >
+                🕷️ Crawl
+              </button>
+              <button 
+                onClick={() => runCommand('--flow')} 
+                disabled={isSyncing}
+                className="terminal-button text-[9px] py-1 h-auto bg-accent/20 border-accent/50 text-accent"
+              >
+                🧠 Intelligence
+              </button>
+            </>
+          )}
           <button 
             onClick={fetchReport} 
             disabled={isSyncing}
