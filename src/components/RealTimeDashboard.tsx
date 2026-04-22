@@ -22,6 +22,7 @@ interface Props {
     skills: SkillStat[];
     correlation: CorrelationPoint[];
     marketShare: MarketRegion[];
+    rawTable: any[];
     lastSync: string | null;
   };
 }
@@ -42,6 +43,7 @@ export default function RealTimeDashboard({ initialData }: Props) {
           skills: json.skills || initialData.skills,
           correlation: json.correlation || initialData.correlation,
           marketShare: json.marketShare || initialData.marketShare,
+          rawTable: json.rawTable || initialData.rawTable,
           lastSync: json.updated_at || initialData.lastSync
         });
         console.log("[DASHBOARD] Cloud data hot-refreshed.");
