@@ -61,6 +61,7 @@ A powerful data engine that correlates local job requirements with global indust
 - **Software-engineer focus**: Correlates the **Vietnam market (TopCV)** against a **global software-engineer salary benchmark**, surfacing roles like Backend, Fullstack, Java, DevOps.
 - **Skill mining**: Extracts in-demand SE skills (Java, .NET/C#, Node.js, React, AWS, ...) directly from local job titles.
 - **ROI Roadmaps**: Automated identification of "High ROI" skills (High Global Pay / Moderate Local Competition).
+- **Real AI-impact risk**: Automation-risk / resilience per role from a real Kaggle AI job-risk dataset (not just heuristics).
 - **Advanced Extraction**: Regex-based parsing of salaries (USD/VND) and experience years from unstructured JD text.
 - **AI Validation & Analysis**: Free LLMs (Groq/OpenRouter/Gemini) validate the numbers and generate career strategy.
 - **Visual Analytics Heatmaps**: Market demand hierarchy and "Opportunity Gap" visualizations.

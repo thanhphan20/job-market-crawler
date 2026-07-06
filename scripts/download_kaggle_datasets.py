@@ -20,6 +20,7 @@ import zipfile
 from pathlib import Path
 
 import requests
+import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,12 +28,32 @@ load_dotenv()
 KAGGLE_API = "https://www.kaggle.com/api/v1"
 
 
+def _normalize_ai_impact(csv_path):
+    """Reshape the AI job-risk dataset into the engine's impact schema
+    ('Job Title' + 'Automation Risk (%)') so KaggleUnifier can consume it."""
+    df = pd.read_csv(csv_path)
+    if "job_title" not in df.columns or "ai_risk_score" not in df.columns:
+        print("  [!] AI-impact dataset missing expected columns; leaving as-is.")
+        return
+    # Focus on the near-term horizon so risk reflects "current" AI impact.
+    if "year" in df.columns:
+        recent = df[(df["year"] >= 2024) & (df["year"] <= 2030)]
+        if not recent.empty:
+            df = recent
+    out = pd.DataFrame()
+    out["Job Title"] = df["job_title"]
+    out["Automation Risk (%)"] = (df["ai_risk_score"] * 100).round(2)  # 0-1 -> %
+    out = out.dropna(subset=["Job Title", "Automation Risk (%)"])
+    out.to_csv(csv_path, index=False)
+    print(f"  ✓ Normalized AI impact: {len(out)} rows with Automation Risk (%)")
+
+
 # ─────────────────────────────────────────────────────────────
 # Dataset registry (Kaggle sources)
 # ─────────────────────────────────────────────────────────────
-# The GLOBAL software-engineer salary + skills benchmark now comes from the
-# Stack Overflow Developer Survey (see scripts/fetch_data.py), which is far more
-# reliable and genuinely SE-focused. Kaggle is used only for the local market.
+# The GLOBAL software-engineer salary + skills benchmark comes from the Stack
+# Overflow Developer Survey (see scripts/fetch_data.py). Kaggle supplies the
+# local Vietnam market and the AI automation-risk overlay.
 DATASETS = {
     # Local Vietnam jobs (engine's "topcv" source) — already matches TopCVParser.
     "topcv": {
@@ -40,6 +61,13 @@ DATASETS = {
         "rename_to": "topcv_vietnam_it_jobs_2026.csv",  # matches "topcv" pattern
         "description": "Vietnam IT Jobs raw data from TopCV 2026 (local market)",
         "post_process": None,
+    },
+    # AI automation-risk overlay for tech roles (engine's "kaggle_impact" source).
+    "impact": {
+        "id": "shree0910/ai-job-risk-and-salary-dataset-20152035",
+        "rename_to": "ai_impact_job_risk.csv",  # matches "impact" pattern
+        "description": "AI Job Impact & Risk 2015-2035 (automation risk by tech role)",
+        "post_process": _normalize_ai_impact,
     },
 }
 

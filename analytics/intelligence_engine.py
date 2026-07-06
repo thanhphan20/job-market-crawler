@@ -197,21 +197,14 @@ class IntelligenceEngine:
         output_path = Path("public/data/intelligence.json")
         
         from config.settings import SYNC_DIR
-        
+
+        # Real AI automation-risk overlay (from the impact dataset, if present)
+        impact_lookup, se_risk_baseline = self._load_impact_lookup()
+
         # 1. Intelligence Matrix
         intelligence = []
         for _, row in df.head(30).iterrows():
-            risk = row.get("avg_automation_risk_pct")
-            if pd.isna(risk) or risk == 0:
-                role_lower = str(row["std_role"]).lower()
-                if "data" in role_lower or "ai" in role_lower: risk = 15
-                elif "manager" in role_lower or "lead" in role_lower: risk = 25
-                elif "backend" in role_lower or "system" in role_lower: risk = 35
-                elif "frontend" in role_lower or "mobile" in role_lower: risk = 45
-                elif "test" in role_lower or "qa" in role_lower: risk = 65
-                else: risk = 40 
-            
-            risk = float(risk)
+            risk = self._risk_for_role(row, impact_lookup, se_risk_baseline)
             demand = int(row["local_job_count"])
             if demand == 0: demand = int(row["global_job_count"] / 100)
             
@@ -238,7 +231,7 @@ class IntelligenceEngine:
         # 3. Impact Matrix
         impact = []
         for _, row in df.head(30).iterrows():
-            risk = float(row.get("avg_automation_risk_pct", 25))
+            risk = self._risk_for_role(row, impact_lookup, se_risk_baseline)
             impact.append({
                 "industry": row["std_role"],
                 "status": ("High Risk" if risk > 60 else "Safe" if risk < 30 else "Stable"),
@@ -311,6 +304,65 @@ class IntelligenceEngine:
             self._sync_to_cloud(dashboard_data)
 
         print(f"[DASHBOARD] Exported real-time intelligence to {output_path}")
+
+    def _load_impact_lookup(self):
+        """Load real automation-risk % keyed by standardized role from the AI-impact
+        dataset (any *impact*.csv in raw_dir with an 'Automation Risk (%)' column).
+        Returns (lookup dict {std_role: pct}, software-engineer baseline pct)."""
+        import glob
+        from analytics.standardizer import DataStandardizer
+
+        lookup, se_baseline = {}, None
+        pattern = os.path.join(str(self.raw_dir), "**", "*impact*.csv")
+        for f in glob.glob(pattern, recursive=True):
+            try:
+                d = pd.read_csv(f)
+            except Exception:
+                continue
+            rcol = [c for c in d.columns if "risk" in c.lower() or "automation" in c.lower()]
+            tcol = [c for c in d.columns if "title" in c.lower()]
+            if not rcol or not tcol:
+                continue
+            rcol = [c for c in rcol if pd.api.types.is_numeric_dtype(d[c])]
+            if not rcol:
+                continue
+            d["_std"] = d[tcol[0]].apply(DataStandardizer.standardize_title)
+            for role, val in d.groupby("_std")[rcol[0]].mean().items():
+                lookup[role] = float(val)
+            for key in ("Software Engineer", "Software Developer"):
+                if key in lookup:
+                    se_baseline = lookup[key]
+                    break
+        return lookup, se_baseline
+
+    def _risk_for_role(self, row, impact_lookup, se_baseline):
+        """Automation-risk % for a role: prefer real merged data, then the impact
+        lookup, then the software-engineer baseline for dev roles, then a heuristic."""
+        risk = row.get("avg_automation_risk_pct")
+        if pd.notna(risk) and risk not in (0, 0.0):
+            return float(risk)
+
+        std = str(row["std_role"])
+        if std in impact_lookup:
+            return float(impact_lookup[std])
+
+        rl = std.lower()
+        # Keyword heuristic — gives relative role differentiation.
+        if "data" in rl or "ai" in rl: heuristic = 15.0
+        elif "manager" in rl or "lead" in rl: heuristic = 25.0
+        elif "backend" in rl or "system" in rl: heuristic = 35.0
+        elif "frontend" in rl or "mobile" in rl: heuristic = 45.0
+        elif "test" in rl or "qa" in rl: heuristic = 65.0
+        else: heuristic = 40.0
+
+        dev_markers = (
+            "developer", "engineer", "architect", "programmer", "software",
+            "fullstack", "backend", "frontend", "mobile", "embedded", "devops", "cloud",
+        )
+        if se_baseline is not None and any(m in rl for m in dev_markers):
+            # Anchor to the real software-engineer risk, keep relative role nuance.
+            return float(min(95.0, max(5.0, se_baseline + (heuristic - 40.0))))
+        return heuristic
 
     def _extract_skill_matrix(self, top_n=18):
         """Build the skill matrix. Prefers real survey skills (Stack Overflow

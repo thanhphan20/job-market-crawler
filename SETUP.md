@@ -33,6 +33,7 @@ This fetches both data sources below. The Stack Overflow survey needs no token
 | :--- | :--- | :--- |
 | Global SE salaries + skills | [Stack Overflow Developer Survey 2025](https://survey.stackoverflow.co/) (~18k SE respondents) | Global benchmark — real salaries + languages |
 | Local market | [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026) (Kaggle) | Vietnam market (TopCV) |
+| AI automation risk | [shree0910/ai-job-risk-and-salary-dataset](https://www.kaggle.com/datasets/shree0910/ai-job-risk-and-salary-dataset-20152035) (Kaggle) | Real automation-risk % per tech role |
 
 > Only software-engineering roles are kept from the survey (full-stack, back-end,
 > front-end, mobile, embedded, DevOps, ...); data-science/non-tech respondents are
@@ -46,6 +47,10 @@ This fetches both data sources below. The Stack Overflow survey needs no token
 
 [*] TOPCV: Vietnam IT Jobs raw data from TopCV 2026 (local market)
   ✓ topcv_jobs.csv -> topcv_vietnam_it_jobs_2026.csv
+
+[*] IMPACT: AI Job Impact & Risk 2015-2035 (automation risk by tech role)
+  ✓ ...csv -> ai_impact_job_risk.csv
+  ✓ Normalized AI impact: 4076 rows with Automation Risk (%)
 
 [*] GLOBAL: Stack Overflow Developer Survey (SE salaries + skills)
   [+] Downloaded 134 MB -> data/so_survey_2025.csv
