@@ -117,7 +117,7 @@ class MarketVisualizer:
         """[5/8] Local Job Skills Ranking (TopCV + ITviec) — top 15 roles."""
         if df.empty or "standardized_title" not in df.columns:
             return
-        counts = df["standardized_title"].value_counts().head(15)
+        counts = df["standardized_title"].value_counts().head(20)
         if len(counts) == 0:
             return
         plt.figure(figsize=(12, max(6, 0.5 * len(counts))))
@@ -128,7 +128,7 @@ class MarketVisualizer:
             palette="flare",
             legend=False,
         )
-        plt.title("Local Demand: Top 15 Roles", fontsize=16, fontweight="bold")
+        plt.title("Local Demand: Top 20 Roles", fontsize=16, fontweight="bold")
         plt.xlabel("Job Postings")
         plt.ylabel("")
         plt.tight_layout()
@@ -143,10 +143,10 @@ class MarketVisualizer:
         counts = df["standardized_title"].value_counts()
         if len(counts) == 0:
             return
-        top = counts.head(8)
+        top = counts.head(12)
         labels = list(top.index)
         values = list(top.values)
-        others = int(counts[8:].sum())
+        others = int(counts[12:].sum())
         if others > 0:
             labels.append("Others")
             values.append(others)
@@ -166,7 +166,7 @@ class MarketVisualizer:
             at.set_fontsize(9)
         plt.legend(wedges, labels, title="Roles", loc="center left",
                    bbox_to_anchor=(1.0, 0.5), fontsize=9, frameon=False)
-        plt.title("Market Demand: Talent Group Share (Top 8)",
+        plt.title("Market Demand: Talent Group Share (Top 12)",
                   fontsize=16, fontweight="bold")
         plt.tight_layout()
         plt.savefig(self.report_dir / f"market_demand_group_{ts}.png",
@@ -174,10 +174,10 @@ class MarketVisualizer:
         plt.close()
 
     def plot_skill_network(self, df, ts):
-        """[7/8] Role convergence — top 12 roles around the dominant hub."""
+        """[7/8] Role convergence — top 15 roles around the dominant hub."""
         if df.empty or "standardized_title" not in df.columns:
             return
-        counts = df["standardized_title"].value_counts().head(12)
+        counts = df["standardized_title"].value_counts().head(15)
         if len(counts) < 2:
             return
         roles = list(counts.index)
