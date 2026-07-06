@@ -28,6 +28,28 @@ load_dotenv()
 KAGGLE_API = "https://www.kaggle.com/api/v1"
 
 
+def _normalize_global_salary(csv_path):
+    """Reshape a global IT-salary dataset (job_role + salary_usd) into the engine's
+    salary schema (job_title + salary_usd + work_year). Kept to engineering/IT roles
+    so it stays software-focused. Pooled with the Stack Overflow survey by the engine."""
+    df = pd.read_csv(csv_path)
+    if "job_role" not in df.columns or "salary_usd" not in df.columns:
+        print("  [!] Global-salary dataset missing expected columns; leaving as-is.")
+        return
+    df = df[df["job_role"].astype(str).str.contains(
+        r"engineer|developer|software", case=False, na=False
+    )]
+    out = pd.DataFrame()
+    out["job_title"] = df["job_role"].values
+    out["salary_usd"] = df["salary_usd"].values
+    if "year" in df.columns:
+        out["work_year"] = df["year"].values
+    out = out.dropna(subset=["job_title", "salary_usd"])
+    out["job_id"] = range(len(out))
+    out.to_csv(csv_path, index=False)
+    print(f"  ✓ Normalized global salary: {len(out)} engineering rows (salary_usd)")
+
+
 def _normalize_ai_impact(csv_path):
     """Reshape the AI job-risk dataset into the engine's impact schema
     ('Job Title' + 'Automation Risk (%)'), keeping year + salary so the engine
@@ -68,6 +90,13 @@ DATASETS = {
         "rename_to": "ai_impact_job_risk.csv",  # matches "impact" pattern
         "description": "AI Job Impact & Risk 2015-2035 (automation risk by tech role)",
         "post_process": _normalize_ai_impact,
+    },
+    # Additional GLOBAL IT salary source, pooled with the SO survey for breadth.
+    "global_salary": {
+        "id": "mohankrishnathalla/global-ai-and-data-jobs-salary-dataset",
+        "rename_to": "ai_job_global_it_salary.csv",  # matches "ai_job" pattern
+        "description": "Global AI/IT Jobs Salary (90k rows, salary_usd, 2020-2026)",
+        "post_process": _normalize_global_salary,
     },
 }
 

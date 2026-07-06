@@ -34,10 +34,28 @@ class KaggleUnifier:
             return max(candidates, key=os.path.getsize)
         return None
 
+    def _find_all_files_by_pattern(self, key, required_cols=None):
+        """Return ALL files matching the pattern (and required columns)."""
+        pattern = os.path.join(self.raw_dir, "**", f"*{PATTERNS[key]}*.csv")
+        out = []
+        for f in glob.glob(pattern, recursive=True):
+            if required_cols:
+                try:
+                    cols = pd.read_csv(f, nrows=1).columns
+                    if all(c in cols for c in required_cols):
+                        out.append(f)
+                except Exception:
+                    continue
+            else:
+                out.append(f)
+        return out
+
     def unify(self):
         print("[*] Unified Intelligence Discovery Process...")
 
-        path_sal = self._find_file_by_pattern(
+        # Global salary can come from MULTIPLE sources (e.g. Stack Overflow survey
+        # + a Kaggle global IT-salary dataset). Pool them all for a broader benchmark.
+        paths_sal = self._find_all_files_by_pattern(
             "kaggle_salary", required_cols=["job_title", "salary_usd"]
         )
         path_imp = self._find_file_by_pattern(
@@ -47,13 +65,21 @@ class KaggleUnifier:
             "kaggle_insights", required_cols=["Job_Growth_Projection"]
         )
 
-        if not path_sal:
+        if not paths_sal:
             print("[!] Error: Global Salary dataset not found.")
             return None, None
 
-        # 1. Main Salary Data
-        df_sal = pd.read_csv(path_sal)
-        
+        # 1. Main Salary Data — concatenate every global salary source found.
+        frames = []
+        for p in paths_sal:
+            try:
+                fr = pd.read_csv(p)
+                frames.append(fr)
+                print(f"[*] Global salary source: {os.path.basename(p)} ({len(fr)} rows)")
+            except Exception as e:
+                print(f"[!] Skipping salary source {os.path.basename(p)}: {e}")
+        df_sal = pd.concat(frames, ignore_index=True, sort=False)
+
         # --- CLEANING STEP ---
         initial_count = len(df_sal)
         # Remove nulls in critical columns

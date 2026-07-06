@@ -34,7 +34,7 @@ Kaggle / TopCV / ITviec  ──►  Python IntelligenceEngine  ──►  intell
 | `src/components/` | React dashboard: `RealTimeDashboard.tsx`, `SyncTerminal.tsx`, `charts/`. |
 | `src/lib/` | `db.ts` (Prisma singleton), `cache-data.ts` (cached queries). |
 | `prisma/schema.prisma` | DB schema: `Job`, `GlobalIntelligence`, `AIImpactMatrix`, `SalaryTrend`. |
-| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern (`PATTERNS` in `config/settings.py`): `*topcv*` = local Vietnam jobs (Kaggle: `baocgb/vietnam-it-jobs-raw-data-from-topcv-2026`), `*ai_job*` = global SE salary+skills benchmark from the **Stack Overflow Developer Survey** (`scripts/fetch_data.py` → `ai_job_so_survey_2025.csv`), `*impact*` = AI automation-risk per tech role (Kaggle: `shree0910/ai-job-risk-and-salary-dataset` → `ai_impact_job_risk.csv`, needs an `Automation Risk (%)` column). `scripts/download_kaggle_datasets.py` orchestrates all three. |
+| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern (`PATTERNS` in `config/settings.py`): `*topcv*` = local Vietnam jobs (Kaggle: `baocgb/vietnam-it-jobs-raw-data-from-topcv-2026`), `*ai_job*` = global salary sources — **all** matching files are pooled (Stack Overflow survey via `scripts/fetch_data.py` → `ai_job_so_survey_2025.csv`, plus Kaggle `mohankrishnathalla/global-ai-and-data-jobs-salary-dataset` → `ai_job_global_it_salary.csv`), `*impact*` = AI automation-risk per tech role (Kaggle: `shree0910/ai-job-risk-and-salary-dataset` → `ai_impact_job_risk.csv`, needs an `Automation Risk (%)` column). `scripts/download_kaggle_datasets.py` orchestrates all three. |
 
 ## Running things
 

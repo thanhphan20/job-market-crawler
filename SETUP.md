@@ -31,9 +31,10 @@ This fetches both data sources below. The Stack Overflow survey needs no token
 
 | Source | Where from | Role |
 | :--- | :--- | :--- |
-| Global SE salaries + skills | [Stack Overflow Developer Survey 2025](https://survey.stackoverflow.co/) (~18k SE respondents) | Global benchmark — real salaries + languages |
-| Local market | [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026) (Kaggle) | Vietnam market (TopCV) |
-| AI automation risk | [shree0910/ai-job-risk-and-salary-dataset](https://www.kaggle.com/datasets/shree0910/ai-job-risk-and-salary-dataset-20152035) (Kaggle) | Real automation-risk % per tech role |
+| Global salaries + skills | [Stack Overflow Developer Survey 2025](https://survey.stackoverflow.co/) (~18k SE respondents) | Global benchmark — real salaries + languages |
+| Global IT salaries (2nd source) | [mohankrishnathalla/global-ai-and-data-jobs-salary-dataset](https://www.kaggle.com/datasets/mohankrishnathalla/global-ai-and-data-jobs-salary-dataset) (Kaggle) | Pooled with SO for broader role coverage |
+| Local market | [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026) (Kaggle) + ITviec crawler | Vietnam market |
+| AI automation risk + salary trend | [shree0910/ai-job-risk-and-salary-dataset](https://www.kaggle.com/datasets/shree0910/ai-job-risk-and-salary-dataset-20152035) (Kaggle) | Automation-risk % + multi-year SE salary trend |
 
 > Only software-engineering roles are kept from the survey (full-stack, back-end,
 > front-end, mobile, embedded, DevOps, ...); data-science/non-tech respondents are
