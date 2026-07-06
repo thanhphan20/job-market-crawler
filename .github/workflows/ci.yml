@@ -38,3 +38,36 @@ jobs:
           # Ensure all core files can be imported (Run Success)
           # We don't run main.py because it scrapes real websites
           python -c "import main; from analytics import skill_analyzer; from crawlers import itviec; print('Basic validation success!')"
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit frontend dependencies
+        run: pnpm audit
+
+      - name: Lint frontend
+        run: pnpm lint
+
+      - name: Type-check frontend
+        run: pnpm exec tsc --noEmit
+
+      - name: Build frontend
+        run: pnpm build
