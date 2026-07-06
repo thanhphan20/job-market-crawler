@@ -217,9 +217,10 @@ class IntelligenceEngine:
                 "riskLevel": ("LOW" if risk < 30 else "HIGH" if risk > 60 else "MODERATE"),
             })
 
-        # 2. Trends
-        trends = []
-        if self.global_raw is not None and "work_year" in self.global_raw.columns:
+        # 2. Trends — prefer the real multi-year global salary trend (impact dataset,
+        # anchored to the SO benchmark); fall back to the SO single-year + projection.
+        trends = self._build_salary_trends() or []
+        if not trends and self.global_raw is not None and "work_year" in self.global_raw.columns:
             evolution = self.global_raw.groupby("work_year")["salary_usd"].median().reset_index()
             for _, row in evolution.iterrows():
                 trends.append({"year": int(row["work_year"]), "avgSalary": float(row["salary_usd"])})
@@ -326,6 +327,11 @@ class IntelligenceEngine:
             rcol = [c for c in rcol if pd.api.types.is_numeric_dtype(d[c])]
             if not rcol:
                 continue
+            # Use the near-term horizon so risk reflects "current" AI impact.
+            if "year" in d.columns:
+                recent = d[(d["year"] >= 2024) & (d["year"] <= 2030)]
+                if not recent.empty:
+                    d = recent
             d["_std"] = d[tcol[0]].apply(DataStandardizer.standardize_title)
             for role, val in d.groupby("_std")[rcol[0]].mean().items():
                 lookup[role] = float(val)
@@ -334,6 +340,48 @@ class IntelligenceEngine:
                     se_baseline = lookup[key]
                     break
         return lookup, se_baseline
+
+    def _build_salary_trends(self, year_lo=2019, year_hi=2030):
+        """Real multi-year global IT salary trend: growth curve from the impact
+        dataset's year/salary, anchored to the SO survey's real salary level."""
+        import glob
+
+        by_year = {}
+        pattern = os.path.join(str(self.raw_dir), "**", "*impact*.csv")
+        for f in glob.glob(pattern, recursive=True):
+            try:
+                d = pd.read_csv(f)
+            except Exception:
+                continue
+            if "year" not in d.columns or "salary_usd" not in d.columns:
+                continue
+            # Restrict to software-engineering roles so this is an SE salary trend
+            # (excludes data analyst / scientist / business analyst / product manager).
+            if "Job Title" in d.columns:
+                se = d[d["Job Title"].astype(str).str.contains(
+                    r"software|developer|\bengineer\b|devops|cloud", case=False, na=False
+                )]
+                if not se.empty:
+                    d = se
+            for yr, val in d.groupby("year")["salary_usd"].median().items():
+                by_year[int(yr)] = float(val)
+        if len(by_year) < 2:
+            return None
+
+        # Anchor the growth curve to the SO benchmark's current-year level.
+        anchor_year = max((y for y in by_year if y <= 2025), default=max(by_year))
+        base = by_year.get(anchor_year)
+        scale = 1.0
+        if base and self.global_raw is not None and "salary_usd" in self.global_raw.columns:
+            so_median = float(self.global_raw["salary_usd"].median())
+            if so_median > 0:
+                scale = so_median / base
+
+        return [
+            {"year": y, "avgSalary": round(by_year[y] * scale, 2)}
+            for y in sorted(by_year)
+            if year_lo <= y <= year_hi
+        ] or None
 
     def _risk_for_role(self, row, impact_lookup, se_baseline):
         """Automation-risk % for a role: prefer real merged data, then the impact

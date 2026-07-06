@@ -30,22 +30,22 @@ KAGGLE_API = "https://www.kaggle.com/api/v1"
 
 def _normalize_ai_impact(csv_path):
     """Reshape the AI job-risk dataset into the engine's impact schema
-    ('Job Title' + 'Automation Risk (%)') so KaggleUnifier can consume it."""
+    ('Job Title' + 'Automation Risk (%)'), keeping year + salary so the engine
+    can also derive a multi-year global salary trend from it."""
     df = pd.read_csv(csv_path)
     if "job_title" not in df.columns or "ai_risk_score" not in df.columns:
         print("  [!] AI-impact dataset missing expected columns; leaving as-is.")
         return
-    # Focus on the near-term horizon so risk reflects "current" AI impact.
-    if "year" in df.columns:
-        recent = df[(df["year"] >= 2024) & (df["year"] <= 2030)]
-        if not recent.empty:
-            df = recent
     out = pd.DataFrame()
     out["Job Title"] = df["job_title"]
     out["Automation Risk (%)"] = (df["ai_risk_score"] * 100).round(2)  # 0-1 -> %
+    if "year" in df.columns:
+        out["year"] = df["year"]
+    if "salary" in df.columns:
+        out["salary_usd"] = df["salary"]
     out = out.dropna(subset=["Job Title", "Automation Risk (%)"])
     out.to_csv(csv_path, index=False)
-    print(f"  ✓ Normalized AI impact: {len(out)} rows with Automation Risk (%)")
+    print(f"  ✓ Normalized AI impact: {len(out)} rows (risk + year/salary trend)")
 
 
 # ─────────────────────────────────────────────────────────────

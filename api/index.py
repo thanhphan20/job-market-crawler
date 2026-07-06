@@ -24,7 +24,8 @@ async def run_sync(background_tasks: BackgroundTasks):
     def sync_process():
         try:
             engine = IntelligenceEngine()
-            engine.load_all_sources(skip_itviec=True)
+            # Local market = TopCV + ITviec crawler (data/itviec_jobs.csv, if present)
+            engine.load_all_sources(skip_itviec=False)
             report = engine.run_agentic_analysis()
             print(f"[API] Sync completed: {report}")
         except Exception as e:

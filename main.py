@@ -98,7 +98,8 @@ def run_main():
 
     if args.flow:
         engine = IntelligenceEngine(raw_dir=args.dir)
-        engine.load_all_sources(skip_itviec=True)
+        # Local market = TopCV + ITviec crawler (data/itviec_jobs.csv, if present)
+        engine.load_all_sources(skip_itviec=False)
         report = engine.run_agentic_analysis()
         if report:
             print(f"\n[SUCCESS] Analysis Complete: {report}")
