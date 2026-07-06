@@ -15,13 +15,11 @@ market (TopCV) correlated against a global software-engineer salary benchmark.
 """
 
 import os
-import re
 import io
 import zipfile
 from pathlib import Path
 
 import requests
-import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,60 +28,12 @@ KAGGLE_API = "https://www.kaggle.com/api/v1"
 
 
 # ─────────────────────────────────────────────────────────────
-# SE salary normalization
+# Dataset registry (Kaggle sources)
 # ─────────────────────────────────────────────────────────────
-def _parse_se_salary(s):
-    """'$68K - $94K (Glassdoor est.)' -> 81000.0 (annual USD midpoint)."""
-    if not isinstance(s, str):
-        return None
-    text = s.replace("\xa0", " ")
-    # $NNK ranges/singles (the dominant format)
-    ks = re.findall(r"\$\s*([\d.]+)\s*[Kk]", text)
-    if ks:
-        vals = [float(n) * 1000 for n in ks]
-        return sum(vals) / len(vals)
-    # $NN/hr -> annualize (2080 work hours/yr)
-    hourly = re.findall(r"\$\s*([\d.]+)\s*/?\s*(?:hr|hour)", text, re.I)
-    if hourly:
-        vals = [float(n) * 2080 for n in hourly]
-        return sum(vals) / len(vals)
-    # plain $NN,NNN
-    plain = re.findall(r"\$\s*([\d,]+)", text)
-    if plain:
-        vals = [float(n.replace(",", "")) for n in plain if n.replace(",", "").isdigit()]
-        if vals:
-            avg = sum(vals) / len(vals)
-            return avg if avg > 1000 else None
-    return None
-
-
-def _normalize_se_salaries(csv_path):
-    """Reshape the Glassdoor SE dataset into the engine's expected schema
-    (job_title + salary_usd + job_id) so KaggleUnifier can consume it."""
-    df = pd.read_csv(csv_path)
-    rename = {"Job Title": "job_title", "Location": "location", "Company": "company"}
-    df = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
-    if "Salary" not in df.columns or "job_title" not in df.columns:
-        print("  [!] SE dataset missing expected columns; leaving as-is.")
-        return
-    df["salary_usd"] = df["Salary"].apply(_parse_se_salary)
-    df = df.dropna(subset=["salary_usd", "job_title"])
-    df["job_id"] = range(len(df))
-    df.to_csv(csv_path, index=False)
-    print(f"  ✓ Normalized SE salaries: {len(df)} rows with numeric salary_usd")
-
-
-# ─────────────────────────────────────────────────────────────
-# Dataset registry
-# ─────────────────────────────────────────────────────────────
+# The GLOBAL software-engineer salary + skills benchmark now comes from the
+# Stack Overflow Developer Survey (see scripts/fetch_data.py), which is far more
+# reliable and genuinely SE-focused. Kaggle is used only for the local market.
 DATASETS = {
-    # Global software-engineer salary benchmark (engine's "kaggle_salary" source).
-    "salary": {
-        "id": "emreksz/software-engineer-jobs-and-salaries-2024",
-        "rename_to": "ai_job_software_engineer_2024.csv",  # matches "ai_job" pattern
-        "description": "Software Engineer Jobs & Salaries 2024 (global SE roles)",
-        "post_process": _normalize_se_salaries,
-    },
     # Local Vietnam jobs (engine's "topcv" source) — already matches TopCVParser.
     "topcv": {
         "id": "baocgb/vietnam-it-jobs-raw-data-from-topcv-2026",
@@ -168,6 +118,21 @@ def download_all_datasets(data_dir=None):
         if not ok:
             all_success = False
         print()
+
+    # Global SE salary + skills benchmark: Stack Overflow Developer Survey.
+    print("[*] GLOBAL: Stack Overflow Developer Survey (SE salaries + skills)")
+    try:
+        from scripts.fetch_data import fetch_and_prepare
+        if not fetch_and_prepare():
+            all_success = False
+    except Exception as e:
+        print(f"  [!] SO survey fetch failed: {e}")
+        all_success = False
+    print()
+
+    # Remove any stale global benchmark from earlier dataset choices.
+    for stale in raw_dir.glob("ai_job_software_engineer_*.csv"):
+        stale.unlink()
 
     print("=" * 60)
     if all_success:

@@ -26,14 +26,17 @@ KAGGLE_API_TOKEN=KGAT_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 python3 main.py --download-datasets
 ```
 
-This fetches the two curated datasets (see table below), and automatically
-normalizes the Glassdoor salary strings (e.g. `$68K - $94K`) into a numeric
-`salary_usd` the engine can use.
+This fetches both data sources below. The Stack Overflow survey needs no token
+(it's a public download); the Kaggle token is only for the Vietnam TopCV data.
 
-| Slot | Kaggle dataset | Role |
+| Source | Where from | Role |
 | :--- | :--- | :--- |
-| `salary` | [emreksz/software-engineer-jobs-and-salaries-2024](https://www.kaggle.com/datasets/emreksz/software-engineer-jobs-and-salaries-2024) | Global software-engineer salary benchmark |
-| `topcv` | [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026) | Local Vietnam market (TopCV) |
+| Global SE salaries + skills | [Stack Overflow Developer Survey 2025](https://survey.stackoverflow.co/) (~18k SE respondents) | Global benchmark — real salaries + languages |
+| Local market | [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026) (Kaggle) | Vietnam market (TopCV) |
+
+> Only software-engineering roles are kept from the survey (full-stack, back-end,
+> front-end, mobile, embedded, DevOps, ...); data-science/non-tech respondents are
+> filtered out. To fetch just the survey without a Kaggle token: `python3 main.py --fetch`.
 
 **Output:**
 ```
@@ -41,12 +44,12 @@ normalizes the Glassdoor salary strings (e.g. `$68K - $94K`) into a numeric
  KAGGLE DATASET DOWNLOADER
 ============================================================
 
-[*] SALARY: Software Engineer Jobs & Salaries 2024 (global SE roles)
-  ✓ Software Engineer Salaries.csv -> ai_job_software_engineer_2024.csv
-  ✓ Normalized SE salaries: 740 rows with numeric salary_usd
-
 [*] TOPCV: Vietnam IT Jobs raw data from TopCV 2026 (local market)
   ✓ topcv_jobs.csv -> topcv_vietnam_it_jobs_2026.csv
+
+[*] GLOBAL: Stack Overflow Developer Survey (SE salaries + skills)
+  [+] Downloaded 134 MB -> data/so_survey_2025.csv
+  [+] Wrote 18626 SE rows across 13 roles -> data/raw/ai_job_so_survey_2025.csv
   ✓ Extracted and renamed to ai_data_science_2020_2026.csv
 
 [SUCCESS] All datasets downloaded and ready!
@@ -88,28 +91,24 @@ pnpm dev  # Runs on http://localhost:3000
 
 ---
 
-## Option 2: Manual Dataset Download
+## Option 2: Manual / partial download
 
-If automatic download fails, download these from Kaggle and place the CSVs in `data/raw/`:
-1. **Software Engineer Jobs & Salaries 2024** — https://www.kaggle.com/datasets/emreksz/software-engineer-jobs-and-salaries-2024
-2. **Vietnam IT Jobs (TopCV 2026)** — https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026
+The global benchmark (Stack Overflow survey) needs no Kaggle token — fetch it alone with:
+```bash
+python3 main.py --fetch     # downloads + normalizes -> data/raw/ai_job_so_survey_2025.csv
+```
 
-### Rename to match the engine's discovery patterns
-The engine finds files by filename substring (`config/settings.py` → `PATTERNS`):
-- the **global salary** file must contain `ai_job` and have `job_title` + `salary_usd` columns
-- the **local** file must contain `topcv`
+For the local Vietnam data, download [baocgb/vietnam-it-jobs-raw-data-from-topcv-2026](https://www.kaggle.com/datasets/baocgb/vietnam-it-jobs-raw-data-from-topcv-2026)
+and place the CSV so its filename contains `topcv`:
 
 ```bash
 mkdir -p data/raw
-# global software-engineer salaries (rename so it contains "ai_job")
-mv ~/Downloads/software-engineer*/*.csv data/raw/ai_job_software_engineer_2024.csv
-# local Vietnam TopCV jobs (rename so it contains "topcv")
 mv ~/Downloads/vietnam-it-jobs*/*.csv data/raw/topcv_vietnam_it_jobs_2026.csv
 ```
-> The Glassdoor SE salary column is a string like `$68K - $94K`. The automatic
-> downloader normalizes it to a numeric `salary_usd`; if you place the file
-> manually you'll need to add a numeric `salary_usd` column yourself (or just use
-> `--download-datasets`, which does it for you).
+
+> The engine finds files by filename substring (`config/settings.py` → `PATTERNS`):
+> the **global** file must contain `ai_job` + have `job_title`/`salary_usd` columns
+> (the SO normalizer produces this), and the **local** file must contain `topcv`.
 
 ### Run the Flow
 ```bash

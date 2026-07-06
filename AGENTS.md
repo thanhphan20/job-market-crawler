@@ -34,14 +34,15 @@ Kaggle / TopCV / ITviec  ──►  Python IntelligenceEngine  ──►  intell
 | `src/components/` | React dashboard: `RealTimeDashboard.tsx`, `SyncTerminal.tsx`, `charts/`. |
 | `src/lib/` | `db.ts` (Prisma singleton), `cache-data.ts` (cached queries). |
 | `prisma/schema.prisma` | DB schema: `Job`, `GlobalIntelligence`, `AIImpactMatrix`, `SalaryTrend`. |
-| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern (`PATTERNS` in `config/settings.py`): `*topcv*` = local Vietnam jobs, `*ai_job*` = global SE salary benchmark. `scripts/download_kaggle_datasets.py` fetches these (Software Engineer Salaries 2024 + Vietnam TopCV 2026) via a `KAGGLE_API_TOKEN`. |
+| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern (`PATTERNS` in `config/settings.py`): `*topcv*` = local Vietnam jobs (Kaggle: `baocgb/vietnam-it-jobs-raw-data-from-topcv-2026`), `*ai_job*` = global SE salary+skills benchmark from the **Stack Overflow Developer Survey** (`scripts/fetch_data.py` normalizes it to `ai_job_so_survey_2025.csv`). `scripts/download_kaggle_datasets.py` orchestrates both. |
 
 ## Running things
 
 **Python engine** (from repo root, needs `pip install -r requirements.txt`):
 ```bash
 python main.py --flow        # Full correlation + report + JSON export (main action)
-python main.py --download-datasets  # Auto-download curated Kaggle datasets (needs kaggle CLI + creds)
+python main.py --download-datasets  # Vietnam TopCV (Kaggle, needs KAGGLE_API_TOKEN) + SO survey
+python main.py --fetch       # Only fetch+normalize the SO survey global benchmark (no token)
 python main.py --extract     # Unzip datasets in data/ into data/raw/
 python main.py --benchmark   # Generate synthetic Kaggle test data
 python main.py --itviec      # Run the live ITviec crawler

@@ -27,7 +27,12 @@ def run_main():
     parser.add_argument(
         "--download-datasets",
         action="store_true",
-        help="Download real datasets from Kaggle (requires kaggle CLI + credentials)",
+        help="Download all datasets (Vietnam TopCV via Kaggle + SO survey global benchmark)",
+    )
+    parser.add_argument(
+        "--fetch",
+        action="store_true",
+        help="Fetch + normalize only the Stack Overflow survey (global SE benchmark; no token needed)",
     )
     parser.add_argument(
         "--itviec", action="store_true", help="Run the ITviec live job crawler"
@@ -57,6 +62,12 @@ def run_main():
         from scripts.download_kaggle_datasets import download_all_datasets
         success = download_all_datasets()
         if success:
+            print("[NEXT] Run: python3 main.py --flow")
+        return
+
+    if args.fetch:
+        from scripts.fetch_data import fetch_and_prepare
+        if fetch_and_prepare():
             print("[NEXT] Run: python3 main.py --flow")
         return
 

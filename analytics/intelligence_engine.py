@@ -45,12 +45,15 @@ SKILL_KEYWORDS = {
 }
 
 # Rough demand-growth outlook per skill (0-100) for the skill matrix chart.
+# Keys cover both title-mined skills and Stack Overflow language names.
 SKILL_GROWTH = {
     "Java": 45, "JavaScript": 55, "TypeScript": 70, "Python": 80, "Spring Boot": 50,
-    ".NET / C#": 45, "React": 68, "Angular": 40, "Vue": 55, "Node.js": 60, "PHP": 30,
-    "Go": 78, "Ruby": 30, "C++": 40, "Kotlin": 62, "Swift": 55, "Flutter": 65,
-    "Android": 50, "iOS": 50, "Unity": 48, "SQL": 55, "AWS": 82, "Azure": 75,
-    "Docker": 78, "Kubernetes": 85, "DevOps": 80, "QA / Testing": 42, "Embedded": 50,
+    ".NET / C#": 45, "C#": 50, "React": 68, "Angular": 40, "Vue": 55, "Node.js": 60,
+    "PHP": 30, "Go": 78, "Ruby": 30, "C++": 40, "C": 35, "Kotlin": 62, "Swift": 55,
+    "Flutter": 65, "Android": 50, "iOS": 50, "Unity": 48, "SQL": 55, "AWS": 82,
+    "Azure": 75, "Docker": 78, "Kubernetes": 85, "DevOps": 80, "QA / Testing": 42,
+    "Embedded": 50, "HTML/CSS": 48, "Bash/Shell": 45, "Rust": 82, "Dart": 58,
+    "R": 45, "Scala": 48, "PowerShell": 45, "Assembly": 30, "Perl": 25, "Lua": 45,
 }
 
 
@@ -310,7 +313,43 @@ class IntelligenceEngine:
         print(f"[DASHBOARD] Exported real-time intelligence to {output_path}")
 
     def _extract_skill_matrix(self, top_n=18):
-        """Mine software-engineering tech skills from local job titles (Java, React, AWS...)."""
+        """Build the skill matrix. Prefers real survey skills (Stack Overflow
+        `required_skills`); falls back to mining local job titles."""
+        skills = self._skills_from_survey(top_n)
+        if skills:
+            return skills
+        return self._skills_from_titles(top_n)
+
+    def _skills_from_survey(self, top_n):
+        """Count real skills/languages from the global survey's required_skills column."""
+        if self.global_raw is None or "required_skills" not in self.global_raw.columns:
+            return []
+        exploded = (
+            self.global_raw["required_skills"]
+            .dropna()
+            .astype(str)
+            .str.split(";")
+            .explode()
+            .str.replace(r"\s*\(.*?\)", "", regex=True)  # drop "(all shells)" etc.
+            .str.strip()
+        )
+        exploded = exploded[exploded.str.len() > 1]
+        counts = exploded.value_counts().head(top_n)
+        if counts.empty:
+            return []
+        top_count = int(counts.iloc[0])
+        skills = []
+        for skill, n in counts.items():
+            relevance = int(round(40 + 58 * (n / top_count)))  # 40..98 by frequency
+            skills.append({
+                "skill": skill,
+                "relevance": min(98, relevance),
+                "growth": SKILL_GROWTH.get(skill, 50),
+            })
+        return skills
+
+    def _skills_from_titles(self, top_n):
+        """Fallback: mine tech skills from local job titles (Java, React, AWS...)."""
         import re
 
         if self.local_data is None or self.local_data.empty:

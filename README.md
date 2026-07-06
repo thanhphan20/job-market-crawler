@@ -81,8 +81,9 @@ pip install -r requirements.txt
 # 2. Add your Kaggle API token to .env:  KAGGLE_API_TOKEN=KGAT_xxx
 #    (https://www.kaggle.com/settings/account -> Create New API Token)
 
-# 3. Download from Kaggle (automatic — SE salaries + Vietnam TopCV)
+# 3. Download datasets: Vietnam TopCV (Kaggle) + Stack Overflow survey (global SE benchmark)
 python3 main.py --download-datasets
+#    (or just the SO survey, no token needed:  python3 main.py --fetch)
 
 # 4. Run analysis
 python3 main.py --flow
