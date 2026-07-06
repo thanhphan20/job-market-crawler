@@ -128,6 +128,7 @@ export function OpportunityGapChart({ data }: { data: TechStat[] }) {
 
 export function SalaryEvolutionChart({ data }: { data: SalaryTrend[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return <div className="h-[250px] w-full bg-border/10 animate-pulse" />;
 
@@ -296,6 +297,7 @@ export function CorrelationChart({ data }: { data: CorrelationPoint[] }) {
 
 export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return <div className="h-[400px] w-full bg-border/10 animate-pulse" />;
 
@@ -316,9 +318,17 @@ export function GlobalMarketShareChart({ data }: { data: MarketRegion[] }) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTreemapContent = (props: any) => {
-  const { x, y, width, height, index, name } = props;
+interface TreemapContentProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  index?: number;
+  name?: string;
+}
+
+const CustomTreemapContent = (props: TreemapContentProps) => {
+  const { x = 0, y = 0, width = 0, height = 0, index = 0, name = "" } = props;
   return (
     <g>
       <rect

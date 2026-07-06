@@ -9,28 +9,33 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.16"
+    }
+  },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.42.2",
     "glob": "^13.0.6",
-    "lucide-react": "^1.8.0",
+    "lucide-react": "^1.23.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "recharts": "^3.8.1",
-    "tailwind-merge": "^3.5.0"
+    "recharts": "^3.9.2",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
     "eslint-config-next": "16.2.4",
     "prisma": "^6.19.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "tailwindcss": "^4.3.2",
+    "typescript": "^5.9.3"
   }
 }

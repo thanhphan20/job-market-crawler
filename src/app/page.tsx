@@ -1,6 +1,6 @@
 import RealTimeDashboard from "@/components/RealTimeDashboard";
-import { getCachedIntelligence, getCachedTrends, getCachedImpact } from "@/lib/cache-data";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "@/components/charts/IntelligenceCharts";
+import type { KaggleRow } from "@/components/KaggleDataTable";
 import { prisma } from "@/lib/db";
 
 import fs from "fs";
@@ -16,7 +16,7 @@ async function getDashboardData() {
   let skills: SkillStat[] = [];
   let correlation: CorrelationPoint[] = [];
   let marketShare: MarketRegion[] = [];
-  let rawTable: any[] = [];
+  let rawTable: KaggleRow[] = [];
   let lastSync: string | null = null;
 
   const isDev = process.env.NODE_ENV === "development";
@@ -50,7 +50,7 @@ async function getDashboardData() {
           globalAvgSalary: i.globalAvgSalary,
           localAvgSalary: i.localAvgSalary || 0,
           resilienceScore: i.resilienceScore,
-          riskLevel: i.riskLevel as any
+          riskLevel: i.riskLevel
         }));
         
         const dbTrends = await prisma.salaryTrend.findMany({ where: { source: "Kaggle" }, orderBy: { year: 'asc' } });

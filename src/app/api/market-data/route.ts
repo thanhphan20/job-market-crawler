@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import fs from "fs";
+import path from "path";
 
 export async function GET() {
   try {
@@ -45,8 +47,6 @@ export async function GET() {
 
 async function fetchStaticFallback() {
   try {
-    const fs = require('fs');
-    const path = require('path');
     const filePath = path.join(process.cwd(), 'public/data/intelligence.json');
     if (fs.existsSync(filePath)) {
       const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));

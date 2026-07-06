@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-interface KaggleRow {
+export interface KaggleRow {
   std_role: string;
   global_salary_mean: number;
   global_salary_median: number;

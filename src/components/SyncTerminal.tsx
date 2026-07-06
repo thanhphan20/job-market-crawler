@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function SyncTerminal() {
   const [logs, setLogs] = useState<string[]>([]);
@@ -39,8 +40,9 @@ export default function SyncTerminal() {
       setLogs(prev => [...prev, '[SUCCESS] Task queued in background.']);
       
       window.dispatchEvent(new CustomEvent('intel-sync-complete'));
-    } catch (err: any) {
-      setLogs(prev => [...prev, `[ERROR] Sync failed: ${err.message}`]);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setLogs(prev => [...prev, `[ERROR] Sync failed: ${message}`]);
       setLogs(prev => [...prev, '[HINT] Make sure the FastAPI server is running at localhost:8000 if testing locally.']);
     } finally {
       setIsSyncing(false);
@@ -67,9 +69,12 @@ export default function SyncTerminal() {
         const filename = match[2];
         return (
           <div key={index} className="my-6 border border-zinc-800 p-1 bg-black">
-            <img 
+            <Image
               src={`/api/report/image/${filename}`} 
               alt={alt} 
+              width={1200}
+              height={675}
+              unoptimized
               className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-500"
             />
             <p className="text-[8px] text-zinc-600 mt-2 text-center uppercase tracking-widest">{alt}</p>

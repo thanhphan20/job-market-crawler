@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { 
   OpportunityGapChart, 
   AIResilienceRadar, 
@@ -12,7 +12,7 @@ import {
 } from "@/components/charts/IntelligenceCharts";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "./charts/IntelligenceCharts";
 import SyncTerminal from "./SyncTerminal";
-import KaggleDataTable from "./KaggleDataTable";
+import KaggleDataTable, { type KaggleRow } from "./KaggleDataTable";
 
 interface Props {
   initialData: {
@@ -22,7 +22,7 @@ interface Props {
     skills: SkillStat[];
     correlation: CorrelationPoint[];
     marketShare: MarketRegion[];
-    rawTable: any[];
+    rawTable: KaggleRow[];
     lastSync: string | null;
   };
 }
@@ -31,11 +31,11 @@ export default function RealTimeDashboard({ initialData }: Props) {
   const [data, setData] = useState(initialData);
   const [tab, setTab] = useState('local');
 
-  const refreshData = async () => {
+  const refreshData = useCallback(async () => {
     try {
       const res = await fetch('/api/market-data');
       if (res.ok) {
-        const json = await res.json();
+        const json = await res.json() as Partial<Props["initialData"]> & { updated_at?: string };
         setData({
           intelligence: json.intelligence || initialData.intelligence,
           trends: json.trends || initialData.trends,
@@ -51,12 +51,12 @@ export default function RealTimeDashboard({ initialData }: Props) {
     } catch (e) {
       console.error("Failed to refresh chart data:", e);
     }
-  };
+  }, [initialData]);
 
   useEffect(() => {
     window.addEventListener('intel-sync-complete', refreshData);
     return () => window.removeEventListener('intel-sync-complete', refreshData);
-  }, []);
+  }, [refreshData]);
 
   return (
     <div className="space-y-10">

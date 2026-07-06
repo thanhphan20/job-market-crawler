@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const reportDir = path.join(process.cwd(), "analytics/reports");
     
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       filename: latestReport,
       content: content 
     });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "Failed to read report" }, { status: 500 });
   }
 }
