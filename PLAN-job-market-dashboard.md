@@ -1,5 +1,7 @@
 # PLAN: Job Market Intelligence Dashboard (v2.0)
 
+> **⚠️ Historical planning doc — not current reality.** This captures the original design intent. The shipped code differs: source lives under `src/app/` (not `app/`), the file/task structure below was not followed literally, and the intended Supabase-first data path is one of several fallbacks. For how the system is *actually* built, read [SPEC.md](SPEC.md) and [AGENTS.md](AGENTS.md).
+
 A high-performance, minimalist Next.js 16 dashboard that correlates local job market data with global Kaggle AI intelligence.
 
 ---

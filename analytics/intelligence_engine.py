@@ -74,6 +74,14 @@ class IntelligenceEngine:
             else df_topcv
         )
 
+        # If no local data, create an empty dataframe with required columns
+        if self.local_data is None:
+            self.local_data = pd.DataFrame(columns=[
+                "job_title_raw", "standardized_title", "min_years_exp",
+                "annual_salary_usd", "location", "company", "source"
+            ])
+            print("[!] No local data available. Using global data only.")
+
         # 3. Load Global Kaggle Intel
         unifier = KaggleUnifier(raw_dir=self.raw_dir)
         self.global_benchmarks, self.global_raw = unifier.unify()

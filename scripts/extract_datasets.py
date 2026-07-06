@@ -1,32 +1,41 @@
 import zipfile
 import os
+from pathlib import Path
 
 
-def extract_all():
-    data_dir = r"e:\Repository\job-market-crawler\data"
-    raw_dir = os.path.join(data_dir, "raw")
+def extract_all(data_dir=None):
+    """Extract all ZIP files in data/ to data/raw/"""
+    if data_dir is None:
+        # Dynamically determine repo root (parent of scripts/)
+        script_dir = Path(__file__).resolve().parent
+        repo_root = script_dir.parent
+        data_dir = repo_root / "data"
+    else:
+        data_dir = Path(data_dir)
 
-    if not os.path.exists(raw_dir):
-        os.makedirs(raw_dir)
+    raw_dir = data_dir / "raw"
 
-    for item in os.listdir(data_dir):
-        if item.endswith(".zip"):
-            zip_path = os.path.join(data_dir, item)
-            target_dir = os.path.join(raw_dir, item.replace(".zip", ""))
+    raw_dir.mkdir(parents=True, exist_ok=True)
+    print(f"[*] Extracting ZIPs from {data_dir} to {raw_dir}...")
 
-            print(f"[*] Extracting {item}...")
+    if not data_dir.exists():
+        print(f"[!] Data directory not found: {data_dir}")
+        return
+
+    for item in data_dir.iterdir():
+        if item.suffix.lower() == ".zip":
+            target_dir = raw_dir / item.stem
+            print(f"[*] Extracting {item.name}...")
             try:
-                with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                with zipfile.ZipFile(item, "r") as zip_ref:
                     zip_ref.extractall(target_dir)
                 print(f"[+] Done: {target_dir}")
             except Exception as e:
-                print(f"[!] Failed {item}: {e}")
+                print(f"[!] Failed {item.name}: {e}")
 
-    print("\n--- Listing Files ---")
-    for root, dirs, files in os.walk(raw_dir):
-        for f in files:
-            if f.endswith(".csv"):
-                print(os.path.join(root, f))
+    print("\n--- Extracted CSV Files ---")
+    for csv_file in raw_dir.rglob("*.csv"):
+        print(csv_file.relative_to(raw_dir.parent))
 
 
 if __name__ == "__main__":

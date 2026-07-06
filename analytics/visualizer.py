@@ -58,17 +58,24 @@ class MarketVisualizer:
     def plot_ai_impact_matrix(self, df, ts):
         """[2/8] AI Impact Matrix (Risk vs Trend)"""
         # Expecting standardized correlation df
-        if "avg_automation_risk_pct" not in df.columns:
+        if "avg_automation_risk_pct" not in df.columns or df.empty:
             return
-        plt.figure(figsize=(14, 8))
-        # Pivoting data for heatmap
-        matrix = df.pivot_table(index="std_role", values="avg_automation_risk_pct")
-        sns.heatmap(matrix, annot=True, cmap="YlOrRd", cbar_kws={"label": "Risk %"})
-        plt.title(
-            "AI Impact Matrix: Automation Risk by Role", fontsize=16, fontweight="bold"
-        )
-        plt.savefig(self.report_dir / f"ai_impact_matrix_{ts}.png")
-        plt.close()
+        try:
+            plt.figure(figsize=(14, 8))
+            # Pivoting data for heatmap
+            matrix = df.pivot_table(index="std_role", values="avg_automation_risk_pct")
+            if matrix.empty or matrix.size == 0:
+                plt.close()
+                return
+            sns.heatmap(matrix, annot=True, cmap="YlOrRd", cbar_kws={"label": "Risk %"})
+            plt.title(
+                "AI Impact Matrix: Automation Risk by Role", fontsize=16, fontweight="bold"
+            )
+            plt.savefig(self.report_dir / f"ai_impact_matrix_{ts}.png")
+            plt.close()
+        except (ValueError, Exception) as e:
+            print(f"[WARN] Could not generate AI Impact Matrix: {e}")
+            plt.close()
 
     def plot_global_skills_ranking(self, skills_series, ts):
         """[3/8] Global Skills Demand (Kaggle)"""
@@ -109,7 +116,11 @@ class MarketVisualizer:
     def plot_job_skills_ranking(self, df, ts):
         """[5/8] Local Job Skills Ranking (TopCV + ITviec)"""
         # Assuming df has 'skills' or we use 'std_role' for demand
+        if df.empty or "standardized_title" not in df.columns:
+            return
         counts = df["standardized_title"].value_counts()
+        if len(counts) == 0:
+            return
         plt.figure(figsize=(12, 8))
         sns.barplot(
             x=counts.values,
@@ -126,7 +137,11 @@ class MarketVisualizer:
 
     def plot_market_demand_group(self, df, ts):
         """[6/8] Market Demand Groups (Market Share)"""
+        if df.empty or "standardized_title" not in df.columns:
+            return
         counts = df["standardized_title"].value_counts()
+        if len(counts) == 0:
+            return
         plt.figure(figsize=(10, 10))
         plt.pie(
             counts.values,
@@ -165,9 +180,15 @@ class MarketVisualizer:
 
     def plot_correlation_audit(self, df, ts):
         """[8/8] Correlation: Skill vs Experience vs Salary"""
+        if df.empty or "local_avg_exp" not in df.columns or "local_salary_avg" not in df.columns:
+            return
+        # Filter to rows with valid data
+        df_valid = df[(df["local_avg_exp"].notna()) & (df["local_salary_avg"].notna()) & (df["local_salary_avg"] > 0)]
+        if df_valid.empty:
+            return
         plt.figure(figsize=(10, 6))
         sns.regplot(
-            data=df,
+            data=df_valid,
             x="local_avg_exp",
             y="local_salary_avg",
             scatter_kws={"s": 100, "alpha": 0.5},

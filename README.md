@@ -2,20 +2,34 @@
 
 A specialized toolkit to crawl job markets (starting with ITviec) and analyze technology trends. This project helps you identify the most essential skills and tools required for specific roles (e.g., Java Developer) by analyzing real-time job descriptions.
 
+> **Working on the code?** Read [AGENTS.md](AGENTS.md) for orientation and run commands, and [SPEC.md](SPEC.md) for the full architecture and data contract. This README is a product overview and some of its historical examples predate the current CLI — trust `python main.py --help`.
+
 ## Project Structure
 
 ```text
 job-market-crawler/
-├── main.py              # Orchestrates crawling and analysis
-├── crawlers/            # Modular crawler scripts
-│   └── itviec.py        # ITviec-specific scraping logic
-├── analytics/           # Data processing & visualization
-│   └── skill_analyzer.py# Trends analysis logic
-│   └── kaggle_analyzer.py# Kaggle global trend insights
-├── data/                # Raw scraped data (CSV/JSON)
-├── outputs/             # Generated graphs and reports
-├── requirements.txt     # Dependencies
-└── README.md            # Documentation
+├── main.py               # Python CLI entrypoint (argparse)
+├── analytics/            # Intelligence engine
+│   ├── intelligence_engine.py  # Orchestrator (correlate + export + report)
+│   ├── kaggle_unifier.py       # Loads & unifies global Kaggle datasets
+│   ├── topcv_parser.py         # Parses local TopCV data
+│   ├── standardizer.py         # Title/salary/experience normalization
+│   ├── visualizer.py           # Matplotlib chart generation
+│   └── kaggle_analyzer.py      # Standalone Kaggle insights suite
+├── crawlers/itviec.py    # ITviec scraper (curl-cffi, Cloudflare bypass)
+├── config/settings.py    # Paths + Vercel-aware /tmp fallbacks
+├── scripts/              # Utilities (dataset extract, benchmarks, SO fetch)
+├── api/index.py         # FastAPI bridge (Python serverless / local uvicorn)
+├── src/                 # Next.js 16 dashboard
+│   ├── app/             #   App Router pages + API routes
+│   ├── components/      #   React UI (dashboard, terminal, charts)
+│   └── lib/             #   Prisma client + cached queries
+├── prisma/schema.prisma # Supabase Postgres schema
+├── data/                # Input CSVs & generated JSON (gitignored)
+├── requirements.txt     # Python dependencies
+├── package.json         # Node dependencies
+├── AGENTS.md            # Agent orientation guide
+└── SPEC.md              # Full technical specification
 ```
 
 ## Features
@@ -64,25 +78,36 @@ A powerful data engine that correlates local job requirements with global indust
    pip install -r requirements.txt
    ```
 
-2. **Fetch Global Benchmarks (SO 2025)**:
+2. **Extract raw datasets** (unzips archives in `data/` into `data/raw/`):
    ```bash
-   python main.py --fetch
+   python main.py --extract
    ```
 
-3. **Run Market Intelligence Analysis (Default)**:
+3. **Run the full Market Intelligence flow** (correlate + export JSON + generate reports):
    ```bash
-   python main.py
+   python main.py --flow
    ```
 
-4. **Scrap Fresh Local Data (Optional)**:
+4. **Scrape fresh local data (optional)** — needs `ITVIEC_SESSION` / `ITVIEC_TOKEN` in `.env`:
    ```bash
-   python main.py --crawl --pages 15
+   python main.py --itviec --limit 30
    ```
 
-5. **Run Kaggle Global Intelligence Suite**:
+5. **Generate synthetic benchmark data (for testing)**:
    ```bash
-   python analytics/kaggle_analyzer.py
+   python main.py --benchmark
    ```
+
+Run `python main.py --help` for the authoritative list of actions and options.
+
+### 🖥️ Dashboard (Next.js)
+
+```bash
+pnpm install
+pnpm dev        # http://localhost:3000
+```
+
+The dashboard reads the intelligence data produced by `python main.py --flow`. To exercise the in-app "Sync" buttons locally, also run the FastAPI bridge: `uvicorn api.index:app --reload --port 8000`. See [SPEC.md](SPEC.md) for how the two halves connect.
 
 ## 📊 Outputs
 - **`analytics/reports/market_intelligence_*.md`**: Detailed insight report with ROI analysis.
