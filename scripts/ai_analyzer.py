@@ -49,14 +49,14 @@ PROVIDERS = {
         "base_url": "https://openrouter.ai/api/v1",
         "key_env": "OPENROUTER_API_KEY",
         "model_env": "OPENROUTER_MODEL",
-        "default_model": "deepseek/deepseek-chat:free",
+        "default_model": "meta-llama/llama-3.3-70b-instruct:free",
     },
     "gemini": {
         "kind": "gemini",
         "base_url": "https://generativelanguage.googleapis.com/v1beta",
         "key_env": "GEMINI_API_KEY",
         "model_env": "GEMINI_MODEL",
-        "default_model": "gemini-2.0-flash",
+        "default_model": "gemini-2.5-flash",
     },
 }
 
