@@ -114,14 +114,13 @@ class MarketVisualizer:
         plt.close()
 
     def plot_job_skills_ranking(self, df, ts):
-        """[5/8] Local Job Skills Ranking (TopCV + ITviec)"""
-        # Assuming df has 'skills' or we use 'std_role' for demand
+        """[5/8] Local Job Skills Ranking (TopCV + ITviec) — top 15 roles."""
         if df.empty or "standardized_title" not in df.columns:
             return
-        counts = df["standardized_title"].value_counts()
+        counts = df["standardized_title"].value_counts().head(15)
         if len(counts) == 0:
             return
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(12, max(6, 0.5 * len(counts))))
         sns.barplot(
             x=counts.values,
             y=counts.index,
@@ -129,53 +128,79 @@ class MarketVisualizer:
             palette="flare",
             legend=False,
         )
-        plt.title(
-            "Local Demand: Unified Market Vacancies", fontsize=16, fontweight="bold"
-        )
-        plt.savefig(self.report_dir / f"job_skills_ranking_{ts}.png")
+        plt.title("Local Demand: Top 15 Roles", fontsize=16, fontweight="bold")
+        plt.xlabel("Job Postings")
+        plt.ylabel("")
+        plt.tight_layout()
+        plt.savefig(self.report_dir / f"job_skills_ranking_{ts}.png",
+                    bbox_inches="tight", dpi=120)
         plt.close()
 
     def plot_market_demand_group(self, df, ts):
-        """[6/8] Market Demand Groups (Market Share)"""
+        """[6/8] Market Demand Groups — top 8 roles + Others, donut w/ legend."""
         if df.empty or "standardized_title" not in df.columns:
             return
         counts = df["standardized_title"].value_counts()
         if len(counts) == 0:
             return
-        plt.figure(figsize=(10, 10))
-        plt.pie(
-            counts.values,
-            labels=counts.index,
-            autopct="%1.1f%%",
+        top = counts.head(8)
+        labels = list(top.index)
+        values = list(top.values)
+        others = int(counts[8:].sum())
+        if others > 0:
+            labels.append("Others")
+            values.append(others)
+
+        plt.figure(figsize=(11, 8))
+        colors = sns.color_palette("viridis", len(values))
+        wedges, _texts, autotexts = plt.pie(
+            values,
+            autopct=lambda p: f"{p:.0f}%" if p >= 4 else "",
             startangle=140,
-            colors=sns.color_palette("viridis"),
+            colors=colors,
+            pctdistance=0.8,
+            wedgeprops=dict(width=0.42, edgecolor="#121212"),
         )
-        plt.title("Market Demand: Talent Group Share", fontsize=16, fontweight="bold")
-        plt.savefig(self.report_dir / f"market_demand_group_{ts}.png")
+        for at in autotexts:
+            at.set_color("white")
+            at.set_fontsize(9)
+        plt.legend(wedges, labels, title="Roles", loc="center left",
+                   bbox_to_anchor=(1.0, 0.5), fontsize=9, frameon=False)
+        plt.title("Market Demand: Talent Group Share (Top 8)",
+                  fontsize=16, fontweight="bold")
+        plt.tight_layout()
+        plt.savefig(self.report_dir / f"market_demand_group_{ts}.png",
+                    bbox_inches="tight", dpi=120)
         plt.close()
 
     def plot_skill_network(self, df, ts):
-        """[7/8] Skill Network Analysis (Co-occurrence)"""
-        # Logic to extract connections between skills if title/desc has multiple markers
-        # For now, we simulate connectivity based on role-to-role adjacency
-        G = nx.Graph()
-        roles = df["standardized_title"].unique()
-        for i in range(len(roles)):
-            for j in range(i + 1, len(roles)):
-                G.add_edge(roles[i], roles[j], weight=np.random.rand())
+        """[7/8] Role convergence — top 12 roles around the dominant hub."""
+        if df.empty or "standardized_title" not in df.columns:
+            return
+        counts = df["standardized_title"].value_counts().head(12)
+        if len(counts) < 2:
+            return
+        roles = list(counts.index)
+        hub = roles[0]
 
-        plt.figure(figsize=(12, 12))
-        pos = nx.spring_layout(G, k=0.5)
-        nx.draw_networkx_nodes(G, pos, node_size=2000, node_color="#00d4ff", alpha=0.8)
-        nx.draw_networkx_edges(G, pos, width=2, edge_color="gray", alpha=0.3)
-        nx.draw_networkx_labels(G, pos, font_size=10, font_color="white")
-        plt.title(
-            "Skill Convergence: Career Path Connectivity",
-            fontsize=16,
-            fontweight="bold",
-        )
+        G = nx.Graph()
+        for r in roles:
+            G.add_node(r)
+        for r in roles[1:]:
+            G.add_edge(hub, r)  # star from the dominant role — no hairball
+
+        plt.figure(figsize=(13, 10))
+        pos = nx.spring_layout(G, k=2.4, seed=42)
+        sizes = [400 + (counts[n] ** 0.5) * 90 for n in G.nodes()]
+        nx.draw_networkx_nodes(G, pos, node_size=sizes, node_color="#EAB308", alpha=0.85)
+        nx.draw_networkx_edges(G, pos, width=1.2, edge_color="gray", alpha=0.35)
+        nx.draw_networkx_labels(G, pos, font_size=10, font_color="white",
+                                bbox=dict(facecolor="#121212", edgecolor="none", alpha=0.6, pad=1))
+        plt.title("Role Convergence: Top Local Roles", fontsize=16, fontweight="bold")
         plt.axis("off")
-        plt.savefig(self.report_dir / f"skill_network_{ts}.png")
+        plt.tight_layout()
+        plt.savefig(self.report_dir / f"skill_network_{ts}.png",
+                    bbox_inches="tight", dpi=120)
         plt.close()
 
     def plot_correlation_audit(self, df, ts):
