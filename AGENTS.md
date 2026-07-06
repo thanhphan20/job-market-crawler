@@ -34,7 +34,7 @@ Kaggle / TopCV / ITviec  ──►  Python IntelligenceEngine  ──►  intell
 | `src/components/` | React dashboard: `RealTimeDashboard.tsx`, `SyncTerminal.tsx`, `charts/`. |
 | `src/lib/` | `db.ts` (Prisma singleton), `cache-data.ts` (cached queries). |
 | `prisma/schema.prisma` | DB schema: `Job`, `GlobalIntelligence`, `AIImpactMatrix`, `SalaryTrend`. |
-| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern. |
+| `data/raw/` | Input CSVs (gitignored). Engine discovers them by filename pattern (`PATTERNS` in `config/settings.py`): `*topcv*` = local Vietnam jobs, `*ai_job*` = global SE salary benchmark. `scripts/download_kaggle_datasets.py` fetches these (Software Engineer Salaries 2024 + Vietnam TopCV 2026) via a `KAGGLE_API_TOKEN`. |
 
 ## Running things
 

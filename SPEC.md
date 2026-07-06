@@ -39,11 +39,11 @@ Two cooperating halves that communicate through a shared JSON file and (optional
 1. `load_all_sources(skip_itviec=...)`
    - **TopCV** via `TopCVParser` — dynamic file discovery (`data/raw/**/*topcv*.csv`), flexible column mapping, produces standardized columns (`standardized_title`, `min_years_exp`, `annual_salary_usd`, ...).
    - **ITviec** — reads `data/itviec_jobs.csv` inline (only title is standardized; salary left null, exp hardcoded to 2). Skipped when `skip_itviec=True` (the API and `main.py --flow` both skip it).
-   - **Kaggle** via `KaggleUnifier` — discovers salary/impact/insights CSVs by pattern (see `PATTERNS` in `config/settings.py`), cleans, groups by standardized role → `global_benchmarks` (salary mean/median/min/max, job count, automation risk, growth).
-   - Local sources are concatenated into `self.local_data`.
+   - **Kaggle** via `KaggleUnifier` — discovers the global-salary CSV by pattern (`*ai_job*`, requires `job_title` + `salary_usd`; see `PATTERNS` in `config/settings.py`), cleans, groups by standardized role → `global_benchmarks` (salary mean/median/min/max, job count; automation risk/growth only if an impact/insights CSV is also present). The default source is the **Software Engineer Salaries 2024** dataset, normalized at download time (Glassdoor `$68K - $94K` strings → numeric `salary_usd`) by `scripts/download_kaggle_datasets.py`.
+   - Local sources are concatenated into `self.local_data`. The default local source is the **Vietnam TopCV 2026** dataset.
 2. `run_agentic_analysis()`
    - `_correlate_data()` — groups local data by `standardized_title`, right-joins onto global benchmarks by `std_role`, sorts by `global_job_count`. This `merged` frame is the source of truth for exports.
-   - `_export_dashboard_json(merged)` — builds the **data contract** (§4) and writes it to `SYNC_DIR/intelligence.json` and `public/data/intelligence.json`, then cloud-syncs.
+   - `_export_dashboard_json(merged)` — builds the **data contract** (§4) and writes it to `SYNC_DIR/intelligence.json` and `public/data/intelligence.json`, then cloud-syncs. The `skills` vector is mined from local job titles by `_extract_skill_matrix()` using the `SKILL_KEYWORDS` regex table (Java, .NET/C#, React, AWS, ...), so it reflects the software-engineering market rather than a fixed dataset. Automation risk falls back to a role-keyword heuristic when no impact dataset is loaded.
    - `visualizer.plot_*` — generates the 8-vector PNG suite into `analytics/reports/` (or `/tmp/reports` on Vercel).
    - `_write_full_report()` — writes `market_intelligence_<timestamp>.md` referencing those PNGs.
    - `_sync_to_cloud()` — upserts `GlobalIntelligence`, `AIImpactMatrix`, `SalaryTrend` into Supabase (only if a client was created).

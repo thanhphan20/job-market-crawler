@@ -11,6 +11,49 @@ from supabase import create_client, Client
 from analytics.visualizer import MarketVisualizer
 
 
+# Software-engineering skills to mine from job titles (canonical -> regex).
+# Ordered roughly by stack; matching is case-insensitive on lowercased titles.
+SKILL_KEYWORDS = {
+    "Java": r"\bjava\b(?!script)",
+    "JavaScript": r"\bjavascript\b",
+    "TypeScript": r"\btypescript\b",
+    "Python": r"\bpython\b",
+    "Spring Boot": r"\bspring\b",
+    ".NET / C#": r"\.net\b|\bc#\b|\bdotnet\b",
+    "React": r"\breact\b",
+    "Angular": r"\bangular\b",
+    "Vue": r"\bvue\b",
+    "Node.js": r"\bnode(?:\.js|js)?\b",
+    "PHP": r"\bphp\b",
+    "Go": r"\bgolang\b|\bgo\s+developer\b",
+    "Ruby": r"\bruby\b",
+    "C++": r"c\+\+",
+    "Kotlin": r"\bkotlin\b",
+    "Swift": r"\bswift\b",
+    "Flutter": r"\bflutter\b",
+    "Android": r"\bandroid\b",
+    "iOS": r"\bios\b",
+    "Unity": r"\bunity\b",
+    "SQL": r"\bsql\b",
+    "AWS": r"\baws\b",
+    "Azure": r"\bazure\b",
+    "Docker": r"\bdocker\b",
+    "Kubernetes": r"\bkubernetes\b|\bk8s\b",
+    "DevOps": r"\bdevops\b",
+    "QA / Testing": r"\btester\b|\bqa\b|\bqc\b|\btesting\b",
+    "Embedded": r"\bembedded\b|\bfirmware\b",
+}
+
+# Rough demand-growth outlook per skill (0-100) for the skill matrix chart.
+SKILL_GROWTH = {
+    "Java": 45, "JavaScript": 55, "TypeScript": 70, "Python": 80, "Spring Boot": 50,
+    ".NET / C#": 45, "React": 68, "Angular": 40, "Vue": 55, "Node.js": 60, "PHP": 30,
+    "Go": 78, "Ruby": 30, "C++": 40, "Kotlin": 62, "Swift": 55, "Flutter": 65,
+    "Android": 50, "iOS": 50, "Unity": 48, "SQL": 55, "AWS": 82, "Azure": 75,
+    "Docker": 78, "Kubernetes": 85, "DevOps": 80, "QA / Testing": 42, "Embedded": 50,
+}
+
+
 class IntelligenceEngine:
     """
     Advanced Intelligence Engine v6.0 (Full Flow)
@@ -199,21 +242,8 @@ class IntelligenceEngine:
                 "automationRisk": risk,
             })
 
-        # 4. Skills Matrix
-        skills = []
-        raw_insights_path = Path("data/raw/ai-powered-job-market-insights/ai_job_market_insights.csv")
-        df_skills = pd.read_csv(raw_insights_path) if raw_insights_path.exists() else df
-        skill_col = [c for c in df_skills.columns if "skill" in c.lower()]
-        if skill_col:
-            all_skills = df_skills[skill_col[0]].dropna().str.split(",").explode().str.strip()
-            skill_counts = all_skills.value_counts().head(20)
-            for i, (skill, count) in enumerate(skill_counts.items()):
-                if not skill or len(skill) < 3: continue
-                skills.append({
-                    "skill": skill,
-                    "relevance": min(98, 90 - (i * 2) + ((i * 5) % 15)),
-                    "growth": min(90, 40 + (i * 3) - ((i * 7) % 20))
-                })
+        # 4. Skills Matrix — mine software-engineering tech skills from local job titles
+        skills = self._extract_skill_matrix()
 
         # 5. Correlation
         correlation = []
@@ -278,6 +308,41 @@ class IntelligenceEngine:
             self._sync_to_cloud(dashboard_data)
 
         print(f"[DASHBOARD] Exported real-time intelligence to {output_path}")
+
+    def _extract_skill_matrix(self, top_n=18):
+        """Mine software-engineering tech skills from local job titles (Java, React, AWS...)."""
+        import re
+
+        if self.local_data is None or self.local_data.empty:
+            return []
+        if "job_title_raw" not in self.local_data.columns:
+            return []
+
+        corpus = " \n ".join(
+            str(t).lower() for t in self.local_data["job_title_raw"].dropna()
+        )
+        if not corpus.strip():
+            return []
+
+        counts = {}
+        for skill, pattern in SKILL_KEYWORDS.items():
+            n = len(re.findall(pattern, corpus))
+            if n > 0:
+                counts[skill] = n
+        if not counts:
+            return []
+
+        ranked = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:top_n]
+        top_count = ranked[0][1]
+        skills = []
+        for skill, n in ranked:
+            relevance = int(round(40 + 58 * (n / top_count)))  # 40..98 by frequency
+            skills.append({
+                "skill": skill,
+                "relevance": min(98, relevance),
+                "growth": SKILL_GROWTH.get(skill, 50),
+            })
+        return skills
 
     def _sync_to_cloud(self, data):
         """Pushes intelligence data to Supabase/Prisma tables."""

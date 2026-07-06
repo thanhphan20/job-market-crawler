@@ -58,11 +58,11 @@ Analyzed from **131** live job postings on ITviec.
 A powerful data engine that correlates local job requirements with global industry benchmarks (Stack Overflow 2025) to generate high-ROI career roadmaps.
 
 ## 🌟 Key Features
-- **Intelligence Engine**: Triangular correlation between Skills, Experience, and Global Salary Benchmarks.
+- **Software-engineer focus**: Correlates the **Vietnam market (TopCV)** against a **global software-engineer salary benchmark**, surfacing roles like Backend, Fullstack, Java, DevOps.
+- **Skill mining**: Extracts in-demand SE skills (Java, .NET/C#, Node.js, React, AWS, ...) directly from local job titles.
 - **ROI Roadmaps**: Automated identification of "High ROI" skills (High Global Pay / Moderate Local Competition).
-- **Global Benchmarking**: Integrates official **Stack Overflow Developer Survey 2025** and **Kaggle AI Datasets**.
 - **Advanced Extraction**: Regex-based parsing of salaries (USD/VND) and experience years from unstructured JD text.
-- **AI Impact Profiling**: Automation risk analysis by industry using global research data.
+- **AI Validation & Analysis**: Free LLMs (Groq/OpenRouter/Gemini) validate the numbers and generate career strategy.
 - **Visual Analytics Heatmaps**: Market demand hierarchy and "Opportunity Gap" visualizations.
 
 ## 🛠 Tech Stack
@@ -78,10 +78,13 @@ A powerful data engine that correlates local job requirements with global indust
 # 1. Install
 pip install -r requirements.txt
 
-# 2. Download from Kaggle (automatic)
+# 2. Add your Kaggle API token to .env:  KAGGLE_API_TOKEN=KGAT_xxx
+#    (https://www.kaggle.com/settings/account -> Create New API Token)
+
+# 3. Download from Kaggle (automatic — SE salaries + Vietnam TopCV)
 python3 main.py --download-datasets
 
-# 3. Run analysis
+# 4. Run analysis
 python3 main.py --flow
 ```
 

@@ -1,177 +1,185 @@
 """
 Automated Kaggle Dataset Downloader
 
-Downloads and prepares datasets for the Intelligence Engine.
-Requires: pip install kaggle
-Setup: https://www.kaggle.com/settings/account (create API token)
+Downloads and prepares the datasets the Intelligence Engine needs, using a
+Kaggle API token (the newer KGAT_... token) as a Bearer credential — no
+`kaggle` CLI or username/key `kaggle.json` required.
+
+Setup:
+    1. https://www.kaggle.com/settings/account -> "Create New API Token"
+    2. Put the token in .env as:  KAGGLE_API_TOKEN=KGAT_xxx
+    3. python3 main.py --download-datasets
+
+Focus: software-engineer roles (e.g. Java) and their skills — a local Vietnam
+market (TopCV) correlated against a global software-engineer salary benchmark.
 """
 
 import os
-import subprocess
-import shutil
-from pathlib import Path
+import re
+import io
 import zipfile
+from pathlib import Path
+
+import requests
+import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()
+
+KAGGLE_API = "https://www.kaggle.com/api/v1"
 
 
-# Curated Kaggle datasets for this project
+# ─────────────────────────────────────────────────────────────
+# SE salary normalization
+# ─────────────────────────────────────────────────────────────
+def _parse_se_salary(s):
+    """'$68K - $94K (Glassdoor est.)' -> 81000.0 (annual USD midpoint)."""
+    if not isinstance(s, str):
+        return None
+    text = s.replace("\xa0", " ")
+    # $NNK ranges/singles (the dominant format)
+    ks = re.findall(r"\$\s*([\d.]+)\s*[Kk]", text)
+    if ks:
+        vals = [float(n) * 1000 for n in ks]
+        return sum(vals) / len(vals)
+    # $NN/hr -> annualize (2080 work hours/yr)
+    hourly = re.findall(r"\$\s*([\d.]+)\s*/?\s*(?:hr|hour)", text, re.I)
+    if hourly:
+        vals = [float(n) * 2080 for n in hourly]
+        return sum(vals) / len(vals)
+    # plain $NN,NNN
+    plain = re.findall(r"\$\s*([\d,]+)", text)
+    if plain:
+        vals = [float(n.replace(",", "")) for n in plain if n.replace(",", "").isdigit()]
+        if vals:
+            avg = sum(vals) / len(vals)
+            return avg if avg > 1000 else None
+    return None
+
+
+def _normalize_se_salaries(csv_path):
+    """Reshape the Glassdoor SE dataset into the engine's expected schema
+    (job_title + salary_usd + job_id) so KaggleUnifier can consume it."""
+    df = pd.read_csv(csv_path)
+    rename = {"Job Title": "job_title", "Location": "location", "Company": "company"}
+    df = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
+    if "Salary" not in df.columns or "job_title" not in df.columns:
+        print("  [!] SE dataset missing expected columns; leaving as-is.")
+        return
+    df["salary_usd"] = df["Salary"].apply(_parse_se_salary)
+    df = df.dropna(subset=["salary_usd", "job_title"])
+    df["job_id"] = range(len(df))
+    df.to_csv(csv_path, index=False)
+    print(f"  ✓ Normalized SE salaries: {len(df)} rows with numeric salary_usd")
+
+
+# ─────────────────────────────────────────────────────────────
+# Dataset registry
+# ─────────────────────────────────────────────────────────────
 DATASETS = {
+    # Global software-engineer salary benchmark (engine's "kaggle_salary" source).
     "salary": {
-        "id": "ruchi798/data-science-job-salaries",
-        "files": ["ds_salaries.csv"],
-        "rename_to": "ai_job_market_2025.csv",
-        "description": "Data Science Job Salaries (607 records with global salary data)",
+        "id": "emreksz/software-engineer-jobs-and-salaries-2024",
+        "rename_to": "ai_job_software_engineer_2024.csv",  # matches "ai_job" pattern
+        "description": "Software Engineer Jobs & Salaries 2024 (global SE roles)",
+        "post_process": _normalize_se_salaries,
     },
-    "impact": {
-        "id": "bimarsalim/ai-powered-job-market-insights",
-        "files": ["*impact*.csv", "*automation*.csv"],
-        "rename_to": "ai_impact_2024_2030.csv",
-        "description": "AI Impact & Automation Risk by Job/Industry",
-    },
-    "insights": {
-        "id": "cedricaubin/data-science-salary-2020-2026",
-        "files": ["*salary*.csv", "*2020*.csv"],
-        "rename_to": "ai_data_science_2020_2026.csv",
-        "description": "Data Science Salary Evolution (2020-2026 trends)",
+    # Local Vietnam jobs (engine's "topcv" source) — already matches TopCVParser.
+    "topcv": {
+        "id": "baocgb/vietnam-it-jobs-raw-data-from-topcv-2026",
+        "rename_to": "topcv_vietnam_it_jobs_2026.csv",  # matches "topcv" pattern
+        "description": "Vietnam IT Jobs raw data from TopCV 2026 (local market)",
+        "post_process": None,
     },
 }
 
 
-def check_kaggle_installed():
-    """Check if kaggle CLI is installed."""
+# ─────────────────────────────────────────────────────────────
+# Download via Bearer token
+# ─────────────────────────────────────────────────────────────
+def _get_token():
+    return os.environ.get("KAGGLE_API_TOKEN")
+
+
+def download_and_extract(dataset_id, token, raw_dir, rename_to):
+    """Download a dataset zip via the Kaggle API and extract its main CSV."""
+    url = f"{KAGGLE_API}/datasets/download/{dataset_id}"
+    headers = {"Authorization": f"Bearer {token}"}
     try:
-        subprocess.run(["kaggle", "--version"], capture_output=True, check=True)
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
+        resp = requests.get(url, headers=headers, timeout=180)
+        resp.raise_for_status()
+    except requests.HTTPError as e:
+        code = e.response.status_code if e.response is not None else "?"
+        print(f"  ✗ Download failed (HTTP {code}). Dataset private/renamed or bad token.")
         return False
-
-
-def check_kaggle_credentials():
-    """Check if Kaggle credentials are configured."""
-    cred_path = Path.home() / ".kaggle" / "kaggle.json"
-    return cred_path.exists()
-
-
-def download_dataset(dataset_id, target_dir):
-    """Download a single dataset from Kaggle."""
-    try:
-        cmd = ["kaggle", "datasets", "download", "-d", dataset_id, "-p", str(target_dir)]
-        print(f"  Downloading {dataset_id}...")
-        subprocess.run(cmd, check=True, capture_output=True)
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"  ✗ Download failed: {e.stderr.decode() if e.stderr else str(e)}")
-        return False
-
-
-def extract_and_rename(target_dir, original_files, rename_to):
-    """Extract ZIP and rename matching CSV files."""
-    try:
-        # Find and extract ZIP files
-        for zip_file in Path(target_dir).glob("*.zip"):
-            print(f"  Extracting {zip_file.name}...")
-            with zipfile.ZipFile(zip_file, "r") as zip_ref:
-                zip_ref.extractall(target_dir)
-            zip_file.unlink()  # Remove ZIP after extraction
-
-        # Find matching CSV files
-        found_files = []
-        for pattern in original_files if isinstance(original_files, list) else [original_files]:
-            found_files.extend(Path(target_dir).glob(pattern))
-
-        if found_files:
-            # Rename the first matching file
-            src = found_files[0]
-            dst = Path(target_dir).parent / rename_to
-            shutil.move(str(src), str(dst))
-            print(f"  ✓ Extracted and renamed to {rename_to}")
-
-            # Clean up any other extracted files
-            for extra_file in Path(target_dir).glob("*.csv"):
-                if extra_file != dst:
-                    extra_file.unlink()
-
-            return True
     except Exception as e:
-        print(f"  ✗ Extraction failed: {e}")
+        print(f"  ✗ Download failed: {e}")
+        return False
 
-    return False
+    try:
+        z = zipfile.ZipFile(io.BytesIO(resp.content))
+    except zipfile.BadZipFile:
+        print("  ✗ Response was not a valid zip (auth or dataset issue).")
+        return False
+
+    csvs = [f for f in z.namelist() if f.lower().endswith(".csv")]
+    if not csvs:
+        print("  ✗ No CSV found in dataset zip.")
+        return False
+
+    # Extract the largest CSV (the main data file) to the rename target.
+    main = max(csvs, key=lambda f: z.getinfo(f).file_size)
+    dst = raw_dir / rename_to
+    with z.open(main) as src, open(dst, "wb") as out:
+        out.write(src.read())
+    print(f"  ✓ {main} -> {dst.name}")
+    return True
 
 
 def download_all_datasets(data_dir=None):
-    """Download and prepare all required Kaggle datasets."""
+    """Download and prepare all required datasets. Returns True if all succeeded."""
     if data_dir is None:
-        script_dir = Path(__file__).resolve().parent
-        repo_root = script_dir.parent
-        data_dir = repo_root / "data"
+        data_dir = Path(__file__).resolve().parent.parent / "data"
     else:
         data_dir = Path(data_dir)
-
-    data_dir.mkdir(parents=True, exist_ok=True)
+    raw_dir = data_dir / "raw"
+    raw_dir.mkdir(parents=True, exist_ok=True)
 
     print("\n" + "=" * 60)
     print(" KAGGLE DATASET DOWNLOADER")
     print("=" * 60 + "\n")
 
-    # Check prerequisites
-    if not check_kaggle_installed():
-        print("[!] Kaggle CLI not installed.")
-        print("    Install with: pip install kaggle")
+    token = _get_token()
+    if not token:
+        print("[!] No KAGGLE_API_TOKEN set.")
+        print("    1. https://www.kaggle.com/settings/account -> Create New API Token")
+        print("    2. Add to .env:  KAGGLE_API_TOKEN=KGAT_xxx")
         return False
 
-    if not check_kaggle_credentials():
-        print("[!] Kaggle credentials not configured.")
-        print("    1. Go to: https://www.kaggle.com/settings/account")
-        print("    2. Click 'Create New API Token' (downloads kaggle.json)")
-        print("    3. Move kaggle.json to ~/.kaggle/")
-        print("    4. Run: chmod 600 ~/.kaggle/kaggle.json")
-        return False
-
-    print("[✓] Kaggle CLI configured\n")
-
-    # Download each dataset
     all_success = True
-    for dataset_key, dataset_info in DATASETS.items():
-        print(f"[*] {dataset_key.upper()}: {dataset_info['description']}")
-
-        # Create temp directory for download
-        temp_dir = data_dir / f"_download_{dataset_key}"
-        temp_dir.mkdir(exist_ok=True)
-
-        # Download
-        if download_dataset(dataset_info["id"], temp_dir):
-            # Extract and rename
-            if extract_and_rename(
-                temp_dir,
-                dataset_info["files"],
-                dataset_info["rename_to"]
-            ):
-                print()
-            else:
-                print(f"  ✗ Failed to process {dataset_key}\n")
-                all_success = False
-                # Clean up temp dir
-                shutil.rmtree(temp_dir, ignore_errors=True)
-        else:
-            print(f"  ✗ Failed to download {dataset_key}\n")
+    for key, info in DATASETS.items():
+        print(f"[*] {key.upper()}: {info['description']}")
+        ok = download_and_extract(info["id"], token, raw_dir, info["rename_to"])
+        if ok and info.get("post_process"):
+            try:
+                info["post_process"](raw_dir / info["rename_to"])
+            except Exception as e:
+                print(f"  [!] post-process failed: {e}")
+        if not ok:
             all_success = False
-            # Clean up temp dir
-            shutil.rmtree(temp_dir, ignore_errors=True)
+        print()
 
-    # Final summary
     print("=" * 60)
     if all_success:
-        print("[SUCCESS] All datasets downloaded and ready!")
-        print(f"Location: {data_dir}")
+        print("[SUCCESS] Datasets downloaded and ready!")
+        print(f"Location: {raw_dir}")
         print("\nNext: python3 main.py --flow")
     else:
         print("[!] Some datasets failed. Check errors above.")
-        print("    Tip: Ensure datasets still exist on Kaggle")
     print("=" * 60 + "\n")
-
     return all_success
 
 
 if __name__ == "__main__":
     import sys
-    data_dir = sys.argv[1] if len(sys.argv) > 1 else None
-    download_all_datasets(data_dir)
+    download_all_datasets(sys.argv[1] if len(sys.argv) > 1 else None)
