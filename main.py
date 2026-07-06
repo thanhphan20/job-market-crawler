@@ -25,6 +25,11 @@ def run_main():
         help="Generate synthetic benchmark data (for testing purposes)",
     )
     parser.add_argument(
+        "--download-datasets",
+        action="store_true",
+        help="Download real datasets from Kaggle (requires kaggle CLI + credentials)",
+    )
+    parser.add_argument(
         "--itviec", action="store_true", help="Run the ITviec live job crawler"
     )
 
@@ -38,6 +43,13 @@ def run_main():
     print("\n" + "="*50)
     print(" MARKET INTELLIGENCE ENGINE v6.1")
     print("="*50 + "\n")
+
+    if args.download_datasets:
+        from scripts.download_kaggle_datasets import download_all_datasets
+        success = download_all_datasets()
+        if success:
+            print("[NEXT] Run: python3 main.py --flow")
+        return
 
     if args.itviec:
         from crawlers.itviec import run_itviec_crawler

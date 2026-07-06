@@ -2,7 +2,7 @@
 
 A specialized toolkit to crawl job markets (starting with ITviec) and analyze technology trends. This project helps you identify the most essential skills and tools required for specific roles (e.g., Java Developer) by analyzing real-time job descriptions.
 
-> **Working on the code?** Read [AGENTS.md](AGENTS.md) for orientation and run commands, and [SPEC.md](SPEC.md) for the full architecture and data contract. This README is a product overview and some of its historical examples predate the current CLI — trust `python main.py --help`.
+> **Working on the code?** See [SETUP.md](SETUP.md) for quick-start, [AGENTS.md](AGENTS.md) for architecture, [SPEC.md](SPEC.md) for technical details. This README is a product overview.
 
 ## Project Structure
 
@@ -71,43 +71,47 @@ A powerful data engine that correlates local job requirements with global indust
 - **Crawler**: curl-cffi (Cloudflare Bypass), BeautifulSoup4
 - **Intelligence**: Custom correlation engine for market gaps.
 
-## 🚀 Quick Start
+## 🚀 Quick Start (3 commands)
 
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### **With Real Kaggle Datasets**
+```bash
+# 1. Install
+pip install -r requirements.txt
 
-2. **Extract raw datasets** (unzips archives in `data/` into `data/raw/`):
-   ```bash
-   python main.py --extract
-   ```
+# 2. Download from Kaggle (automatic)
+python3 main.py --download-datasets
 
-3. **Run the full Market Intelligence flow** (correlate + export JSON + generate reports):
-   ```bash
-   python main.py --flow
-   ```
+# 3. Run analysis
+python3 main.py --flow
+```
 
-4. **Scrape fresh local data (optional)** — needs `ITVIEC_SESSION` / `ITVIEC_TOKEN` in `.env`:
-   ```bash
-   python main.py --itviec --limit 30
-   ```
+📊 Reports generated in `analytics/reports/` and `data/sync/intelligence.json`
 
-5. **Generate synthetic benchmark data (for testing)**:
-   ```bash
-   python main.py --benchmark
-   ```
+### **With Synthetic Data (Testing)**
+```bash
+python3 main.py --benchmark     # Generate test data
+python3 main.py --flow          # Run analysis
+```
 
-Run `python main.py --help` for the authoritative list of actions and options.
-
-### 🖥️ Dashboard (Next.js)
-
+### **Dashboard (Optional)**
 ```bash
 pnpm install
 pnpm dev        # http://localhost:3000
 ```
 
-The dashboard reads the intelligence data produced by `python main.py --flow`. To exercise the in-app "Sync" buttons locally, also run the FastAPI bridge: `uvicorn api.index:app --reload --port 8000`. See [SPEC.md](SPEC.md) for how the two halves connect.
+---
+
+## 📋 Available Commands
+
+| Command | Purpose |
+|---------|---------|
+| `--download-datasets` | Download real Kaggle datasets (automated) |
+| `--flow` | Run full Intelligence Flow (analyze + export + visualize) |
+| `--benchmark` | Generate synthetic test data |
+| `--extract` | Extract ZIP archives in `data/` to `data/raw/` |
+| `--itviec` | Scrape live ITviec jobs (needs credentials) |
+
+See [SETUP.md](SETUP.md) for detailed setup instructions and troubleshooting.
 
 ## 📊 Outputs
 - **`analytics/reports/market_intelligence_*.md`**: Detailed insight report with ROI analysis.
