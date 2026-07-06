@@ -157,6 +157,52 @@ python3 main.py --flow        # Runs analysis on synthetic data
 
 ---
 
+## 🤖 AI Analysis (Validate + Analyze with free LLMs)
+
+After you've generated `intelligence.json` (via `--flow`), you can run free LLM providers to
+**validate** the numbers (flag implausible salaries / risk scores / bad role names) and
+**analyze** the market for you (career strategy, ROI, automation risk). It runs every provider
+you have a key for and compares them side by side.
+
+### 1️⃣ Get free API keys (set any subset)
+
+| Provider | Get a free key | Default model |
+| :--- | :--- | :--- |
+| **Groq** | https://console.groq.com/keys | `llama-3.3-70b-versatile` |
+| **OpenRouter** | https://openrouter.ai/keys | `deepseek/deepseek-chat:free` |
+| **Google Gemini** | https://aistudio.google.com/app/apikey | `gemini-2.0-flash` |
+
+### 2️⃣ Add them to `.env`
+```bash
+GROQ_API_KEY=your_key_here
+OPENROUTER_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
+```
+You only need **one** — the command skips providers without a key. Set more to compare them.
+
+### 3️⃣ Run it
+```bash
+# Compare every provider that has a key
+python3 main.py --ai-analyze
+
+# Only one provider
+python3 main.py --ai-analyze --provider gemini
+
+# Tailor the "for you" advice to a specific profile
+python3 main.py --ai-analyze --profile "Senior Java backend dev, HCMC, 5 yrs"
+```
+
+### 4️⃣ Outputs
+- **`data/sync/ai_analysis.json`** — machine-readable: each provider's validation flags + analysis,
+  a cross-provider agreement tally, and a metrics table (latency, #recommendations, parse success).
+- **`analytics/reports/ai_analysis_<timestamp>.md`** — readable report comparing providers side by side.
+
+> **Notes:** Free tiers rate-limit; the tool retries on HTTP 429 (3× backoff) and captures any other
+> error per-provider without crashing. If a model returns prose instead of JSON, the raw text is
+> preserved in the output. The default analysis profile is a **Vietnam-based backend/Java developer**.
+
+---
+
 ## Available Commands
 
 ```bash
@@ -171,6 +217,9 @@ python3 main.py --extract
 
 # Run the full Intelligence Flow
 python3 main.py --flow
+
+# Validate + analyze with free LLMs (Groq/OpenRouter/Gemini)
+python3 main.py --ai-analyze
 
 # Crawl live ITviec jobs (requires credentials)
 python3 main.py --itviec --limit 30

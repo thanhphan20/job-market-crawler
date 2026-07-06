@@ -32,10 +32,19 @@ def run_main():
     parser.add_argument(
         "--itviec", action="store_true", help="Run the ITviec live job crawler"
     )
+    parser.add_argument(
+        "--ai-analyze",
+        action="store_true",
+        help="Run free LLMs (Groq/OpenRouter/Gemini) to validate + analyze intelligence.json",
+    )
 
     # Options
     parser.add_argument('--dir', type=str, default=str(RAW_DATA_DIR), help="Override the raw data directory")
     parser.add_argument('--limit', type=int, default=20, help="Limit for crawler or analysis results")
+    parser.add_argument('--provider', type=str, default=None,
+                        help="For --ai-analyze: run only one provider (groq|openrouter|gemini)")
+    parser.add_argument('--profile', type=str, default=None,
+                        help="For --ai-analyze: override the person the analysis is written for")
 
     args = parser.parse_args()
 
@@ -49,6 +58,13 @@ def run_main():
         success = download_all_datasets()
         if success:
             print("[NEXT] Run: python3 main.py --flow")
+        return
+
+    if args.ai_analyze:
+        from scripts.ai_analyzer import run_ai_analysis
+        result = run_ai_analysis(provider=args.provider, profile=args.profile)
+        if result:
+            print(f"[SUCCESS] AI analysis complete: {result}")
         return
 
     if args.itviec:

@@ -107,9 +107,22 @@ pnpm dev        # http://localhost:3000
 |---------|---------|
 | `--download-datasets` | Download real Kaggle datasets (automated) |
 | `--flow` | Run full Intelligence Flow (analyze + export + visualize) |
+| `--ai-analyze` | Validate + analyze the data with free LLMs (Groq/OpenRouter/Gemini) |
 | `--benchmark` | Generate synthetic test data |
 | `--extract` | Extract ZIP archives in `data/` to `data/raw/` |
 | `--itviec` | Scrape live ITviec jobs (needs credentials) |
+
+### 🤖 AI Validation & Analysis
+
+After running `--flow`, feed the results to free LLMs to sanity-check the numbers and get career-strategy insight:
+
+```bash
+python3 main.py --ai-analyze                       # compare all providers with a key
+python3 main.py --ai-analyze --provider gemini     # just one
+python3 main.py --ai-analyze --profile "Java dev, HCMC, 5y"   # custom profile
+```
+
+Set any of `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY` in `.env` (all free — see `.env.example` for signup links). Outputs `data/sync/ai_analysis.json` + a readable `analytics/reports/ai_analysis_*.md` comparing each provider side by side.
 
 See [SETUP.md](SETUP.md) for detailed setup instructions and troubleshooting.
 

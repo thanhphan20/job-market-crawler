@@ -28,7 +28,7 @@ Kaggle / TopCV / ITviec  ──►  Python IntelligenceEngine  ──►  intell
 | `analytics/` | The engine. `intelligence_engine.py` orchestrates; `kaggle_unifier.py`, `topcv_parser.py`, `standardizer.py`, `visualizer.py` are its parts. |
 | `crawlers/itviec.py` | Live ITviec scraper (curl-cffi, bypasses Cloudflare). |
 | `config/settings.py` | Path config + Vercel `/tmp` fallbacks. **Read this to know where files go.** |
-| `scripts/` | One-off utilities: dataset extraction, benchmark generation, SO survey fetch. |
+| `scripts/` | Utilities: dataset extraction, Kaggle download, benchmark generation, SO survey fetch, and `ai_analyzer.py` (LLM validate+analyze). |
 | `api/index.py` | FastAPI app (Python serverless on Vercel; local uvicorn in dev). |
 | `src/app/` | Next.js App Router pages + API routes. `page.tsx` is the SSR data loader. |
 | `src/components/` | React dashboard: `RealTimeDashboard.tsx`, `SyncTerminal.tsx`, `charts/`. |
@@ -41,10 +41,13 @@ Kaggle / TopCV / ITviec  ──►  Python IntelligenceEngine  ──►  intell
 **Python engine** (from repo root, needs `pip install -r requirements.txt`):
 ```bash
 python main.py --flow        # Full correlation + report + JSON export (main action)
+python main.py --download-datasets  # Auto-download curated Kaggle datasets (needs kaggle CLI + creds)
 python main.py --extract     # Unzip datasets in data/ into data/raw/
 python main.py --benchmark   # Generate synthetic Kaggle test data
 python main.py --itviec      # Run the live ITviec crawler
+python main.py --ai-analyze  # LLM validate + analyze on intelligence.json (free providers)
 python main.py --flow --limit 30 --dir ./data/raw   # options
+python main.py --ai-analyze --provider gemini --profile "Java dev, HCMC"  # ai options
 ```
 
 **Next.js dashboard**:
@@ -63,6 +66,7 @@ uvicorn api.index:app --reload --port 8000
 
 - **This is not vanilla Next.js.** Per the block above, check `node_modules/next/dist/docs/` before using any Next.js API.
 - **The data contract is `intelligence.json`.** Its shape (`intelligence`, `trends`, `impact`, `skills`, `correlation`, `marketShare`, `rawTable`, `updated_at`) is produced in `IntelligenceEngine._export_dashboard_json` and consumed in `src/app/page.tsx` + `RealTimeDashboard.tsx`. **Change one side → change both.** See SPEC.md § Data Contract.
+- **The AI layer is decoupled and optional.** `scripts/ai_analyzer.py` (`--ai-analyze`) *reads* `intelligence.json` and writes its own `data/sync/ai_analysis.json` + `analytics/reports/ai_analysis_*.md`. It does **not** touch the data contract, `--flow`, or the frontend. `--flow` stays offline/deterministic; the AI step is the only part that needs network + API keys. It runs every provider that has a key (`GROQ_API_KEY`/`OPENROUTER_API_KEY`/`GEMINI_API_KEY`), skips the rest, and never crashes the run on a provider error.
 - **Two `/api/market-data` handlers exist** — a Next.js route (`src/app/api/market-data/route.ts`, Prisma→JSON fallback) and a FastAPI one (`api/index.py`). `vercel.json` rewrites *all* `/api/(.*)` to the Python function in production, while `next.config.ts` only rewrites specific paths in dev. This split is a live source of confusion; verify which one you're actually hitting before debugging an API.
 - **Path handling is Vercel-aware.** On Vercel (`VERCEL=1`) writable paths move to `/tmp` (see `config/settings.py`). Don't hardcode `data/` paths in Python; import from `config.settings`.
 - **Env var names are inconsistent.** The engine reads `SUPABASE_URL`, but `.env.example` only defines `NEXT_PUBLIC_SUPABASE_URL`. If cloud sync silently no-ops, this is why. Crawler auth uses `ITVIEC_SESSION` / `ITVIEC_TOKEN`.

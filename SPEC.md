@@ -118,6 +118,25 @@ The single most important interface. Produced by `IntelligenceEngine._export_das
 
 ---
 
+## 4b. AI layer — `scripts/ai_analyzer.py` (`--ai-analyze`)
+
+An **optional, decoupled** post-processing step. It never touches the data contract, `--flow`, or the frontend.
+
+- **Input:** reads `data/sync/intelligence.json` (fallback `public/data/intelligence.json`). Errors if neither exists (run `--flow` first).
+- **Digest:** `_build_digest()` extracts a compact top-~15-roles + trends + top-skills structure so requests stay inside free-tier limits and every provider sees identical input.
+- **Providers:** `PROVIDERS` dict, two HTTP shapes via `requests` only (no SDKs):
+  - `kind: "openai"` → OpenAI-compatible `/chat/completions` — covers **Groq** and **OpenRouter**.
+  - `kind: "gemini"` → Google Generative Language `generateContent` REST — **Gemini**.
+  - Each provider is gated on its key env (`GROQ_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`); missing keys are skipped, run errors only if zero configured. Model overridable via `*_MODEL` env.
+- **Two calls per provider:** a **validate** step (structured JSON: `overall_confidence`, `flags[]` across plausibility/risk_sanity/standardization/consistency) and an **analyze** step (structured JSON: `market_summary`, `key_insights[]`, `opportunities[]`, `recommendations[]`, `risks[]`, anchored to a profile — default Vietnam backend/Java dev, overridable via `--profile`).
+- **Robustness:** HTTP 429 → 3× exponential backoff; other errors captured per-provider; malformed JSON handled by `_extract_json` (direct → strip ``` fences → first`{`…last`}`), preserving `raw_response` on failure. The run always completes and writes both outputs.
+- **Comparison:** default runs all keyed providers; `--provider <name>` forces one. `_agreement_summary()` tallies roles flagged by ≥2 providers; a metrics table records latency / #recommendations / parse success per provider.
+- **Outputs:**
+  - `data/sync/ai_analysis.json` — per-provider results + `agreement` + `metrics_table`.
+  - `analytics/reports/ai_analysis_<timestamp>.md` — metrics table + side-by-side provider detail.
+
+---
+
 ## 5. Database schema (`prisma/schema.prisma`)
 
 Postgres (Supabase). `DATABASE_URL` (pooled, port 6543) for the app; `DIRECT_URL` (port 5432) for migrations.
