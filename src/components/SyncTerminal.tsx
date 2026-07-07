@@ -20,30 +20,70 @@ export default function SyncTerminal() {
   const runCommand = async (command: string, args: string[] = []) => {
     setIsSyncing(true);
     setLogs(prev => [...prev, `[SYSTEM] Preparing command: python main.py ${command} ${args.join(' ')}`]);
-    
+
     try {
       let endpoint = '/api/sync';
-      if (command === '--itviec') endpoint = '/api/sync/itviec';
       if (command === '--extract') endpoint = '/api/sync/extract';
 
       setLogs(prev => [...prev, `[SYSTEM] Requesting ${endpoint}...`]);
-      
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) throw new Error(`Server returned ${response.status}`);
-      
+
       const data = await response.json();
       setLogs(prev => [...prev, `[SYSTEM] ${data.message}`]);
       setLogs(prev => [...prev, '[SUCCESS] Task queued in background.']);
-      
+
       window.dispatchEvent(new CustomEvent('intel-sync-complete'));
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setLogs(prev => [...prev, `[ERROR] Sync failed: ${message}`]);
       setLogs(prev => [...prev, '[HINT] Make sure the FastAPI server is running at localhost:8000 if testing locally.']);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const runStreamingCommand = async (command: string, args: string[] = []) => {
+    setIsSyncing(true);
+    setLogs(prev => [...prev, `[SYSTEM] Preparing command: python main.py ${command} ${args.join(' ')}`]);
+
+    try {
+      const response = await fetch('/api/run-script', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command, args }),
+      });
+
+      if (!response.ok || !response.body) throw new Error(`Server returned ${response.status}`);
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        const complete = lines.map(l => l.trim()).filter(Boolean);
+        if (complete.length) setLogs(prev => [...prev, ...complete]);
+      }
+
+      const trailing = buffer.trim();
+      if (trailing) setLogs(prev => [...prev, trailing]);
+
+      window.dispatchEvent(new CustomEvent('intel-sync-complete'));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setLogs(prev => [...prev, `[ERROR] Sync failed: ${message}`]);
     } finally {
       setIsSyncing(false);
     }
@@ -108,35 +148,33 @@ export default function SyncTerminal() {
         </div>
         
         <div className="grid grid-cols-4 gap-2">
-            <>
-              <button 
-                onClick={() => runCommand('--itviec', ['--limit', '10'])} 
-                disabled={isSyncing || !!process.env.NEXT_PUBLIC_VERCEL_ENV}
-                className={`terminal-button text-[9px] py-1 h-auto ${process.env.NEXT_PUBLIC_VERCEL_ENV ? 'opacity-30' : ''}`}
-              >
-                {process.env.NEXT_PUBLIC_VERCEL_ENV ? '🚫 Local Crawl' : '🕷️ Crawl'}
-              </button>
-              <button 
-                onClick={() => runCommand('--flow')} 
-                disabled={isSyncing}
-                className="terminal-button text-[9px] py-1 h-auto bg-accent/20 border-accent/50 text-accent"
-              >
-                🧠 Intelligence [FastAPI]
-              </button>
-            </>
-          <button 
-            onClick={fetchReport} 
+          <button
+            onClick={() => runStreamingCommand('--itviec', ['--limit', '10'])}
+            disabled={isSyncing || !!process.env.NEXT_PUBLIC_VERCEL_ENV}
+            className={`terminal-button text-[9px] py-1 h-auto ${process.env.NEXT_PUBLIC_VERCEL_ENV ? 'opacity-30' : ''}`}
+          >
+            {process.env.NEXT_PUBLIC_VERCEL_ENV ? '🚫 Crawl' : '🕷️ Crawl'}
+          </button>
+          <button
+            onClick={() => runCommand('--flow')}
+            disabled={isSyncing}
+            className="terminal-button text-[9px] py-1 h-auto bg-accent/20 border-accent/50 text-accent"
+          >
+            🧠 Sync
+          </button>
+          <button
+            onClick={fetchReport}
             disabled={isSyncing}
             className="terminal-button text-[9px] py-1 h-auto border-blue-500/50 text-blue-400"
           >
-            📋 View Report
+            📋 Report
           </button>
-          <button 
-            onClick={() => setLogs([])} 
+          <button
+            onClick={() => setLogs([])}
             disabled={isSyncing}
             className="terminal-button text-[9px] py-1 h-auto border-zinc-700 text-zinc-500"
           >
-            🧹 Clear Console
+            🧹 Clear
           </button>
         </div>
       </div>

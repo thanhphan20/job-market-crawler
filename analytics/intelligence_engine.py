@@ -6,8 +6,6 @@ from config.settings import RAW_DATA_DIR, DATA_DIR
 from analytics.topcv_parser import TopCVParser
 from analytics.kaggle_unifier import KaggleUnifier
 from analytics.standardizer import DataStandardizer
-
-from supabase import create_client, Client
 from analytics.visualizer import MarketVisualizer
 
 
@@ -69,13 +67,6 @@ class IntelligenceEngine:
         self.local_data = None
         self.global_benchmarks = None
         self.global_raw = None
-        
-        # Initialize Supabase
-        url: str = os.environ.get("SUPABASE_URL")
-        key: str = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-        self.supabase: Client = create_client(url, key) if url and key else None
-        if self.supabase:
-            print("[INFO] Supabase cloud-sync active.")
         self.visualizer = MarketVisualizer()
 
     def load_all_sources(self, skip_itviec=False):
@@ -300,9 +291,6 @@ class IntelligenceEngine:
                 print(f"[DASHBOARD] Exported to {path}")
             except Exception as e:
                 pass # Silently fail for public_path on Vercel
-        
-        if self.supabase:
-            self._sync_to_cloud(dashboard_data)
 
         print(f"[DASHBOARD] Exported real-time intelligence to {output_path}")
 
@@ -482,48 +470,6 @@ class IntelligenceEngine:
                 "growth": SKILL_GROWTH.get(skill, 50),
             })
         return skills
-
-    def _sync_to_cloud(self, data):
-        """Pushes intelligence data to Supabase/Prisma tables."""
-        if not self.supabase:
-            print("[WARN] Cloud sync skipped: Supabase not configured.")
-            return
-
-        print("[*] Synchronizing cleaned Kaggle findings to cloud database...")
-        try:
-            # 1. Sync GlobalIntelligence (Kaggle focused)
-            for item in data["intelligence"]:
-                # Filter out low demand or noisy data if needed
-                if item["demand"] < 1: continue 
-                
-                self.supabase.table("GlobalIntelligence").upsert({
-                    "tech": item["tech"],
-                    "demand": item["demand"],
-                    "globalAvgSalary": item["globalAvgSalary"],
-                    "localAvgSalary": item["localAvgSalary"] if item["localAvgSalary"] > 0 else None,
-                    "resilienceScore": item["resilienceScore"],
-                    "riskLevel": item["riskLevel"],
-                }, on_conflict="tech").execute()
-
-            # 2. Sync AIImpactMatrix
-            for item in data["impact"]:
-                self.supabase.table("AIImpactMatrix").upsert({
-                    "industry": item["industry"],
-                    "status": item["status"],
-                    "automationRisk": item["automationRisk"],
-                }, on_conflict="industry,status").execute()
-
-            # 3. Sync SalaryTrend
-            for item in data["trends"]:
-                self.supabase.table("SalaryTrend").upsert({
-                    "year": item["year"],
-                    "avgSalary": item["avgSalary"],
-                    "source": "Kaggle",
-                }, on_conflict="year,tech,source").execute()
-
-            print("[SUCCESS] Cloud synchronization complete.")
-        except Exception as e:
-            print(f"[ERR] Cloud sync failed: {str(e)}")
 
     def _correlate_data(self):
         local_stats = (

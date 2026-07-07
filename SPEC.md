@@ -6,9 +6,9 @@ This document describes how the system is actually built, so an agent can reason
 
 ## 1. System overview
 
-Two cooperating halves that communicate through a shared JSON file and (optionally) a Supabase Postgres database:
+Two cooperating halves that communicate through a shared JSON file:
 
-- **Intelligence Engine (Python)** — ingests job-market datasets, standardizes and correlates local vs. global data, and emits (a) a dashboard JSON blob, (b) Supabase rows, and (c) matplotlib PNG report images.
+- **Intelligence Engine (Python)** — ingests job-market datasets, standardizes and correlates local vs. global data, and emits (a) a dashboard JSON blob and (b) matplotlib PNG report images.
 - **Dashboard (Next.js 16 + React 19)** — server-renders the latest intelligence and displays it as an "Intelligence Terminal" of charts. It can trigger engine actions on demand.
 
 ```
@@ -17,11 +17,10 @@ Two cooperating halves that communicate through a shared JSON file and (optional
  data/itviec_jobs.csv ─► (inline) ┼─► IntelligenceEngine._correlate_data ─► merged DataFrame
  data/raw/*kaggle*.csv ─► KaggleUnifier ┘                                          │
                                                                                    ├─► intelligence.json  (data/sync + public/data)
-                                                                                   ├─► Supabase upsert (GlobalIntelligence, AIImpactMatrix, SalaryTrend)
                                                                                    └─► analytics/reports/*.png + market_intelligence_*.md
                         └───────────────────────────────────────────────────────────────┘
                         ┌─────────────────────────── Next.js ──────────────────────────┐
- src/app/page.tsx (SSR) ─► reads DB or JSON ─► <RealTimeDashboard> ─► Recharts components
+ src/app/page.tsx (SSR) ─► reads intelligence.json ─► <RealTimeDashboard> ─► Recharts components
  src/app/api/* + api/index.py (FastAPI) ─► trigger engine / serve data
                         └───────────────────────────────────────────────────────────────┘
 ```
@@ -46,7 +45,6 @@ Two cooperating halves that communicate through a shared JSON file and (optional
    - `_export_dashboard_json(merged)` — builds the **data contract** (§4) and writes it to `SYNC_DIR/intelligence.json` and `public/data/intelligence.json`, then cloud-syncs. The `trends` vector is a real multi-year **software-engineer** salary trend from `_build_salary_trends()`: it takes the year/salary growth curve from the impact dataset filtered to SE roles (Software Engineer, DevOps, Cloud, ML Engineer) and anchors it to the SO benchmark's current-year salary level; it falls back to the SO single-year + projection if that source is absent. The `skills` vector comes from `_extract_skill_matrix()`: it prefers the real survey skills (`required_skills` / SO `LanguageHaveWorkedWith`) via `_skills_from_survey()`, and falls back to mining local job titles (`SKILL_KEYWORDS`) via `_skills_from_titles()`. Automation risk (`resilienceScore`/`riskLevel`/`impact`) comes from `_risk_for_role()`, which uses the real AI-impact dataset via `_load_impact_lookup()` (Kaggle `shree0910/ai-job-risk-and-salary-dataset`, normalized to `ai_impact_job_risk.csv` with an `Automation Risk (%)` column): real per-role risk where the role matches (e.g. DevOps, Cloud), else the dataset's software-engineer baseline anchored with relative role nuance, else a keyword heuristic as last resort.
    - `visualizer.plot_*` — generates the 8-vector PNG suite into `analytics/reports/` (or `/tmp/reports` on Vercel).
    - `_write_full_report()` — writes `market_intelligence_<timestamp>.md` referencing those PNGs.
-   - `_sync_to_cloud()` — upserts `GlobalIntelligence`, `AIImpactMatrix`, `SalaryTrend` into Supabase (only if a client was created).
 
 ### 2.3 Standardization (`analytics/standardizer.py`)
 `DataStandardizer` is the glue that lets local and global data merge:
@@ -69,13 +67,10 @@ Two cooperating halves that communicate through a shared JSON file and (optional
 ## 3. The Dashboard (Next.js)
 
 ### 3.1 Stack
-Next.js 16 (App Router), React 19, Tailwind CSS v4, Recharts, Framer Motion, Prisma 6 (`@prisma/client`), Vercel Analytics. Package manager: **pnpm**.
+Next.js 16 (App Router), React 19, Tailwind CSS v4, Recharts, Framer Motion, Vercel Analytics. Package manager: **pnpm**.
 
 ### 3.2 Server-side data loading (`src/app/page.tsx`)
-`getDashboardData()` loads the dashboard payload with environment-dependent priority:
-- **Dev**: try local files (`public/data/intelligence.json`, then `data/sync/kaggle_insights.json`) → fall back to DB.
-- **Prod**: try DB (Prisma) → fall back to files.
-- Hardcoded default fallbacks exist for every vector so the UI never renders empty.
+`getDashboardData()` reads `public/data/intelligence.json`, then `data/sync/kaggle_insights.json` for the skills/correlation/market-share vectors if still empty. Hardcoded default fallbacks exist for every vector so the UI never renders empty. There is no database — data only changes when the Python engine re-runs and the resulting JSON is committed/deployed.
 
 ### 3.3 Components
 - `RealTimeDashboard.tsx` — client component; tabs (`local | global | impact | skills | raw`); hot-refreshes from `/api/market-data` when a `intel-sync-complete` window event fires.
@@ -86,14 +81,11 @@ Next.js 16 (App Router), React 19, Tailwind CSS v4, Recharts, Framer Motion, Pri
 ### 3.4 Next.js API routes (`src/app/api/`)
 | Route | Purpose |
 | :--- | :--- |
-| `GET /api/market-data` | Prisma read of intelligence/trends/impact; falls back to `public/data/intelligence.json`. |
 | `GET /api/report` | Returns the latest `analytics/reports/market_intelligence_*.md` content. |
 | `GET /api/report/image/[filename]` | Serves a PNG from `analytics/reports/`. |
 | `POST /api/run-script` | Spawns `python3 main.py <command>` locally and streams stdout (allowed commands: `--flow`, `--itviec`, `--extract`). Local-only. |
 
-### 3.5 Persistence (`src/lib/`)
-- `db.ts` — Prisma client singleton (global-cached in non-prod).
-- `cache-data.ts` — `unstable_cache`-wrapped Prisma reads (1h revalidate, tag `intelligence`). Note: currently imported by `page.tsx` but the active loader uses direct Prisma calls.
+`GET /api/market-data` is served by FastAPI (`api/index.py`) only — see §6. There used to be a duplicate Next.js route reading Prisma; it was removed since `vercel.json` made it permanently unreachable in production.
 
 ---
 
@@ -137,33 +129,21 @@ An **optional, decoupled** post-processing step. It never touches the data contr
 
 ---
 
-## 5. Database schema (`prisma/schema.prisma`)
-
-Postgres (Supabase). `DATABASE_URL` (pooled, port 6543) for the app; `DIRECT_URL` (port 5432) for migrations.
-
-- **`Job`** — raw crawled listings (title, company, salary range, skills[], source). Currently defined but not the primary path the dashboard reads.
-- **`GlobalIntelligence`** — `tech` (unique), `demand`, `globalAvgSalary`, `localAvgSalary?`, `resilienceScore`, `riskLevel`. Upserted on `tech`.
-- **`AIImpactMatrix`** — `industry` + `status` (unique together), `automationRisk`.
-- **`SalaryTrend`** — `year` + `tech?` + `source` (unique together), `avgSalary`.
-
----
-
-## 6. Deployment (Vercel)
+## 5. Deployment (Vercel)
 
 - `vercel.json` rewrites **all** `/api/(.*)` → `/api/index.py` (the FastAPI function). This means in production the FastAPI app answers API traffic, not the Next.js route handlers.
 - `next.config.ts` only rewrites a *subset* of `/api/*` paths to `localhost:8000` and only in development.
 - Consequence: the effective API implementation differs between dev and prod. When debugging an endpoint, confirm which handler is live in your environment.
 - Writable output paths shift to `/tmp` on Vercel (`config/settings.py`), since the deployment filesystem is read-only except `/tmp`.
+- **No database.** There used to be an optional Supabase Postgres store (Prisma on the Next.js side, `supabase-py` on the Python side) that mirrored `intelligence.json`. It was removed: Vercel serverless functions have no persistent/shared disk, so a file-based DB (e.g. SQLite) can't work there, and the only thing a remote DB bought — refreshing data without a redeploy — wasn't actually used (data updates always go through commit + redeploy). `intelligence.json` is now the single source of truth end to end.
 
 ---
 
-## 7. Known inconsistencies (do not treat as intentional)
+## 6. Known inconsistencies (do not treat as intentional)
 
 These exist in the current code; fix opportunistically or account for them, don't cargo-cult them.
 
-1. **Duplicate `/api/market-data`** in both Next.js and FastAPI (§6).
-2. **Env var mismatch** — engine reads `SUPABASE_URL`; `.env.example` defines `NEXT_PUBLIC_SUPABASE_URL`. Cloud sync silently disables when `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` are absent.
-3. **Hardcoded Windows path** in `scripts/extract_datasets.py` (`e:\Repository\...`).
-4. **Version label drift** — v2.0 / v6.0 / v6.1 appear in different files with no real meaning.
-5. **README command drift** — historical README examples (`--fetch`, `--crawl`, `--pages`) predate the current `main.py` flags. Trust `main.py --help`.
-6. **ITviec loading** hardcodes `min_years_exp = 2` and null salary, so ITviec rows contribute little to salary correlation.
+1. **Hardcoded Windows path** in `scripts/extract_datasets.py` (`e:\Repository\...`).
+2. **Version label drift** — v2.0 / v6.0 / v6.1 appear in different files with no real meaning.
+3. **README command drift** — historical README examples (`--fetch`, `--crawl`, `--pages`) predate the current `main.py` flags. Trust `main.py --help`.
+4. **ITviec loading** hardcodes `min_years_exp = 2` and null salary, so ITviec rows contribute little to salary correlation.

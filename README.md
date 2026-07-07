@@ -22,9 +22,7 @@ job-market-crawler/
 ├── api/index.py         # FastAPI bridge (Python serverless / local uvicorn)
 ├── src/                 # Next.js 16 dashboard
 │   ├── app/             #   App Router pages + API routes
-│   ├── components/      #   React UI (dashboard, terminal, charts)
-│   └── lib/             #   Prisma client + cached queries
-├── prisma/schema.prisma # Supabase Postgres schema
+│   └── components/      #   React UI (dashboard, terminal, charts)
 ├── data/                # Input CSVs & generated JSON (gitignored)
 ├── requirements.txt     # Python dependencies
 ├── package.json         # Node dependencies
@@ -98,11 +96,34 @@ python3 main.py --benchmark     # Generate test data
 python3 main.py --flow          # Run analysis
 ```
 
-### **Dashboard (Optional)**
+### **Dashboard + Backend (Optional)**
 ```bash
 pnpm install
-pnpm dev        # http://localhost:3000
+
+# Run both frontend and backend together
+pnpm dev:all    # http://localhost:3000 (frontend) + http://localhost:8000 (API)
+
+# Or run them separately in different terminals:
+pnpm dev        # http://localhost:3000 (frontend only)
+uvicorn api.index:app --reload --port 8000  # API backend in another terminal
 ```
+
+---
+
+## 🔧 Development
+
+The full stack consists of two servers:
+
+- **Next.js Frontend** (port 3000): React dashboard that visualizes job market data
+- **FastAPI Backend** (port 8000): Python API that serves data and processes intelligence flows
+
+To test features that trigger backend API calls (like `/api/sync` buttons), run both servers together:
+
+```bash
+pnpm dev:all    # Starts both servers concurrently
+```
+
+If you only need to modify the frontend, `pnpm dev` alone is sufficient.
 
 ---
 

@@ -11,4 +11,3 @@ seaborn
 networkx
 scikit-learn
 numpy
-supabase

@@ -1,7 +1,6 @@
 import RealTimeDashboard from "@/components/RealTimeDashboard";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "@/components/charts/IntelligenceCharts";
 import type { KaggleRow } from "@/components/KaggleDataTable";
-import { prisma } from "@/lib/db";
 
 import fs from "fs";
 import path from "path";
@@ -19,61 +18,18 @@ async function getDashboardData() {
   let rawTable: KaggleRow[] = [];
   let lastSync: string | null = null;
 
-  const isDev = process.env.NODE_ENV === "development";
-
   try {
-    // Helper to load from files
-    const loadFromFiles = () => {
-      if (fs.existsSync(realIntelligencePath)) {
-        const realData = JSON.parse(fs.readFileSync(realIntelligencePath, "utf-8"));
-        intelligence = realData.intelligence || [];
-        trends = realData.trends || [];
-        impact = realData.impact || [];
-        skills = realData.skills || [];
-        correlation = realData.correlation || [];
-        marketShare = realData.marketShare || [];
-        rawTable = realData.rawTable || [];
-        lastSync = realData.updated_at || null;
-        console.log(`[SSR] Loaded data from LOCAL FILES.`);
-        return true;
-      }
-      return false;
-    };
-
-    // Helper to load from DB
-    const loadFromDB = async () => {
-      const dbIntelligence = await prisma.globalIntelligence.findMany();
-      if (dbIntelligence.length > 0) {
-        intelligence = dbIntelligence.map(i => ({
-          tech: i.tech,
-          demand: i.demand,
-          globalAvgSalary: i.globalAvgSalary,
-          localAvgSalary: i.localAvgSalary || 0,
-          resilienceScore: i.resilienceScore,
-          riskLevel: i.riskLevel
-        }));
-        
-        const dbTrends = await prisma.salaryTrend.findMany({ where: { source: "Kaggle" }, orderBy: { year: 'asc' } });
-        trends = dbTrends.map(t => ({ year: t.year, avgSalary: t.avgSalary }));
-        
-        const dbImpact = await prisma.aIImpactMatrix.findMany();
-        impact = dbImpact.map(im => ({ industry: im.industry, status: im.status, automationRisk: im.automationRisk }));
-        
-        lastSync = dbIntelligence[0]?.updatedAt.toISOString();
-        console.log(`[SSR] Loaded data from CLOUD DB.`);
-        return true;
-      }
-      return false;
-    };
-
-    if (isDev) {
-      // DEV: Try Files -> then DB
-      const fileSuccess = loadFromFiles();
-      if (!fileSuccess) await loadFromDB();
-    } else {
-      // PROD: Try DB -> then Files
-      const dbSuccess = await loadFromDB();
-      if (!dbSuccess) loadFromFiles();
+    if (fs.existsSync(realIntelligencePath)) {
+      const realData = JSON.parse(fs.readFileSync(realIntelligencePath, "utf-8"));
+      intelligence = realData.intelligence || [];
+      trends = realData.trends || [];
+      impact = realData.impact || [];
+      skills = realData.skills || [];
+      correlation = realData.correlation || [];
+      marketShare = realData.marketShare || [];
+      rawTable = realData.rawTable || [];
+      lastSync = realData.updated_at || null;
+      console.log(`[SSR] Loaded data from LOCAL FILES.`);
     }
 
     if (skills.length === 0 && fs.existsSync(localInsightsPath)) {
