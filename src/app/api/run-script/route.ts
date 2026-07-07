@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { spawn } from "child_process";
+import { spawn } from "node:child_process";
 
 export async function POST(req: NextRequest) {
   const { command, args = [] } = await req.json();

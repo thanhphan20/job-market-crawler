@@ -2,8 +2,8 @@ import RealTimeDashboard from "@/components/RealTimeDashboard";
 import { TechStat, SalaryTrend, ImpactData, SkillStat, CorrelationPoint, MarketRegion } from "@/components/charts/IntelligenceCharts";
 import type { KaggleRow } from "@/components/KaggleDataTable";
 
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 async function getDashboardData() {
   const localInsightsPath = path.join(process.cwd(), "data/sync/kaggle_insights.json");
