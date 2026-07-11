@@ -43,7 +43,7 @@ headers = {
 }
 
 
-def scrap_itviec(limit: int, start_page: int = 1, end_page: int = 5) -> list[Entry]:
+def scrap_itviec(limit: int, start_page: int = 1, end_page: int = 10) -> list[Entry]:
     results: list[Entry] = []
     queries = ["backend", "fullstack-developer", "java", "software-engineer"]
     seen_ids = set()

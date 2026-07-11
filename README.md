@@ -2,6 +2,8 @@
 
 A specialized toolkit to crawl job markets (starting with ITviec) and analyze technology trends. This project helps you identify the most essential skills and tools required for specific roles (e.g., Java Developer) by analyzing real-time job descriptions.
 
+<img src="public/home.png" alt="Job Market" width="100%" style="border-radius: 8px; margin: 1rem 0; border: 1px solid #ccc;">
+
 > **Working on the code?** See [SETUP.md](SETUP.md) for quick-start, [AGENTS.md](AGENTS.md) for architecture, [SPEC.md](SPEC.md) for technical details. This README is a product overview.
 
 ## Project Structure
@@ -30,39 +32,40 @@ job-market-crawler/
 └── SPEC.md              # Full technical specification
 ```
 
-## Features
+## ✨ Features
 
-- **Automated Crawling**: Fetches job listings from ITviec for Backend, Fullstack, and Java queries.
-- **Skill Analytics**: Scans job descriptions for key technologies (Spring Boot, SQL, AWS, etc.).
-- **Market Visualization**: Generates ranking charts of the most in-demand skills.
-- **Kaggle Global Intelligence**: Integration with multiple Kaggle datasets to correlate local trends with global AI market forecasts (2020-2030).
-- **Duplicate Prevention**: ensuring unique data across different search categories.
+- **Dual-source local crawling**: Live ITviec scrape (Backend, Fullstack, Java, Software Engineer queries, curl-cffi + Cloudflare bypass) pooled with a Vietnam TopCV dataset, deduped across both.
+- **Skill mining**: Extracts in-demand technologies (Java, Spring Boot, SQL, AWS, .NET/C#, Node.js, React, ...) directly from job titles and descriptions.
+- **Global benchmarking**: Correlates the local Vietnam market against global salary/skill data (Kaggle + Stack Overflow 2025 survey) to compute a per-role **Opportunity Gap**, flagging **🚀 High ROI** roles (high global pay, moderate local competition).
+- **Real AI-impact risk**: Automation-risk / resilience per role sourced from a real Kaggle AI job-risk dataset, not a heuristic.
+- **Advanced extraction**: Regex-based parsing of salaries (USD/VND) and years-of-experience from unstructured job-description text.
+- **Visual analytics**: An 8-chart suite — skill ranking, market-share, salary distribution/evolution, AI-impact matrix, skill/experience/salary correlation, and skill co-occurrence network.
+- **AI validation & analysis** *(optional)*: Free LLMs (Groq/OpenRouter/Gemini) sanity-check the computed numbers and generate career-strategy insight.
+- **Live dashboard**: Next.js frontend renders the same `intelligence.json` the engine exports, with an in-browser terminal to trigger crawls/flows.
 
-## 📊 Latest Market Insights (Data-Driven)
+<img src="public/global.png" alt="Global Market" width="100%" style="border-radius: 8px; margin: 1rem 0; border: 1px solid #ccc;">
 
-Analyzed from **131** live job postings on ITviec.
+## 🔍 What Insight Do You Get?
 
-### Technology Demand
-| Category | Job Mentions | Market Presence |
-|----------|--------------|-----------------|
-| **Data & Messaging** | 85 | 64.9% |
-| **Infrastructure & DevOps** | 77 | 58.8% |
-| **Architecture** | 55 | 42.0% |
-| **Spring Ecosystem** | 29 | 22.1% |
-| **Java Core** | 10 | 7.6% |
+Running the engine (`--flow`) turns raw job postings into a report that answers three questions:
+
+| Question | How it's answered |
+|----------|--------------------|
+| **What roles/skills are locally in demand?** | Job-title standardization + skill mining over ITviec + TopCV postings, ranked by mention count and market share. |
+| **Is the local market underpaying vs. the world?** | Each role's local salary estimate is compared against the global median (Kaggle + Stack Overflow 2025 survey) to compute an **Opportunity Gap** — the roles with the largest positive gap and real local demand are tagged **🚀 High ROI**. |
+| **Which roles are safest from automation?** | Per-role **automation-risk score** from a real Kaggle AI-job-risk dataset, surfaced as a resilience/risk level (e.g. `MODERATE`) alongside the salary numbers. |
+
+Every run produces:
+- **`analytics/reports/market_intelligence_*.md`** — an executive summary walking through local demand, global benchmarking, high-ROI/AI-risk strategy, and skill-network connectivity, each backed by a chart.
+- **8 charts** (`analytics/reports/*.png`): skill ranking, market-share donut, salary distribution, multi-year salary evolution, AI-impact matrix, skill/experience/salary correlation, skill co-occurrence network.
+- **`data/sync/intelligence.json`** (also copied to `public/data/`) — the structured data behind those charts (`intelligence`, `trends`, `impact`, `skills`, `correlation`, `marketShare`, `rawTable`), consumed live by the Next.js dashboard.
+- Optionally, **`--ai-analyze`** feeds that JSON to a free LLM (Groq/OpenRouter/Gemini) to sanity-check the numbers and write a career-strategy recommendation.
+
+Because the local side (ITviec + TopCV) is re-crawled data, these numbers change from run to run by design — re-run `python3 main.py --itviec` then `python3 main.py --flow` to get a fresh read, rather than trusting any numbers baked into this doc.
 
 # 🚀 Agentic Job Market Intelligence Engine (v2.0)
 
-A powerful data engine that correlates local job requirements with global industry benchmarks (Stack Overflow 2025) to generate high-ROI career roadmaps.
-
-## 🌟 Key Features
-- **Software-engineer focus**: Correlates the **Vietnam market (TopCV)** against a **global software-engineer salary benchmark**, surfacing roles like Backend, Fullstack, Java, DevOps.
-- **Skill mining**: Extracts in-demand SE skills (Java, .NET/C#, Node.js, React, AWS, ...) directly from local job titles.
-- **ROI Roadmaps**: Automated identification of "High ROI" skills (High Global Pay / Moderate Local Competition).
-- **Real AI-impact risk**: Automation-risk / resilience per role from a real Kaggle AI job-risk dataset (not just heuristics).
-- **Advanced Extraction**: Regex-based parsing of salaries (USD/VND) and experience years from unstructured JD text.
-- **AI Validation & Analysis**: Free LLMs (Groq/OpenRouter/Gemini) validate the numbers and generate career strategy.
-- **Visual Analytics Heatmaps**: Market demand hierarchy and "Opportunity Gap" visualizations.
+A powerful data engine that correlates local job requirements with global industry benchmarks (Stack Overflow 2025) to generate high-ROI career roadmaps. See Features above for the full capability list.
 
 ## 🛠 Tech Stack
 - **Data**: Pandas, NumPy, Scikit-Learn
@@ -164,4 +167,4 @@ Skills with the largest positive gap and high local demand are tagged as **🚀 
 
 ## Configuration
 
-Update the `session` variable in `crawlers/itviec.py` with your `_ITViec_session` cookie string for the best results and to avoid 403 errors.
+Set `ITVIEC_SESSION` and `ITVIEC_TOKEN` in `.env` with your ITviec `_ITViec_session` / `auth_token` cookie values for the best results and to avoid 403 errors (see `.env.example`).
