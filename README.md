@@ -32,6 +32,47 @@ job-market-crawler/
 └── SPEC.md              # Full technical specification
 ```
 
+## Architecture
+
+Two runtimes cooperate through a single JSON file — there is no database. The Python engine crawls/loads job data, correlates local (Vietnam) postings against global benchmarks, and writes `intelligence.json`; the Next.js dashboard reads that file and renders it, and can trigger the engine again via its API layer. See [SPEC.md](SPEC.md) for the full data contract and [AGENTS.md](AGENTS.md) for the file-by-file map.
+
+```mermaid
+flowchart TD
+    subgraph Sources["Data Sources"]
+        Kaggle["Kaggle datasets<br/>(global salary + AI risk)"]
+        TopCV["TopCV CSV<br/>(data/raw, Vietnam jobs)"]
+        ITviec["ITviec crawler<br/>(crawlers/itviec.py)"]
+    end
+
+    IE["Python IntelligenceEngine<br/>(analytics/intelligence_engine.py)<br/>correlate + standardize + visualize"]
+
+    JSON[("intelligence.json<br/>data/sync/ + public/data/")]
+
+    subgraph Frontend["Next.js 16 Dashboard"]
+        Page["page.tsx (SSR loader)"]
+        UI["RealTimeDashboard / SyncTerminal"]
+    end
+
+    subgraph API["/api/* routing split"]
+        direction LR
+        Prod["vercel.json rewrite<br/>/api/(.*) -&gt; api/index.py<br/>(production)"]
+        Dev["next.config.ts rewrite<br/>-&gt; localhost:8000<br/>(development)"]
+        FastAPI["FastAPI app<br/>(api/index.py)"]
+    end
+
+    Kaggle --> IE
+    TopCV --> IE
+    ITviec --> IE
+    IE -->|writes| JSON
+    JSON -->|"read at request time"| Page
+    Page --> UI
+    UI -->|"POST /api/sync, GET /api/market-data"| Prod
+    UI -->|"same routes, dev server"| Dev
+    Prod --> FastAPI
+    Dev --> FastAPI
+    FastAPI -->|"triggers --flow / --itviec"| IE
+```
+
 ## ✨ Features
 
 - **Dual-source local crawling**: Live ITviec scrape (Backend, Fullstack, Java, Software Engineer queries, curl-cffi + Cloudflare bypass) pooled with a Vietnam TopCV dataset, deduped across both.
